@@ -1,0 +1,14 @@
+{
+    "sessionExpired": "Sessão expirou",
+    "error401": "Nome de utilizador ou palavra-passe inválidos",
+    "error403": "Não tem permissões para aceder a este recurso",
+    "error500": "Não foi possível conectar ao servidor. Tente novamente mais tarde",
+    "errorUndefined": "Não foi possível conectar ao servidor. Tente novamente mais tarde",
+    "subtitle": "Iniciar sessão abaixo",
+    "username": "Nome de utilizador",
+    "password": "Palavra-passe",
+    "neverExpires": "Lembrar inicio de sessão",
+    "signInButton": "Iniciar sessão",
+    "signUpText": "À procura de um novo registo?",
+    "signUpButton": "Registar"
+}
