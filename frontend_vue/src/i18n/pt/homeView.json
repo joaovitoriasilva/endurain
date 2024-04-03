@@ -7,5 +7,6 @@
     "successActivityAdded": "Atividade adicionada com sucesso",
     "errorActivityAdded": "Erro ao adicionar atividade",
     "errorActivityNotFound": "Atividade não encontrada",
-    "processingActivity": "Processing activity"
+    "processingActivity": "Processing activity",
+    "successActivityDeleted": "Activity deleted successfully"
 }
