@@ -7,7 +7,7 @@
     "subtitle": "Iniciar sessão abaixo",
     "username": "Nome de utilizador",
     "password": "Palavra-passe",
-    "neverExpires": "Lembrar inicio de sessão",
+    "neverExpires": "Remember me (do not tick this box if you are using a shared computer)",
     "signInButton": "Iniciar sessão",
     "signUpText": "À procura de um novo registo?",
     "signUpButton": "Registar"
