@@ -151,16 +151,51 @@
 <hr />
 <h2 id="api-integration-v030">API Integration (v0.3.0+)</h2>
 <p>Endurain supports integration with other apps:</p>
-<ul>
-<li>For <strong>web apps</strong>, the backend sends access/refresh tokens as HTTP-only cookies.</li>
-<li>For <strong>mobile apps</strong>, tokens are included in the response body.</li>
-</ul>
 <h3 id="api-requirements">API Requirements</h3>
 <ul>
 <li><strong>Add a header:</strong> Every request must include an <code>X-Client-Type</code> header with either <code>web</code> or <code>mobile</code> as the value. Requests with other values will receive a <code>403</code> error.</li>
-<li><strong>Login and refresh endpoint</strong>: <code>/api/v1/token</code> and <code>/api/v1/refresh</code>.</li>
-<li><strong>Activity Upload:</strong> Use the <code>/api/v1/activities/create/upload</code> endpoint (expects a .gpx or .fit file).</li>
-</ul></div>
+<li><strong>Authorization:</strong> Every request must include an <code>Authorization Bearer: &lt;access token&gt;</code> header with a valid (new or refreshed) access token.</li>
+</ul>
+<h3 id="token-handling">Token Handling</h3>
+<ul>
+<li>The backend will generate an <code>access_token</code> valid for 15 minutes and an <code>refresh_token</code> valid for 7 days. This follow the logic of short and longed lived tokens for auth session.</li>
+<li>The <code>access_token</code> is used for authorization; The <code>refresh_token</code> is used to refresh the <code>access_token</code>.</li>
+<li>For <strong>web apps</strong>, the backend sends access/refresh tokens as HTTP-only cookies.</li>
+<li>For <strong>mobile apps</strong>, tokens are included in the response body.</li>
+</ul>
+<h3 id="api-endpoints">API Endpoints</h3>
+<p>The API is reachable under <code>/api/v1</code>. Below are some example endpoints. All endpoints information can be checked on the backend docs (<code>http://localhost:98/docs</code> or <code>http://ip_address:98/docs</code> or <code>https://domain/docs</code>):</p>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>Url</th>
+<th>Expected Information</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Authorize</strong></td>
+<td><code>/token</code></td>
+<td><code>FORM</code> with the fields <code>username</code> and <code>password</code>. This will be sent in clear text, use of HTTPS is highly recommended</td>
+</tr>
+<tr>
+<td><strong>Refresh Token</strong></td>
+<td><code>/refresh</code></td>
+<td>header <code>Authorization Bearer: &lt;Refresh Token&gt;</code></td>
+</tr>
+<tr>
+<td><strong>Activity Upload</strong></td>
+<td><code>/activities/create/upload</code></td>
+<td>.gpx or .fit file</td>
+</tr>
+<tr>
+<td><strong>Set Weight</strong></td>
+<td><code>/health/weight</code></td>
+<td>JSON {'weight': <number>, 'created_at': <code>yyyy-MM-dd</code>}</td>
+</tr>
+</tbody>
+</table></div>
             </div>
         </div>
 
