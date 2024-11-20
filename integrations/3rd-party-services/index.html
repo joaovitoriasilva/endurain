@@ -154,6 +154,10 @@
 <h1 id="3rd-party-services">3rd party services</h1>
 <hr />
 <h2 id="strava-integration">Strava Integration</h2>
+<blockquote>
+<p>[!WARNING]<br />
+Due to recent Strava API changes, expect changes in the Strava integration in a following release.</p>
+</blockquote>
 <p>To enable Strava integration, ensure your API endpoint is accessible from the internet and follow Strava's <a href="https://developers.strava.com/docs/getting-started/">API setup guide</a>. After the integration is successful the access and refresh tokens are stored in the DB. Each user will have his/hers own pair.</p>
 <p>Once the integration with Strava is configured, every hour the backend will check if there is new unimported activities. If yes, the new activity is automatically imported.</p>
 <p>On Strava unlink action every data imported from Strava, i.e. activities and gears, will be deleted according to Strava <a href="https://www.strava.com/legal/api">API Agreement</a>.</p>
