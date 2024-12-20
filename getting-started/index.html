@@ -233,16 +233,28 @@ Supported tags are:</p>
 </thead>
 <tbody>
 <tr>
+<td>TZ</td>
+<td>UTC</td>
+<td>Yes</td>
+<td>Timezone definition. Useful for TZ calculation for activities that do not have coordinates associated, like indoor swim or weight training. If not specified UTC will be used. List of available time zones <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones">here</a>. Format <code>Europe/Lisbon</code> expected</td>
+</tr>
+<tr>
+<td>DB_TYPE</td>
+<td>mariadb</td>
+<td>Yes</td>
+<td>mariadb or postgres</td>
+</tr>
+<tr>
 <td>DB_HOST</td>
 <td>mariadb</td>
 <td>Yes</td>
-<td>N/A</td>
+<td>mariadb or postgres</td>
 </tr>
 <tr>
 <td>DB_PORT</td>
 <td>3306</td>
 <td>Yes</td>
-<td>N/A</td>
+<td>3306 or 5432</td>
 </tr>
 <tr>
 <td>DB_USER</td>
@@ -380,6 +392,43 @@ Supported tags are:</p>
 <tr>
 <td>MYSQL_PASSWORD</td>
 <td>changeme</td>
+<td><code>No</code></td>
+<td>N/A</td>
+</tr>
+</tbody>
+</table>
+<p>Table below shows the obligatory environment variables for postgres container. You should set them based on what was also set for backend container.</p>
+<table>
+<thead>
+<tr>
+<th>Environemnt variable</th>
+<th>Default value</th>
+<th>Optional</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POSTGRES_PASSWORD</td>
+<td>changeme</td>
+<td><code>No</code></td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>POSTGRES_DB</td>
+<td>endurain</td>
+<td><code>No</code></td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>POSTGRES_USER</td>
+<td>endurain</td>
+<td><code>No</code></td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>PGDATA</td>
+<td>/var/lib/postgresql/data/pgdata</td>
 <td><code>No</code></td>
 <td>N/A</td>
 </tr>
