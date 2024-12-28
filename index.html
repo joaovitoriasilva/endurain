@@ -56,15 +56,6 @@
                             <li class="nav-item">
                                 <a href="developer-guide/" class="nav-link">Developer guide</a>
                             </li>
-                            <li class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">About</a>
-                                <ul class="dropdown-menu">
-                                    
-<li>
-    <a href="about/license/" class="dropdown-item">License</a>
-</li>
-                                </ul>
-                            </li>
                         </ul>
 
                     <ul class="nav navbar-nav ms-md-auto">
@@ -214,10 +205,10 @@
 <ul>
 <li><strong>Frontend:</strong> Vue.js, Notivue and Bootstrap CSS</li>
 <li><strong>Backend:</strong> Python FastAPI, Alembic, SQLAlchemy, stravalib and python-garminconnect for Strava and Garmin Connect integration, gpxpy and fitdecode for .gpx and .fit file import respectively </li>
-<li><strong>Database:</strong> MariaDB or PostgreSQL for efficient user data management</li>
+<li><strong>Database:</strong> MariaDB or PostgreSQL for efficient data management</li>
 <li><strong>Observability:</strong> Jaeger for basic tracing and monitoring</li>
 </ul>
-<p>To deploy Endurain, Docker images are available, and a comprehensive example can be found in the "docker-compose.yml.example" file provided in the project repository. Configuration is facilitated through environment variables, ensuring flexibility and ease of customization. More details bellow.</p>
+<p>To deploy Endurain, a Docker image is available, and a comprehensive example can be found in the "docker-compose.yml.example" file provided in the project repository. Configuration is facilitated through environment variables, ensuring flexibility and ease of customization.</p>
 <h2 id="developers-note">Developer's Note</h2>
 <p>As a non-professional developer, my journey with Endurain involved learning and implementing new technologies and concepts, with invaluable assistance from ChatGPT. The primary motivation behind this project was to gain hands-on experience and expand my understanding of modern development practices. Second motivation is that I'm an amateur triathlete and I want to keep track of my gear and gear components usage.</p>
 <p>If you have any recommendations or insights on improving any aspect of Endurain, whether related to technology choices, user experience, or any other relevant area, I would greatly appreciate your input. The goal is to create a reliable and user-friendly fitness tracking solution that caters to the needs of individuals who prefer self-hosted applications. Your constructive feedback will undoubtedly contribute to the refinement of Endurain.</p>
@@ -226,15 +217,15 @@
 <ul>
 <li>Multi-user functionality</li>
 <li>Admin and user profiles with adaptable interfaces</li>
-<li>Activity import via manual or bulk upload (.gpx and .fit files)</li>
+<li>Activity import via manual or bulk upload (.gpx and .fit files. .fit files are preferred)</li>
 <li>Strava integration for syncing activities and gear</li>
 <li>Garmin Connect integration for syncing activities, gear and body composition</li>
-<li>Personalized activity feeds and statistics (week/month)</li>
+<li>Activity feeds and statistics (week/month)</li>
 <li>Basic activity privacy settings</li>
 <li>Gear tracking (wetsuits, bicycles, shoes)</li>
 <li>User pages with stats and activity histories</li>
 <li>Follower features (view activities)</li>
-<li>Multi-language support (currently English only)</li>
+<li>Multi-language support</li>
 <li>Dark/light theme switcher</li>
 <li>Third-party app support</li>
 <li>Weight logging</li>
@@ -242,7 +233,6 @@
 <h2 id="planned-features">Planned Features</h2>
 <p>Upcoming features (in no particular order):</p>
 <ul>
-<li>Simplified Docker images</li>
 <li>Live tracking</li>
 <li>Default gear for activity types</li>
 <li>Gear component tracking (e.g., track when components like bike chains need replacing)</li>
@@ -256,7 +246,7 @@
 <h2 id="contributing">Contributing</h2>
 <p>Contributions are welcomed! Please open an issue to discuss any changes or improvements before submitting a PR. Check out the <a href="https://github.com/joaovitoriasilva/endurain/blob/master/CONTRIBUTING.md">Contributing Guidelines</a> for more details.</p>
 <h2 id="license">License</h2>
-<p>This project is licensed under the GPL-3.0 License - see the <a href="https://github.com/joaovitoriasilva/endurain/tree/master?tab=GPL-3.0-1-ov-file">LICENSE</a> file for details.</p>
+<p>This project is licensed under the AGPL-3.0 or later License.</p>
 <h2 id="help-translate">Help Translate</h2>
 <p>Endurain has multi-language support, and you can help translate it into more languages via <a href="https://crowdin.com/project/endurain">Crowdin</a>. </p>
 <p>Currently supported in:</p>
@@ -349,5 +339,5 @@
 
 <!--
 MkDocs version : 1.6.1
-Build Date UTC : 2024-12-20 22:17:26.270048+00:00
+Build Date UTC : 2024-12-28 21:48:07.107640+00:00
 -->

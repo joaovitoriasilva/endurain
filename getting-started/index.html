@@ -56,15 +56,6 @@
                             <li class="nav-item">
                                 <a href="../developer-guide/" class="nav-link">Developer guide</a>
                             </li>
-                            <li class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">About</a>
-                                <ul class="dropdown-menu">
-                                    
-<li>
-    <a href="../about/license/" class="dropdown-item">License</a>
-</li>
-                                </ul>
-                            </li>
                         </ul>
 
                     <ul class="nav navbar-nav ms-md-auto">
@@ -144,11 +135,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#frontend-environment-variables" class="nav-link">Frontend Environment Variables</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#backend-environment-variables" class="nav-link">Backend Environment Variables</a>
+            <li class="nav-item" data-bs-level="2"><a href="#supported-environment-variables" class="nav-link">Supported Environment Variables</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -175,52 +162,13 @@
 <li><strong>Password:</strong> admin</li>
 </ul>
 <h2 id="docker-deployment">Docker Deployment</h2>
-<p>Endurain provides Docker images for simplified deployment. To get started, check out the <code>docker-compose.yml.example</code> file in the project repository and adjust it according to your setup.
-Supported tags are:</p>
+<p>Endurain provides a Docker image for simplified deployment. To get started, check out the <code>docker-compose.yml.example</code> file in the project repository and adjust it according to your setup. Supported tags are:</p>
 <ul>
 <li><strong>latest:</strong> contains the latest released version;</li>
 <li><strong>version, example "v0.3.0":</strong> contains the app state available at the time of the version specified;</li>
 <li><strong>development version, example "dev_06092024":</strong> contains a development version of the app at the date specified. This is not a stable released and may contain issues and bugs. Please do not open issues if using a version like this unless asked by me.</li>
 </ul>
-<h2 id="frontend-environment-variables">Frontend Environment Variables</h2>
-<p>Table below shows supported environment variables. Variables marked with optional "No" should be set to avoid errors.</p>
-<table>
-<thead>
-<tr>
-<th>Environment variable</th>
-<th>Default value</th>
-<th>Optional</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>MY_APP_BACKEND_PROTOCOL</td>
-<td>http</td>
-<td>Yes</td>
-<td>Needs to be <code>https</code> if you want to enable Strava integration. Strava callback relies on this. You may need to update this variable based on docker image spin up (api host or local ip (example: http://192.168.1.10:98))</td>
-</tr>
-<tr>
-<td>MY_APP_BACKEND_HOST</td>
-<td>localhost:98</td>
-<td>Yes</td>
-<td>Needs to be set and be Internet faced/resolved if you want to enable Strava integration. Strava callback relies on this. You may need to update this variable based on docker image spin up (api host or local ip (example: http://192.168.1.10:98))</td>
-</tr>
-<tr>
-<td>MY_APP_STRAVA_CLIENT_ID</td>
-<td>changeme</td>
-<td>Yes</td>
-<td>Needs to be set with your Strava API Client ID if you want to enable Strava integration.</td>
-</tr>
-</tbody>
-</table>
-<p>Frontend dependencies:</p>
-<ul>
-<li>To check npm dependencies used, use npm file (package.json)</li>
-<li>User avatars create using DiceBear (https://www.dicebear.com) avataaars style.</li>
-<li>Logo created on Canva</li>
-</ul>
-<h2 id="backend-environment-variables">Backend Environment Variables</h2>
+<h2 id="supported-environment-variables">Supported Environment Variables</h2>
 <p>Table below shows supported environment variables. Variables marked with optional "No" should be set to avoid errors.</p>
 <table>
 <thead>
@@ -239,20 +187,32 @@ Supported tags are:</p>
 <td>Timezone definition. Useful for TZ calculation for activities that do not have coordinates associated, like indoor swim or weight training. If not specified UTC will be used. List of available time zones <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones">here</a>. Format <code>Europe/Lisbon</code> expected</td>
 </tr>
 <tr>
+<td>ENDURAIN_HOST</td>
+<td>http://localhost:8080</td>
+<td><code>No</code></td>
+<td>Required for internal communication and Strava. For Strava https must be used. Host or local ip (example: http://192.168.1.10:8080 or https://endurain.com)</td>
+</tr>
+<tr>
+<td>GEOCODES_MAPS_API</td>
+<td>changeme</td>
+<td><code>No</code></td>
+<td><a href="https://geocode.maps.co/">Geocode maps</a> offers a free plan consisting of 1 Request/Second. Registration necessary.</td>
+</tr>
+<tr>
 <td>DB_TYPE</td>
-<td>mariadb</td>
+<td>postgres</td>
 <td>Yes</td>
 <td>mariadb or postgres</td>
 </tr>
 <tr>
 <td>DB_HOST</td>
-<td>mariadb</td>
+<td>postgres</td>
 <td>Yes</td>
 <td>mariadb or postgres</td>
 </tr>
 <tr>
 <td>DB_PORT</td>
-<td>3306</td>
+<td>5432</td>
 <td>Yes</td>
 <td>3306 or 5432</td>
 </tr>
@@ -301,19 +261,19 @@ Supported tags are:</p>
 <tr>
 <td>STRAVA_CLIENT_ID</td>
 <td>changeme</td>
-<td><code>No</code></td>
+<td>Yes</td>
 <td>Needed if you want to enable the Strava integration</td>
 </tr>
 <tr>
 <td>STRAVA_CLIENT_SECRET</td>
 <td>changeme</td>
-<td><code>No</code></td>
+<td>Yes</td>
 <td>Needed if you want to enable the Strava integration</td>
 </tr>
 <tr>
 <td>STRAVA_AUTH_CODE</td>
 <td>changeme</td>
-<td><code>No</code></td>
+<td>Yes</td>
 <td>Needed if you want to enable the Strava integration</td>
 </tr>
 <tr>
@@ -341,26 +301,14 @@ Supported tags are:</p>
 <td>N/A</td>
 </tr>
 <tr>
-<td>FRONTEND_PROTOCOL</td>
-<td>http</td>
+<td>BEHIND_PROXY</td>
+<td>false</td>
 <td>Yes</td>
-<td>Needs to be set if you want to enable Strava integration. You may need to update this variable based on docker image spin up (frontend host or local ip (example: http://192.168.1.10:8080))</td>
-</tr>
-<tr>
-<td>FRONTEND_HOST</td>
-<td>frontend:8080</td>
-<td>Yes</td>
-<td>Needs to be set if you want to enable Strava integration. You may need to update this variable based on docker image spin up (frontend host or local ip (example: http://192.168.1.10:8080))</td>
-</tr>
-<tr>
-<td>GEOCODES_MAPS_API</td>
-<td>changeme</td>
-<td><code>No</code></td>
-<td><a href="https://geocode.maps.co/">Geocode maps</a> offers a free plan consisting of 1 Request/Second. Registration necessary.</td>
+<td>Change to true if behind reverse proxy</td>
 </tr>
 </tbody>
 </table>
-<p>Table below shows the obligatory environment variables for mariadb container. You should set them based on what was also set for backend container.</p>
+<p>Table below shows the obligatory environment variables for mariadb container. You should set them based on what was also set for the Endurain container.</p>
 <table>
 <thead>
 <tr>
@@ -397,7 +345,7 @@ Supported tags are:</p>
 </tr>
 </tbody>
 </table>
-<p>Table below shows the obligatory environment variables for postgres container. You should set them based on what was also set for backend container.</p>
+<p>Table below shows the obligatory environment variables for postgres container. You should set them based on what was also set for the Endurain container.</p>
 <table>
 <thead>
 <tr>
@@ -434,36 +382,37 @@ Supported tags are:</p>
 </tr>
 </tbody>
 </table>
-<p>To check Python backend dependencies used, use poetry file (pyproject.toml)</p>
+<p>To check Python backend dependencies used, use poetry file (pyproject.toml).</p>
+<p>Frontend dependencies:</p>
+<ul>
+<li>To check npm dependencies used, use npm file (package.json)</li>
+<li>User avatars create using DiceBear (https://www.dicebear.com) avataaars style</li>
+<li>Logo created on Canva</li>
+</ul>
 <h2 id="volumes">Volumes</h2>
-<p>It is recommended to configure the following volumes for data persistence:</p>
+<p>Docker image uses a non-root user, so ensure target folders are not owned by root. Non-root user should use UID and GID 1000. It is recommended to configure the following volumes for data persistence:</p>
 <table>
 <thead>
 <tr>
 <th>Volume</th>
-<th>Path</th>
 <th>Notes</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>/app/files/bulk_import</td>
-<td><local_path>/endurain/backend/files/bulk_import:/app/files/bulk_import</td>
+<td><code>&lt;local_path&gt;/endurain/backend/files/bulk_import:/app/backend/files/bulk_import</code></td>
 <td>Necessary to enable bulk import of activities. Place here your activities files</td>
 </tr>
 <tr>
-<td>/app/files/processed</td>
-<td><local_path>/endurain/backend/files/processed:/app/files/processed</td>
+<td><code>&lt;local_path&gt;/endurain/backend/files/processed:/app/backend/files/processed</code></td>
 <td>Necessary for processed original files persistence on container image updates</td>
 </tr>
 <tr>
-<td>/app/user_images</td>
-<td><local_path>/endurain/backend/user_images:/app/user_images</td>
+<td><code>&lt;local_path&gt;/endurain/backend/user_images:/app/backend/user_images</code></td>
 <td>Necessary for user image persistence on container image updates</td>
 </tr>
 <tr>
-<td>/app/logs</td>
-<td><local_path>/endurain/backend/logs:/app/logs</td>
+<td><code>&lt;local_path&gt;/endurain/backend/logs:/app/backend/logs</code></td>
 <td>Log files for the backend</td>
 </tr>
 </tbody>
