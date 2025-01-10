@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../img/favicon.ico">
-        <title>Developer guide - Endurain documentation</title>
+        <title>Gallery - Endurain documentation</title>
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/fontawesome.min.css" rel="stylesheet">
         <link href="../css/brands.min.css" rel="stylesheet">
@@ -54,10 +54,10 @@
                                 </ul>
                             </li>
                             <li class="nav-item">
-                                <a href="./" class="nav-link active" aria-current="page">Developer guide</a>
+                                <a href="../developer-guide/" class="nav-link">Developer guide</a>
                             </li>
                             <li class="nav-item">
-                                <a href="../gallery/" class="nav-link">Gallery</a>
+                                <a href="./" class="nav-link active" aria-current="page">Gallery</a>
                             </li>
                         </ul>
 
@@ -68,17 +68,17 @@
                             </a>
                         </li>
                             <li class="nav-item">
-                                <a rel="prev" href="../integrations/3rd-party-services/" class="nav-link">
+                                <a rel="prev" href="../developer-guide/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" href="../gallery/" class="nav-link">
+                                <a rel="next" class="nav-link disabled">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="https://github.com/joaovitoriasilva/endurain/edit/master/docs/developer-guide.md" class="nav-link"><i class="fa-brands fa-github"></i> Edit on GitHub</a>
+                                <a href="https://github.com/joaovitoriasilva/endurain/edit/master/docs/gallery.md" class="nav-link"><i class="fa-brands fa-github"></i> Edit on GitHub</a>
                             </li>
                             <li class="nav-item dropdown">
                               <button id="theme-menu" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Toggle theme" class="nav-link dropdown-toggle">
@@ -128,12 +128,8 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-bs-level="1"><a href="#developer-guide" class="nav-link">Developer guide</a>
+            <li class="nav-item" data-bs-level="1"><a href="#gallery" class="nav-link">Gallery</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-bs-level="2"><a href="#api-integration-v030" class="nav-link">API Integration (v0.3.0+)</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
               </ul>
             </li>
         </ul>
@@ -141,135 +137,55 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="developer-guide">Developer guide</h1>
+<h1 id="gallery">Gallery</h1>
 <hr />
-<h2 id="api-integration-v030">API Integration (v0.3.0+)</h2>
-<p>Endurain supports integration with other apps:</p>
-<h3 id="api-requirements">API Requirements</h3>
-<ul>
-<li><strong>Add a header:</strong> Every request must include an <code>X-Client-Type</code> header with either <code>web</code> or <code>mobile</code> as the value. Requests with other values will receive a <code>403</code> error.</li>
-<li><strong>Authorization:</strong> Every request must include an <code>Authorization Bearer: &lt;access token&gt;</code> header with a valid (new or refreshed) access token.</li>
-</ul>
-<h3 id="token-handling">Token Handling</h3>
-<ul>
-<li>The backend will generate an <code>access_token</code> valid for 15 minutes and an <code>refresh_token</code> valid for 7 days. This follow the logic of short and longed lived tokens for auth session.</li>
-<li>The <code>access_token</code> is used for authorization; The <code>refresh_token</code> is used to refresh the <code>access_token</code>.</li>
-<li>For <strong>web apps</strong>, the backend sends access/refresh tokens as HTTP-only cookies.</li>
-<li>For <strong>mobile apps</strong>, tokens are included in the response body.</li>
-</ul>
-<h3 id="api-endpoints">API Endpoints</h3>
-<p>The API is reachable under <code>/api/v1</code>. Below are some example endpoints. All endpoints information can be checked on the backend docs (<code>http://localhost:98/docs</code> or <code>http://ip_address:98/docs</code> or <code>https://domain/docs</code>):</p>
-<table>
-<thead>
-<tr>
-<th>What</th>
-<th>Url</th>
-<th>Expected Information</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Authorize</strong></td>
-<td><code>/token</code></td>
-<td><code>FORM</code> with the fields <code>username</code> and <code>password</code>. This will be sent in clear text, use of HTTPS is highly recommended</td>
-</tr>
-<tr>
-<td><strong>Refresh Token</strong></td>
-<td><code>/refresh</code></td>
-<td>header <code>Authorization Bearer: &lt;Refresh Token&gt;</code></td>
-</tr>
-<tr>
-<td><strong>Activity Upload</strong></td>
-<td><code>/activities/create/upload</code></td>
-<td>.gpx or .fit file</td>
-</tr>
-<tr>
-<td><strong>Set Weight</strong></td>
-<td><code>/health/weight</code></td>
-<td>JSON {'weight': <number>, 'created_at': <code>yyyy-MM-dd</code>}</td>
-</tr>
-</tbody>
-</table>
-<h3 id="supported-activity-types">Supported activity types</h3>
-<p>The table bellow details the activity types supported by Endurain:</p>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Run</td>
-<td>1</td>
-</tr>
-<tr>
-<td>Trail run</td>
-<td>2</td>
-</tr>
-<tr>
-<td>Virtual run</td>
-<td>3</td>
-</tr>
-<tr>
-<td>Road cycling</td>
-<td>4</td>
-</tr>
-<tr>
-<td>Gravel cycling</td>
-<td>5</td>
-</tr>
-<tr>
-<td>MTB cycling</td>
-<td>6</td>
-</tr>
-<tr>
-<td>Virtual cycling</td>
-<td>7</td>
-</tr>
-<tr>
-<td>Indoor swimming</td>
-<td>8</td>
-</tr>
-<tr>
-<td>Open water swimming</td>
-<td>9</td>
-</tr>
-<tr>
-<td>General workout</td>
-<td>10</td>
-</tr>
-<tr>
-<td>Walk</td>
-<td>11</td>
-</tr>
-<tr>
-<td>Hike</td>
-<td>12</td>
-</tr>
-<tr>
-<td>Rowing</td>
-<td>13</td>
-</tr>
-<tr>
-<td>Yoga</td>
-<td>14</td>
-</tr>
-<tr>
-<td>Alpine ski</td>
-<td>15</td>
-</tr>
-<tr>
-<td>Nordic Ski</td>
-<td>16</td>
-</tr>
-<tr>
-<td>Snowboard</td>
-<td>17</td>
-</tr>
-</tbody>
-</table></div>
+<div align="center">
+  <p>Home page</p>
+  <p>
+    <img src="assets/gallery/screenshot_home.png">
+  </p>
+  <p>Activity page</p>
+  <p>
+    <img src="assets/gallery/screenshot_activity_page_1.png">
+  </p>
+  <p>
+    <img src="assets/gallery/screenshot_activity_page_2.png">
+  </p>
+  <p>Gears page</p>
+  <p>
+    <img src="assets/gallery/screenshot_gears_page.png">
+  </p>
+  <p>
+    <img src="assets/gallery/screenshot_gear_page.png">
+  </p>
+  <p>Health page</p>
+  <p>
+    <img src="assets/gallery/screenshot_health_home.png">
+  </p>
+  <p>
+    <img src="assets/gallery/screenshot_health_weight.png">
+  </p>
+  <p>Profile page</p>
+  <p>
+    <img src="assets/gallery/screenshot_profile.png">
+  </p>
+  <p>Settings page</p>
+  <p>
+    <img src="assets/gallery/screenshot_settings_user.png">
+  </p>
+  <p>
+    <img src="assets/gallery/screenshot_settings_general.png">
+  </p>
+  <p>
+    <img src="assets/gallery/screenshot_settings_profile.png">
+  </p>
+  <p>
+    <img src="assets/gallery/screenshot_settings_security.png">
+  </p>
+  <p>
+    <img src="assets/gallery/screenshot_settings_integrations.png">
+  </p>
+</div></div>
             </div>
         </div>
 
