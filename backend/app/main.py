@@ -81,7 +81,6 @@ def create_app() -> FastAPI:
     # Add CORS middleware to allow requests from the frontend
     origins = [
         "http://localhost",
-        "http://localhost:8080",
         "http://localhost:5173",
         os.environ.get("ENDURAIN_HOST"),
     ]
