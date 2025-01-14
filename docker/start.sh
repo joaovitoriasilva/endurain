@@ -45,7 +45,7 @@ fi
 echo "Starting FastAPI with BEHIND_PROXY=$BEHIND_PROXY"
 
 # Define the base command for starting the FastAPI server as an array
-CMD=("uvicorn" "main:app" "--host" "0.0.0.0" "--port" "8080")
+CMD=("uvicorn" "main:app" "--host" "0.0.0.0" "--port" "${ENDURAIN_PORT:-8080}")
 
 # Add --proxy-headers if BEHIND_PROXY is true
 if [ "$BEHIND_PROXY" = "true" ]; then

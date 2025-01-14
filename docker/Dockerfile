@@ -57,6 +57,7 @@ ENV UID=1000 \
     JAEGER_PROTOCOL="http" \
     JAGGER_PORT=4317 \
     ENDURAIN_HOST="http://localhost:8080" \
+    ENDURAIN_PORT=8080 \
     GEOCODES_MAPS_API="changeme" \
     BEHIND_PROXY=false
 
@@ -90,11 +91,11 @@ RUN chown -R $UID:$GID /app
 # Switch to the non-root user by UID and GID
 USER $UID:$GID
 
-# Make port 8080 available to the world outside this container
-EXPOSE 8080
+# Make port available to the world outside this container
+EXPOSE ${ENDURAIN_PORT}
 
 # Add a healthcheck
-HEALTHCHECK --interval=30s --timeout=10s --start-period=30s CMD curl -f http://localhost:8080/api/v1/about || exit 1
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s CMD curl -f "$ENDURAIN_HOST/api/v1/about" || exit 1
 
 # Run the FastAPI app
 ENTRYPOINT ["/docker-entrypoint.d/start.sh"]
