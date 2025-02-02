@@ -5,7 +5,7 @@
     "modalLabelSelectGear": "Select gear",
     "modalButtonAddGear": "Add gear",
     "modalLabelDeleteGear": "Delete gear from activity",
-    "modalLabelDeleteGearBody": "Are you sure you want to remove the gear from the activity?",
+    "modalLabelDeleteGearBody": "E",
     "modalLabelDeleteGearButton": "Delete gear",
     "labelGraph": "Activity data graphs",
     "labelDownsampling": "Data downsampled to ~200 points",
