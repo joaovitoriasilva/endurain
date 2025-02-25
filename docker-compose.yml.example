@@ -14,6 +14,7 @@ services:
       #- STRAVA_AUTH_CODE=changeme
       - GEOCODES_MAPS_API=changeme
       - ENDURAIN_HOST=http://localhost:8080 # host or local ip (example: http://192.168.1.10:8080 or https://endurain.com), default is http://localhost:8080
+      - ENDURAIN_PORT=8080
       - BEHIND_PROXY=false # default value is false. Change to true if behind reverse proxy
     volumes:
     #  - <local_path>/endurain/backend/app:/app # Configure volume if you want to edit the code locally by cloning the repo
