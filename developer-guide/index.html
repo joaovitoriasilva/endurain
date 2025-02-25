@@ -130,7 +130,19 @@
             
             <li class="nav-item" data-bs-level="1"><a href="#developer-guide" class="nav-link">Developer guide</a>
               <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#setup-a-dev-environment" class="nav-link">Setup a dev environment</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
             <li class="nav-item" data-bs-level="2"><a href="#api-integration-v030" class="nav-link">API Integration (v0.3.0+)</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#supported-activity-types" class="nav-link">Supported activity types</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#supported-gear-types" class="nav-link">Supported gear types</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -143,6 +155,117 @@
 
 <h1 id="developer-guide">Developer guide</h1>
 <hr />
+<h2 id="setup-a-dev-environment">Setup a dev environment</h2>
+<p>Bellow are the steps to create a dev environment. Examples bellow will use Endurain repo, but you should adapt those for your scenario (forked repo, etc).</p>
+<ul>
+<li>Clone the repo to your dev machine:</li>
+</ul>
+<pre><code>$ cd &lt;folder_to_store_code&gt;
+$ git clone https://github.com/joaovitoriasilva/endurain.git # this will clone the repo structure to the previous folder inside a folder called endurain
+</code></pre>
+<h3 id="docker-image-and-backend-logic">Docker image and backend logic</h3>
+<p>Make sure Docker is installed, more info <a href="https://docs.docker.com/get-started/introduction/get-docker-desktop/">here</a>.</p>
+<ul>
+<li>On the project root folder, create a new Docker image, the example bellow uses <code>unified-image</code> as the image name:</li>
+</ul>
+<pre><code>$ docker build -f docker/Dockerfile -t unified-image .
+</code></pre>
+<ul>
+<li>Go to the project root folder and create a file called <code>docker-compose.yml</code> and adapt it to your needs. Example bellow:</li>
+</ul>
+<pre><code>services:
+    endurain:
+        container_name: endurain
+        image: unified-image # based on image that will be created above
+        environment:
+            - TZ=Europe/Lisbon # change if needed. Default is UTC
+            - DB_TYPE=postgres
+            - DB_HOST=postgres
+            - DB_PORT=5432
+            - DB_PASSWORD=changeme
+            - SECRET_KEY=changeme
+            - GEOCODES_MAPS_API=changeme
+            - ENDURAIN_HOST=http://localhost:8080 # change if needed
+            - BEHIND_PROXY=false
+        volumes:
+            - &lt;path_to_project_root_folder&gt;/backend/app:/app/backend/ # this will replace the backend code logic with yours. Any changes in the code need a container reboot for them to apply
+        ports:
+            - &quot;8080:8080&quot; # change if needed
+        depends_on:
+            postgres:
+                condition: service_healthy
+        restart: unless-stopped
+
+    postgres:
+        image: postgres:latest
+        container_name: postgres
+        environment:
+            - POSTGRES_PASSWORD=changeme
+            - POSTGRES_DB=endurain
+            - POSTGRES_USER=endurain
+            - PGDATA=/var/lib/postgresql/data/pgdata
+        ports:
+            - &quot;5432:5432&quot;
+        healthcheck:
+            test: [&quot;CMD-SHELL&quot;, &quot;pg_isready -U endurain&quot;]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+        volumes:
+            - &lt;path_to_container_folders&gt;/postgres:/var/lib/postgresql/data
+        restart: unless-stopped
+
+    adminer:
+        container_name: adminer
+        image: adminer
+        ports:
+            - 8081:8080
+        restart: unless-stopped
+</code></pre>
+<ul>
+<li>Start your project based on the docker compose file created before:</li>
+</ul>
+<pre><code>$ docker compose up -d
+</code></pre>
+<ul>
+<li>To stop the project:</li>
+</ul>
+<pre><code>$ docker compose down
+</code></pre>
+<ul>
+<li>To remove the create <code>unified-image</code> Docker image:</li>
+</ul>
+<pre><code>$ docker image remove unified-image
+</code></pre>
+<ul>
+<li>Backend uses <a href="https://python-poetry.org/">Poetry</a> for dependency management. You may need to install Python and Poetry if dependency management is necessary.</li>
+</ul>
+<h3 id="frontend">Frontend</h3>
+<p>Make sure you have an up-to-date version of <a href="https://nodejs.org/">Node.js</a> installed.</p>
+<ul>
+<li>Go to the root of the project and move to frontend/app folder and install the dependencies:</li>
+</ul>
+<pre><code>$ cd frontend/app
+$ npm install
+</code></pre>
+<ul>
+<li>Create a file called <code>.env.local</code> inside frontend/app and add the following to it:</li>
+</ul>
+<pre><code>VITE_ENDURAIN_HOST=http://localhost:8080 # Adapt this based on the docker compose of your dev environment
+VITE_STRAVA_CLIENT_ID=MY_APP_STRAVA_CLIENT_ID
+</code></pre>
+<ul>
+<li>After the dependencies are installed run the frontend:</li>
+</ul>
+<pre><code>$ npm run dev
+</code></pre>
+<ul>
+<li>After the frontend starts running, it should be available in the port <code>5173</code>. You should now be able to access the dev environment at <code>http://localhost:5173</code>. Screenshot bellow shows the output from the <code>npm run dev</code>. Adapt the port based on the command output.</li>
+</ul>
+<p><img alt="Frontend running" src="../assets/developer-guide/npm_run_dev.png" /></p>
+<ul>
+<li>Some processes, like token refresh may redirect your dev env from port <code>5173</code> to <code>8080</code> (or other, depending on your compose file). If this happens simply navigate again to <code>5173</code>.</li>
+</ul>
 <h2 id="api-integration-v030">API Integration (v0.3.0+)</h2>
 <p>Endurain supports integration with other apps:</p>
 <h3 id="api-requirements">API Requirements</h3>
@@ -190,7 +313,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="supported-activity-types">Supported activity types</h3>
+<h2 id="supported-activity-types">Supported activity types</h2>
 <p>The table bellow details the activity types supported by Endurain:</p>
 <table>
 <thead>
@@ -267,6 +390,30 @@
 <tr>
 <td>Snowboard</td>
 <td>17</td>
+</tr>
+</tbody>
+</table>
+<h2 id="supported-gear-types">Supported gear types</h2>
+<p>The table bellow details the gear types supported by Endurain:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bike</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Shoes</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Wetsuit</td>
+<td>3</td>
 </tr>
 </tbody>
 </table></div>
