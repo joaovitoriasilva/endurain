@@ -188,7 +188,7 @@ $ git clone https://github.com/joaovitoriasilva/endurain.git # this will clone t
             - ENDURAIN_HOST=http://localhost:8080 # change if needed
             - BEHIND_PROXY=false
         volumes:
-            - &lt;path_to_project_root_folder&gt;/backend/app:/app/backend/ # this will replace the backend code logic with yours. Any changes in the code need a container reboot for them to apply
+            - &lt;path_to_project_root_folder&gt;/backend/app:/app/backend # this will replace the backend code logic with yours. Any changes in the code need a container reboot for them to apply
         ports:
             - &quot;8080:8080&quot; # change if needed
         depends_on:
@@ -391,6 +391,42 @@ VITE_STRAVA_CLIENT_ID=MY_APP_STRAVA_CLIENT_ID
 <td>Snowboard</td>
 <td>17</td>
 </tr>
+<tr>
+<td>Transition</td>
+<td>18</td>
+</tr>
+<tr>
+<td>Strength Training</td>
+<td>19</td>
+</tr>
+<tr>
+<td>Crossfit</td>
+<td>20</td>
+</tr>
+<tr>
+<td>Tennis</td>
+<td>21</td>
+</tr>
+<tr>
+<td>Table Tennis</td>
+<td>22</td>
+</tr>
+<tr>
+<td>Badminton</td>
+<td>23</td>
+</tr>
+<tr>
+<td>Squash</td>
+<td>24</td>
+</tr>
+<tr>
+<td>Racquetball</td>
+<td>25</td>
+</tr>
+<tr>
+<td>Pickleball</td>
+<td>26</td>
+</tr>
 </tbody>
 </table>
 <h2 id="supported-gear-types">Supported gear types</h2>
@@ -414,6 +450,10 @@ VITE_STRAVA_CLIENT_ID=MY_APP_STRAVA_CLIENT_ID
 <tr>
 <td>Wetsuit</td>
 <td>3</td>
+</tr>
+<tr>
+<td>Racquet</td>
+<td>4</td>
 </tr>
 </tbody>
 </table></div>
