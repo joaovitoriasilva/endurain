@@ -1,0 +1,13 @@
+{
+  "headerType": "Typ",
+  "headerName": "Name",
+  "headerLocation": "Ort",
+  "headerStartTime": "Startzeit",
+  "headerDuration": "Dauer",
+  "headerDistance": "Distanz",
+  "headerPace": "Tempo",
+  "headerCalories": "Kalorien",
+  "headerElevation": "Höhenmeter",
+  "headerAvgHr": "Ø HF",
+  "noActivitiesFound": "Keine Aktivitäten gefunden."
+}

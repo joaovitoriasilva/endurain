@@ -1,0 +1,13 @@
+{
+  "headerType": "Tipo",
+  "headerName": "Nome",
+  "headerLocation": "Local",
+  "headerStartTime": "Hora de início",
+  "headerDuration": "Duração",
+  "headerDistance": "Distância",
+  "headerPace": "Ritmo",
+  "headerCalories": "Calorias",
+  "headerElevation": "Elevação",
+  "headerAvgHr": "FC Méd.",
+  "noActivitiesFound": "Nenhuma atividade encontrada."
+}
