@@ -154,6 +154,7 @@ Due to recent Strava API changes, expect changes in the Strava integration in a 
 </blockquote>
 <p>To enable Strava integration, ensure your Endurain instance is accessible from the internet and follow Strava's <a href="https://developers.strava.com/docs/getting-started/">API setup guide</a>. After the integration is successful the access and refresh tokens are stored in the DB. Each user will have his/hers own pair.</p>
 <p>Once the integration with Strava is configured, on startup and every hour the backend will check if there is new unimported activities. If yes, the new activity is automatically imported.</p>
+<p>On link, user will need to provide his/her API client ID and secret. Pair will be temporary stored in the DB until the process finishes. Info is sent on a JSON payload and HTTPS end2end is encouraged.</p>
 <p>On Strava unlink action every data imported from Strava, i.e. activities and gears, will be deleted according to Strava <a href="https://www.strava.com/legal/api">API Agreement</a>.</p>
 <p>For Strava integration <a href="https://github.com/stravalib/stravalib">stravalib</a> Python module is used.</p>
 <h2 id="garmin-connect-integration">Garmin Connect Integration</h2>
