@@ -49,44 +49,54 @@
     <div v-else-if="summaryData" class="card mb-4">
       <div class="card-body">
         <!-- New Highlighted Summary Totals Section -->
-        <div class="row text-center justify-content-around mb-3">
-            <div class="col-lg col-md-4 col-sm-6 mb-3">
+        <div class="row text-center mb-2">
+            <!-- Distance -->
+            <div class="col-4 col-md mb-2">
                 <div class="card shadow-sm h-100 card-total-summary-highlight">
-                    <div class="card-body d-flex flex-column justify-content-center">
-                        <h6 class="card-subtitle mb-2">{{ t('summaryView.metricTotalDistance') }}</h6>
-                        <p class="card-text h4 mb-0">{{ formatRawDistance(summaryData.total_distance, authStore.user.units) }}</p>
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
+                        <font-awesome-icon :icon="['fas', 'route']" size="2x" class="summary-metric-icon mb-2"/>
+                        <h6 class="summary-metric-subtitle mb-1">{{ t('summaryView.colDistance') }}</h6>
+                        <p class="summary-metric-value h4 mb-0 text-nowrap">{{ formatRawDistance(summaryData.total_distance, authStore.user.units) }}</p>
                     </div>
                 </div>
             </div>
-            <div class="col-lg col-md-4 col-sm-6 mb-3">
+            <!-- Duration -->
+            <div class="col-4 col-md mb-2">
                 <div class="card shadow-sm h-100 card-total-summary-highlight">
-                    <div class="card-body d-flex flex-column justify-content-center">
-                        <h6 class="card-subtitle mb-2">{{ t('summaryView.metricTotalDuration') }}</h6>
-                        <p class="card-text h4 mb-0">{{ formatDuration(summaryData.total_duration) }}</p>
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
+                        <font-awesome-icon :icon="['far', 'clock']" size="2x" class="summary-metric-icon mb-2"/>
+                        <h6 class="summary-metric-subtitle mb-1">{{ t('summaryView.colDuration') }}</h6>
+                        <p class="summary-metric-value h4 mb-0 text-nowrap">{{ formatDuration(summaryData.total_duration) }}</p>
                     </div>
                 </div>
             </div>
-            <div class="col-lg col-md-4 col-sm-6 mb-3">
+            <!-- Elevation -->
+            <div class="col-4 col-md mb-2">
                 <div class="card shadow-sm h-100 card-total-summary-highlight">
-                    <div class="card-body d-flex flex-column justify-content-center">
-                        <h6 class="card-subtitle mb-2">{{ t('summaryView.metricTotalElevation') }}</h6>
-                        <p class="card-text h4 mb-0">{{ formatElevation(summaryData.total_elevation_gain, authStore.user.units) }}</p>
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
+                        <font-awesome-icon :icon="['fas', 'mountain']" size="2x" class="summary-metric-icon mb-2"/>
+                        <h6 class="summary-metric-subtitle mb-1">{{ t('summaryView.colElevation') }}</h6>
+                        <p class="summary-metric-value h4 mb-0 text-nowrap">{{ formatElevation(summaryData.total_elevation_gain, authStore.user.units) }}</p>
                     </div>
                 </div>
             </div>
-            <div class="col-lg col-md-6 col-sm-6 mb-3"> <!-- Adjusted col-md for potentially wider content -->
+            <!-- Calories -->
+            <div class="col-6 col-md mb-2">
                 <div class="card shadow-sm h-100 card-total-summary-highlight">
-                    <div class="card-body d-flex flex-column justify-content-center">
-                        <h6 class="card-subtitle mb-2">{{ t('summaryView.metricTotalCalories') }}</h6>
-                        <p class="card-text h4 mb-0">{{ formatCalories(summaryData.total_calories) }}</p>
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
+                        <font-awesome-icon :icon="['fas', 'fire-alt']" size="2x" class="summary-metric-icon mb-2"/>
+                        <h6 class="summary-metric-subtitle mb-1">{{ t('summaryView.colCalories') }}</h6>
+                        <p class="summary-metric-value h4 mb-0 text-nowrap">{{ formatCalories(summaryData.total_calories) }}</p>
                     </div>
                 </div>
             </div>
-            <div class="col-lg col-md-6 col-sm-12 mb-3"> <!-- Adjusted col-md and col-sm for last item -->
+            <!-- Activities -->
+            <div class="col-6 col-md mb-2">
                 <div class="card shadow-sm h-100 card-total-summary-highlight">
-                    <div class="card-body d-flex flex-column justify-content-center">
-                        <h6 class="card-subtitle mb-2">{{ t('summaryView.metricTotalActivities') }}</h6>
-                        <p class="card-text h4 mb-0">{{ summaryData.activity_count }}</p>
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
+                        <font-awesome-icon :icon="['fas', 'hashtag']" size="2x" class="summary-metric-icon mb-2"/>
+                        <h6 class="summary-metric-subtitle mb-1">{{ t('summaryView.colActivities') }}</h6>
+                        <p class="summary-metric-value h4 mb-0 text-nowrap">{{ summaryData.activity_count.toLocaleString() }}</p>
                     </div>
                 </div>
             </div>
@@ -766,7 +776,31 @@ onBeforeUnmount(() => {
   background-color: #ffdb5c !important; /* Logo yellowish-orange */
   color: #212529; /* Dark text for contrast, Bootstrap's $gray-900 */
 }
-.card-total-summary-highlight .card-subtitle {
+.summary-metric-icon {
+  color: #343a40; /* Bootstrap's $gray-800, slightly lighter than pure black */
+}
+.summary-metric-subtitle {
   color: #495057 !important; /* A darker muted color, Bootstrap's $gray-700 */
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+.summary-metric-value {
+  color: #212529; /* Dark text for contrast, Bootstrap's $gray-900 */
+  font-weight: bold;
+  /* RFS for h4 is applied by Bootstrap class by default */
+}
+
+/* For small screens where cards are narrower */
+@media (max-width: 575.98px) { /* xs breakpoint, below sm */
+  .summary-metric-value {
+    font-size: 1.1rem; /* Slightly smaller than h5 (1.25rem), larger than h6 (1rem) */
+  }
+}
+
+/* For very small screens, an even smaller font */
+@media (max-width: 399.98px) {
+  .summary-metric-value {
+    font-size: 0.9rem; /* Smaller than h6 */
+  }
 }
 </style>
