@@ -7,9 +7,9 @@
       <div class="card-body">
         <div class="row mb-3 align-items-end">
       <!-- Activity Type Filter -->
-      <div class="col-md-3">
-        <label for="activityTypeFilter" class="form-label">{{ t('summaryView.filterLabelActivityType') }}</label>
-        <select id="activityTypeFilter" class="form-select" v-model="selectedActivityType" :disabled="loadingTypes">
+      <div class="col-6 col-lg-3">
+        <label for="activityTypeFilter" class="form-label mb-1">{{ t('summaryView.filterLabelActivityType') }}</label>
+        <select id="activityTypeFilter" class="form-select form-select-sm" v-model="selectedActivityType" :disabled="loadingTypes">
           <option value="">{{ t('summaryView.filterOptionAllTypes') }}</option>
           <option v-for="(name, id) in activityTypes" :key="id" :value="id">{{ name }}</option>
         </select>
@@ -17,24 +17,24 @@
          <div v-if="errorTypes" class="form-text text-danger">{{ errorTypes }}</div>
       </div>
       <!-- View Type Filter -->
-      <div class="col-md-3">
-        <label for="viewType" class="form-label">{{ t('summaryView.labelViewType') }}</label>
-        <select id="viewType" class="form-select" v-model="selectedViewType">
+      <div class="col-6 col-lg-3">
+        <label for="viewType" class="form-label mb-1">{{ t('summaryView.labelViewType') }}</label>
+        <select id="viewType" class="form-select form-select-sm" v-model="selectedViewType">
           <option value="week">{{ t('summaryView.optionWeekly') }}</option>
           <option value="month">{{ t('summaryView.optionMonthly') }}</option>
           <option value="year">{{ t('summaryView.optionYearly') }}</option>
           <option value="lifetime">{{ t('summaryView.optionLifetime') }}</option>
         </select>
       </div>
-      <div class="col-md-3" v-if="selectedViewType !== 'lifetime'">
-         <label :for="periodInputId" class="form-label">{{ periodLabel }}</label>
-         <input type="date" :id="periodInputId" class="form-control" v-if="selectedViewType === 'week'" v-model="selectedDate" @change="handleDateInputChange">
-         <input type="month" :id="periodInputId" class="form-control" v-else-if="selectedViewType === 'month'" v-model="selectedPeriodString">
-         <input type="number" :id="periodInputId" class="form-control" v-else-if="selectedViewType === 'year'" v-model.number="selectedYear" placeholder="YYYY" min="1900" max="2100">
+      <div class="col-6 col-lg-3" v-if="selectedViewType !== 'lifetime'">
+         <label :for="periodInputId" class="form-label mb-1">{{ periodLabel }}</label>
+         <input type="date" :id="periodInputId" class="form-control form-control-sm" v-if="selectedViewType === 'week'" v-model="selectedDate" @change="handleDateInputChange">
+         <input type="month" :id="periodInputId" class="form-control form-control-sm" v-else-if="selectedViewType === 'month'" v-model="selectedPeriodString">
+         <input type="number" :id="periodInputId" class="form-control form-control-sm" v-else-if="selectedViewType === 'year'" v-model.number="selectedYear" placeholder="YYYY" min="1900" max="2100">
       </div>
-       <div class="col-md-3 d-flex align-items-end" v-if="selectedViewType !== 'lifetime'">
-         <button class="btn btn-primary me-1" @click="navigatePeriod(-1)" :disabled="loadingSummary || loadingActivities"><</button>
-         <button class="btn btn-primary" @click="navigatePeriod(1)" :disabled="loadingSummary || loadingActivities">></button>
+       <div class="col-6 col-lg-3 d-flex align-items-end" v-if="selectedViewType !== 'lifetime'">
+         <button class="btn btn-primary btn-sm me-1" @click="navigatePeriod(-1)" :disabled="loadingSummary || loadingActivities"><</button>
+         <button class="btn btn-primary btn-sm" @click="navigatePeriod(1)" :disabled="loadingSummary || loadingActivities">></button>
       </div>
         </div>
       </div>
@@ -47,9 +47,6 @@
       </div>
     </div>
     <div v-else-if="summaryData" class="card mb-4">
-      <div class="card-header">
-        <h4>{{ t('summaryView.headerSummaryFor', { period: summaryPeriodText }) }}</h4>
-      </div>
       <div class="card-body">
         <!-- New Highlighted Summary Totals Section -->
         <div class="row text-center justify-content-around mb-3">
@@ -95,7 +92,6 @@
             </div>
         </div>
         <hr>
-        <h5>{{ t('summaryView.headerBreakdown') }}</h5>
         <div class="table-responsive">
           <table class="table table-sm table-striped responsive-summary-table">
             <thead>
