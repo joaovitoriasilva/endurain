@@ -3,6 +3,7 @@ import { RouterView } from "vue-router";
 import NavbarComponent from "./components/Navbar/NavbarComponent.vue";
 import NavbarBottomMobileComponent from "./components/Navbar/NavbarBottomMobileComponent.vue";
 import FooterComponent from "./components/FooterComponent.vue";
+import SwipeNavigationComponent from "./components/SwipeNavigationComponent.vue";
 import {
 	Notivue,
 	Notification,
@@ -21,6 +22,8 @@ import {
 		</NotivueSwipe>
 	</Notivue>
 	<div class="d-flex flex-column min-vh-100">
+		<!-- Swipe Navigation Component for mobile -->  
+		<SwipeNavigationComponent />
 		<!-- Top Navbar with safe-area padding -->
 		<div class="bg-body-tertiary shadow-sm safe-area-top">
 			<NavbarComponent class="container safe-area-container"/>
