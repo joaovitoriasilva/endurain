@@ -60,6 +60,11 @@ const router = createRouter({
 			component: () => import("../views/MenuMobileView.vue"),
 		},
 		{
+			path: "/swipe-test",
+			name: "swipe-test",
+			component: () => import("../views/SwipeTestView.vue"),
+		},
+		{
 			path: "/strava/callback",
 			name: "strava-callback",
 			component: () => import("../views/Strava/StravaCallbackView.vue"),
