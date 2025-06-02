@@ -92,8 +92,8 @@ async function refreshAccessToken() {
 	return refreshTokenPromise;
 }
 
-export async function fetchGetRequest(url) {
-	const options = {
+export async function fetchGetRequest(url, options = {}) {
+	const requestOptions = {
 		method: "GET",
 		credentials: "include",
 		headers: {
@@ -101,7 +101,23 @@ export async function fetchGetRequest(url) {
 			"X-Client-Type": "web",
 		},
 	};
-	return fetchWithRetry(url, options);
+
+	// For blob responses
+	if (options.responseType === 'blob') {
+		const fullUrl = `${API_URL}${url}`;
+		const response = await fetch(fullUrl, requestOptions);
+		
+		if (!response.ok) {
+			const errorBody = await response.json();
+			const errorMessage = errorBody.detail || "Unknown error";
+			throw new Error(`${response.status} - ${errorMessage}`);
+		}
+		
+		return response.blob();
+	}
+
+	// Regular JSON response
+	return fetchWithRetry(url, requestOptions);
 }
 
 export async function fetchPostFileRequest(url, formData) {

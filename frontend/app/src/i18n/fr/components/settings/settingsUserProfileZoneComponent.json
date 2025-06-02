@@ -52,5 +52,12 @@
     "errorUnableToGetGear": "Impossible d'obtenir l'équipement",
     "errorUnableToGetDefaultGear": "Impossible d'obtenir l'équipement par défaut",
     "successUpdateDefaultGear": "Équipement par défaut mis à jour avec succès",
-    "errorUpdateDefaultGear": "Erreur lors de la mise à jour de l'équipement par défaut"
+    "errorUpdateDefaultGear": "Erreur lors de la mise à jour de l'équipement par défaut",
+    "buttonExportData": "Exporter mes données",
+    "buttonImportData": "Importer une sauvegarde",
+    "modalImportTitle": "Importer un fichier de sauvegarde",
+    "modalImportBody": "Sélectionnez le fichier .zip que vous avez précédemment exporté pour restaurer vos données.",
+    "importSuccess": "Import terminé : {tracks} traces, {activities} activités, {health_entries} entrées santé.",
+    "importError": "Erreur lors de l’import : {error}",
+    "exportError": "Erreur lors de l’export : {error}"
 }
