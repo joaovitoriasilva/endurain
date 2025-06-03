@@ -429,76 +429,110 @@
                 />
               </div>
               <!-- Import / Export Buttons -->
-               <!-- Export / Import -->
-            <div class="row mt-3">
-              <div class="col d-flex gap-3">
-                <button
-                  class="btn btn-primary w-50"
-                  :disabled="loadingExport"
-                  @click="handleExport"
-                >
-                  <font-awesome-icon :icon="['fas', 'file-export']" class="me-1" />
-                  <span v-if="loadingExport">{{ $t('generalItems.loading') }}...</span>
-                  <span v-else>{{ $t('settingsUserProfileZone.buttonExportData') }}</span>
-                </button>
+              <!-- Export / Import -->
+              <div class="row mt-3">
+                <div class="col d-flex gap-3">
+                  <button
+                    class="btn btn-primary w-50"
+                    :disabled="loadingExport"
+                    @click="handleExport"
+                  >
+                    <font-awesome-icon :icon="['fas', 'file-export']" class="me-1" />
+                    <span v-if="loadingExport">{{ $t('generalItems.loading') }}...</span>
+                    <span v-else>{{ $t('settingsUserProfileZone.buttonExportData') }}</span>
+                  </button>
 
-                <button
-                  class="btn btn-primary w-50"
-                  data-bs-toggle="modal"
-                  data-bs-target="#importDataModal"
-                  :disabled="loadingImport"
-                >
-                  <font-awesome-icon :icon="['fas', 'file-import']" class="me-1" />
-                  {{ $t('settingsUserProfileZone.buttonImportData') }}
-                </button>
-              </div>
-            </div>
-
-            <!-- Import Data Modal -->
-            <ModalComponent
-              modalId="importDataModal"
-              :title="$t('settingsUserProfileZone.modalImportTitle')"
-              :body="$t('settingsUserProfileZone.modalImportBody')"
-              actionButtonType="primary"
-              :actionButtonText="$t('settingsUserProfileZone.buttonImportData')"
-              :actionButtonDisabled="loadingImport || !importFile"
-              @submitAction="uploadImportFile"
-            >
-              <div class="mb-3">
-                <label for="importFileInput" class="form-label">
-                  {{ $t('settingsUserProfileZone.selectFileLabel') }}
-                </label>
-                <input
-                  id="importFileInput"
-                  type="file"
-                  accept=".zip"
-                  @change="onImportFileSelected"
-                  :disabled="loadingImport"
-                  class="form-control"
-                  ref="fileInput"
-                />
-                <div class="form-text">
-                  {{ $t('settingsUserProfileZone.fileFormatHelp') }}
+                  <button
+                    class="btn btn-primary w-50"
+                    data-bs-toggle="modal"
+                    data-bs-target="#importDataModal"
+                    :disabled="loadingImport"
+                  >
+                    <font-awesome-icon :icon="['fas', 'file-import']" class="me-1" />
+                    {{ $t('settingsUserProfileZone.buttonImportData') }}
+                  </button>
                 </div>
               </div>
-              
-              <!-- Selected file info -->
-              <div v-if="importFile" class="alert alert-info">
-                <font-awesome-icon :icon="['fas', 'file-zipper']" class="me-2" />
-                <strong>{{ $t('settingsUserProfileZone.selectedFile') }}:</strong>
-                {{ importFile.name }} ({{ formatFileSize(importFile.size) }})
-              </div>
-              
-              <!-- Loading indicator -->
-              <div v-if="loadingImport" class="text-center">
-                <div class="spinner-border text-primary" role="status">
-                  <span class="visually-hidden">{{ $t('generalItems.loading') }}...</span>
+
+              <!-- Import Data Modal -->
+              <div
+                class="modal fade"
+                id="importDataModal"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="importDataModalLabel"
+                aria-describedby="importDataModalDescription"
+              >
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="importDataModalLabel">
+                        {{ $t('settingsUserProfileZone.modalImportTitle') }}
+                      </h5>
+                      <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div class="modal-body">
+                      <p id="importDataModalDescription">
+                        {{ $t('settingsUserProfileZone.modalImportBody') }}
+                      </p>
+
+                      <div class="mb-3">
+                        <label for="importFileInput" class="form-label">
+                          {{ $t('settingsUserProfileZone.selectFileLabel') }}
+                        </label>
+                        <input
+                          id="importFileInput"
+                          ref="fileInput"
+                          type="file"
+                          accept=".zip"
+                          @change="onImportFileSelected"
+                          :disabled="loadingImport"
+                          class="form-control"
+                        />
+                        <div class="form-text">
+                          {{ $t('settingsUserProfileZone.fileFormatHelp') }}
+                        </div>
+                      </div>
+
+                      <!-- Selected file info -->
+                      <div v-if="importFile" class="alert alert-info">
+                        <font-awesome-icon :icon="['fas', 'file-zipper']" class="me-2" />
+                        <strong>{{ $t('settingsUserProfileZone.selectedFile') }}:</strong>
+                        {{ importFile.name }} ({{ formatFileSize(importFile.size) }})
+                      </div>
+
+                      <!-- Loading indicator -->
+                      <div v-if="loadingImport" class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                          <span class="visually-hidden">{{ $t('generalItems.loading') }}...</span>
+                        </div>
+                        <p class="mt-2">{{ $t('settingsUserProfileZone.importingData') }}...</p>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        {{ $t('generalItems.cancel') }}
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-primary"
+                        :disabled="loadingImport || !importFile"
+                        @click="uploadImportFile"
+                      >
+                        <font-awesome-icon :icon="['fas', 'file-import']" class="me-1" />
+                        <span v-if="loadingImport">{{ $t('generalItems.loading') }}...</span>
+                        <span v-else>{{ $t('settingsUserProfileZone.buttonImportData') }}</span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <p class="mt-2">{{ $t('settingsUserProfileZone.importingData') }}...</p>
               </div>
-            </ModalComponent>
             </div>
-            
           </div>
         </div>
       </div>
@@ -568,10 +602,76 @@ export default {
     // export/import
     const loadingExport = ref(false)
     const loadingImport = ref(false)
-    let importFile = null
+    const importFile = ref(null)
+    const fileInput = ref(null)
 
     function onImportFileSelected(e) {
-      importFile = e.target.files?.[0] || null
+      importFile.value = e.target.files?.[0] || null
+    }
+
+    async function uploadImportFile() {
+      if (!importFile.value) return
+      console.log('Uploading file:', importFile.value.name)
+      loadingImport.value = true
+      const form = new FormData()
+      form.append('file', importFile.value)
+      try {
+        const payload = await profile.importData(form)
+        push.success(t('settingsUserProfileZone.importSuccess', payload.imported))
+        // Clear the file and reset input
+        importFile.value = null
+        if (fileInput.value) {
+          fileInput.value.value = ''
+        }
+        // Close modal
+        const modal = document.getElementById('importDataModal')
+        if (modal) {
+          const bootstrapModal = bootstrap.Modal.getInstance(modal)
+          if (bootstrapModal) {
+            bootstrapModal.hide()
+          }
+        }
+      } catch (e) {
+        push.error(t('settingsUserProfileZone.importError', { error: e.message }))
+      } finally {
+        loadingImport.value = false
+      }
+    }
+
+    function handleModalShown() {
+      // Ensure focus is properly managed when modal opens
+      nextTick(() => {
+        const modal = document.getElementById('importDataModal')
+        if (modal) {
+          modal.removeAttribute('aria-hidden')
+        }
+      })
+    }
+
+    function handleModalHidden() {
+      // Clear file when modal is closed
+      importFile.value = null
+      if (fileInput.value) {
+        fileInput.value.value = ''
+      }
+    }
+
+    onMounted(() => {
+      // Set up modal event listeners
+      const modal = document.getElementById('importDataModal')
+      if (modal) {
+        modal.addEventListener('shown.bs.modal', handleModalShown)
+        modal.addEventListener('hidden.bs.modal', handleModalHidden)
+      }
+    })
+
+    // Helper function for file size formatting
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes'
+      const k = 1024
+      const sizes = ['Bytes', 'KB', 'MB', 'GB']
+      const i = Math.floor(Math.log(bytes) / Math.log(k))
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
     }
 
     async function handleExport() {
@@ -588,21 +688,6 @@ export default {
         push.error(t('settingsUserProfileZone.exportError', { error: e.message }))
       } finally {
         loadingExport.value = false
-      }
-    }
-
-    async function uploadImportFile() {
-      if (!importFile) return
-      loadingImport.value = true
-      const form = new FormData()
-      form.append('file', importFile)
-      try {
-        const payload = await profile.importData(form)
-        push.success(t('settingsUserProfileZone.importSuccess', payload.imported))
-      } catch (e) {
-        push.error(t('settingsUserProfileZone.importError', { error: e.message }))
-      } finally {
-        loadingImport.value = false
       }
     }
 
@@ -751,7 +836,12 @@ export default {
       loadingImport,
       onImportFileSelected,
       handleExport,
-      uploadImportFile
+      uploadImportFile,
+      importFile,
+      fileInput,
+      formatFileSize,
+      handleModalShown,
+      handleModalHidden
     }
   }
 }

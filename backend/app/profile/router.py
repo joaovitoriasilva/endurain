@@ -27,6 +27,7 @@ PROCESSED_DIR = PROJECT_ROOT / "files" / "processed"
 PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 PROCESSED_DIR = str(PROCESSED_DIR)
 
+
 @router.get("", response_model=users_schema.UserMe)
 async def read_users_me(
     token_user_id: Annotated[
@@ -123,7 +124,10 @@ async def delete_profile_session(
     db: Annotated[Session, Depends(core_database.get_db)],
 ):
     return session_crud.delete_session(session_id, token_user_id, db)
-5    
+
+
+5
+
 
 @router.get("/export")
 async def export_user_data(
@@ -185,10 +189,16 @@ async def import_user_data(
     data = await file.read()
     try:
         with ZipFile(BytesIO(data)) as zipf:
+            import logging
+
+            logging.info(
+                f"Received ZIP entries for user {token_user_id}: {zipf.namelist()}"
+            )
+
             for entry in zipf.namelist():
                 path = entry.replace("\\", "/")
 
-                # a) write track files to disk
+                # write track files to disk
                 if path.startswith("tracks/") and path.lower().endswith(
                     (".gpx", ".fit")
                 ):
@@ -197,14 +207,14 @@ async def import_user_data(
                         out_f.write(zipf.read(entry))
                     counts["tracks"] += 1
 
-                # b) import activities JSON
+                # import activities JSON
                 elif path == "data/activities.json":
                     acts = json.loads(zipf.read(entry))
                     for act in acts:
                         activities_crud.create_activity(act, db)
                         counts["activities"] += 1
 
-                # c) import health CSV
+                # import health CSV
                 elif path == "data/health.csv":
                     rows = zipf.read(entry).decode("utf-8").splitlines()
                     for row in csv.DictReader(rows):

@@ -57,12 +57,14 @@ export async function attemptFetch(url, options) {
 	const fullUrl = `${API_URL}${url}`;
 	const response = await fetch(fullUrl, options);
 	if (!response.ok) {
-		const errorBody = await response.json(); // Parse the response as JSON
-		const errorMessage = errorBody.detail || "Unknown error"; // Get the 'detail' field or a default message
-		throw new Error(`${response.status} - ${errorMessage}`);
+	  const errorBody = await response.clone().json().catch(() => null);
+	  console.error('Import error payload:', errorBody);
+	  const errorMessage = errorBody?.detail || "Unknown error";
+	  throw new Error(`${response.status} - ${errorMessage}`);
 	}
 	return response.json();
-}
+  }
+  
 
 async function refreshAccessToken() {
 	if (refreshTokenPromise) {
