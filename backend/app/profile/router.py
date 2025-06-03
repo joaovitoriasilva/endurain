@@ -1,4 +1,5 @@
 from io import BytesIO, StringIO
+from pathlib import Path
 from zipfile import ZipFile
 import os
 import json
@@ -21,9 +22,10 @@ import health_data.crud as health_crud
 
 router = APIRouter()
 
-# Where your processed GPX/FIT files live; each user gets a subfolder named by their ID
-PROCESSED_DIR = os.getenv("PROCESSED_DIR", "files/processed")
-
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PROCESSED_DIR = PROJECT_ROOT / "files" / "processed"
+PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+PROCESSED_DIR = str(PROCESSED_DIR)
 
 @router.get("", response_model=users_schema.UserMe)
 async def read_users_me(
@@ -121,9 +123,9 @@ async def delete_profile_session(
     db: Annotated[Session, Depends(core_database.get_db)],
 ):
     return session_crud.delete_session(session_id, token_user_id, db)
+5    
 
-
-@router.get("/export", summary="Export all user data as a ZIP archive")
+@router.get("/export")
 async def export_user_data(
     token_user_id: int = Depends(session_security.get_user_id_from_access_token),
     db: Session = Depends(core_database.get_db),
@@ -167,9 +169,7 @@ async def export_user_data(
     )
 
 
-@router.post(
-    "/import", summary="Import user data from a previously exported ZIP archive"
-)
+@router.post("/import")
 async def import_user_data(
     file: UploadFile,
     token_user_id: int = Depends(session_security.get_user_id_from_access_token),
