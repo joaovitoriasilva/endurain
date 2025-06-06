@@ -1,16 +1,14 @@
 <template>
-  <!-- Swipe detection overlay that allows clicks to pass through -->
+  <!-- iOS PWA compatible swipe detection -->
   <div
+    v-if="shouldShowOverlay"
     class="swipe-navigation-overlay"
-    @touchstart.passive="handleTouchStart"
-    @touchmove="handleTouchMove"
-    @touchend.passive="handleTouchEnd"
-    @click="handleClick"
+    ref="swipeOverlay"
   ></div>
 </template>
 
 <script>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 
@@ -19,6 +17,7 @@ export default {
   setup() {
     const router = useRouter();
     const authStore = useAuthStore();
+    const swipeOverlay = ref(null);
 
     // Touch tracking variables
     const touchStartX = ref(0);
@@ -26,6 +25,7 @@ export default {
     const touchStartTime = ref(0);
     const isSwipeGesture = ref(false);
     const isTouchActive = ref(false);
+    const swipeInProgress = ref(false);
 
     // Define the navigation pages in order (same as bottom navbar)
     const navPages = [
@@ -36,10 +36,16 @@ export default {
       { name: 'menu' }
     ];
 
-    // Swipe detection thresholds (adjusted for iOS PWA)
-    const SWIPE_THRESHOLD = 40; // Reduced for better sensitivity on iOS
-    const SWIPE_TIME_THRESHOLD = 400; // Increased for iOS PWA
-    const VERTICAL_THRESHOLD = 80; // Reduced for better horizontal detection
+    // iOS PWA optimized thresholds
+    const SWIPE_THRESHOLD = 30; // Lower threshold for iOS
+    const SWIPE_TIME_THRESHOLD = 500; // More time for iOS PWA
+    const VERTICAL_THRESHOLD = 100; // Allow more vertical movement
+    const MIN_HORIZONTAL_MOVEMENT = 20; // Minimum to start detecting swipe
+
+    // Computed property to determine if overlay should be shown
+    const shouldShowOverlay = computed(() => {
+      return window.innerWidth <= 991.98 && authStore.isAuthenticated;
+    });
 
     // Helper function to find the current page index in the navigation array
     const getCurrentPageIndex = () => {
@@ -54,13 +60,22 @@ export default {
              document.referrer.includes('android-app://');
     };
 
-    // Handle touch start
+    // Check if we're on iOS
+    const isIOS = () => {
+      return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+             (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    };
+
+    // Enhanced touch start handler for iOS PWA
     const handleTouchStart = (event) => {
       // Only handle single touch
       if (event.touches.length !== 1) return;
 
-      // Only process if user is authenticated
+      // Only process if user is authenticated and on a navigation page
       if (!authStore.isAuthenticated) return;
+
+      const currentIndex = getCurrentPageIndex();
+      if (currentIndex === -1) return;
 
       const touch = event.touches[0];
       touchStartX.value = touch.clientX;
@@ -68,77 +83,86 @@ export default {
       touchStartTime.value = Date.now();
       isSwipeGesture.value = false;
       isTouchActive.value = true;
+      swipeInProgress.value = false;
 
-      // Debug logging for PWA
-      if (isPWA()) {
-        console.log('PWA Touch Start:', { x: touch.clientX, y: touch.clientY });
-      }
+      // Debug logging
+      console.log('Touch Start:', {
+        x: touch.clientX,
+        y: touch.clientY,
+        isPWA: isPWA(),
+        isIOS: isIOS(),
+        page: router.currentRoute.value.name
+      });
     };
 
-    // Handle touch move
+    // Enhanced touch move handler for iOS PWA
     const handleTouchMove = (event) => {
       // Only handle single touch and if touch is active
       if (event.touches.length !== 1 || !isTouchActive.value) return;
 
-      // Only process if user is authenticated
-      if (!authStore.isAuthenticated) return;
-
       const touch = event.touches[0];
-      const deltaX = Math.abs(touch.clientX - touchStartX.value);
-      const deltaY = Math.abs(touch.clientY - touchStartY.value);
+      const deltaX = touch.clientX - touchStartX.value;
+      const deltaY = touch.clientY - touchStartY.value;
+      const absDeltaX = Math.abs(deltaX);
+      const absDeltaY = Math.abs(deltaY);
 
-      // If horizontal movement is significant and vertical movement is minimal,
-      // this might be a swipe gesture
-      if (deltaX > 15 && deltaY < VERTICAL_THRESHOLD) {
-        isSwipeGesture.value = true;
+      // Start detecting horizontal swipe if movement is significant
+      if (absDeltaX > MIN_HORIZONTAL_MOVEMENT && !swipeInProgress.value) {
+        // Check if this is more horizontal than vertical
+        if (absDeltaX > absDeltaY) {
+          swipeInProgress.value = true;
+          isSwipeGesture.value = true;
 
-        // For PWA, we need to be more aggressive about preventing default
-        if (isPWA()) {
+          // Prevent default to stop scrolling during swipe
           event.preventDefault();
-          event.stopPropagation();
-        } else {
-          // Prevent scrolling during horizontal swipe on regular mobile
-          event.preventDefault();
-        }
 
-        // Debug logging for PWA
-        if (isPWA()) {
-          console.log('PWA Swipe Detected:', { deltaX, deltaY });
+          console.log('Swipe Started:', { deltaX, deltaY, absDeltaX, absDeltaY });
         }
+      }
+
+      // If we're in a swipe, continue preventing default
+      if (swipeInProgress.value) {
+        event.preventDefault();
+        console.log('Swipe In Progress:', { deltaX, deltaY });
       }
     };
 
-    // Handle touch end
+    // Enhanced touch end handler for iOS PWA
     const handleTouchEnd = (event) => {
-      // Reset touch active state
+      const wasSwipeInProgress = swipeInProgress.value;
       const wasSwipeGesture = isSwipeGesture.value;
-      isTouchActive.value = false;
 
-      // Only process if user is authenticated and we had a potential swipe
-      if (!authStore.isAuthenticated || !wasSwipeGesture) {
+      // Reset all touch states
+      isTouchActive.value = false;
+      swipeInProgress.value = false;
+
+      // Only process if we had a swipe in progress
+      if (!wasSwipeInProgress || !wasSwipeGesture) {
         isSwipeGesture.value = false;
         return;
       }
 
       const touch = event.changedTouches[0];
       const deltaX = touch.clientX - touchStartX.value;
-      const deltaY = Math.abs(touch.clientY - touchStartY.value);
+      const deltaY = touch.clientY - touchStartY.value;
+      const absDeltaX = Math.abs(deltaX);
+      const absDeltaY = Math.abs(deltaY);
       const deltaTime = Date.now() - touchStartTime.value;
 
-      // Debug logging for PWA
-      if (isPWA()) {
-        console.log('PWA Touch End:', {
-          deltaX,
-          deltaY,
-          deltaTime,
-          threshold: SWIPE_THRESHOLD,
-          verticalThreshold: VERTICAL_THRESHOLD
-        });
-      }
+      console.log('Touch End Analysis:', {
+        deltaX,
+        deltaY,
+        absDeltaX,
+        absDeltaY,
+        deltaTime,
+        threshold: SWIPE_THRESHOLD,
+        verticalThreshold: VERTICAL_THRESHOLD,
+        timeThreshold: SWIPE_TIME_THRESHOLD
+      });
 
-      // Check if this qualifies as a swipe
-      if (Math.abs(deltaX) >= SWIPE_THRESHOLD &&
-          deltaY < VERTICAL_THRESHOLD &&
+      // Check if this qualifies as a completed swipe
+      if (absDeltaX >= SWIPE_THRESHOLD &&
+          absDeltaY < VERTICAL_THRESHOLD &&
           deltaTime < SWIPE_TIME_THRESHOLD) {
 
         // Prevent the touch event from becoming a click
@@ -146,105 +170,93 @@ export default {
         event.stopPropagation();
 
         // Determine swipe direction and navigate
+        const direction = deltaX > 0 ? 'right' : 'left';
+        console.log('Navigation triggered:', direction);
+
         if (deltaX > 0) {
           handleSwipeRight();
         } else {
           handleSwipeLeft();
         }
-
-        // Debug logging for PWA
-        if (isPWA()) {
-          console.log('PWA Navigation triggered:', deltaX > 0 ? 'right' : 'left');
-        }
+      } else {
+        console.log('Swipe not qualified:', {
+          distanceOk: absDeltaX >= SWIPE_THRESHOLD,
+          verticalOk: absDeltaY < VERTICAL_THRESHOLD,
+          timeOk: deltaTime < SWIPE_TIME_THRESHOLD
+        });
       }
 
       // Reset swipe tracking
       isSwipeGesture.value = false;
     };
 
-    // Handle click events - let them pass through
-    const handleClick = (event) => {
-      // If this was part of a swipe gesture, prevent the click
-      if (isSwipeGesture.value || isTouchActive.value) {
-        event.preventDefault();
-        event.stopPropagation();
-        return;
-      }
-      // Otherwise, let the click pass through to underlying elements
-    };
-
     // Handle swipe left (navigate to next page)
     const handleSwipeLeft = () => {
-      // Only navigate if user is authenticated
-      if (!authStore.isAuthenticated) return;
-
+      console.log('Swipe Left - navigating to next page');
       const currentIndex = getCurrentPageIndex();
 
       // If current page is in our navigation array and not the last page
       if (currentIndex !== -1 && currentIndex < navPages.length - 1) {
-        router.push({ name: navPages[currentIndex + 1].name });
+        const nextPage = navPages[currentIndex + 1].name;
+        console.log(`Navigating from ${router.currentRoute.value.name} to ${nextPage}`);
+        router.push({ name: nextPage });
+      } else {
+        console.log('Cannot navigate left - at last page or invalid page');
       }
     };
 
     // Handle swipe right (navigate to previous page)
     const handleSwipeRight = () => {
-      // Only navigate if user is authenticated
-      if (!authStore.isAuthenticated) return;
-
+      console.log('Swipe Right - navigating to previous page');
       const currentIndex = getCurrentPageIndex();
 
       // If current page is in our navigation array and not the first page
       if (currentIndex > 0) {
-        router.push({ name: navPages[currentIndex - 1].name });
+        const prevPage = navPages[currentIndex - 1].name;
+        console.log(`Navigating from ${router.currentRoute.value.name} to ${prevPage}`);
+        router.push({ name: prevPage });
+      } else {
+        console.log('Cannot navigate right - at first page or invalid page');
       }
     };
 
-    // Add global touch event listeners for better PWA support
+    // Setup touch event listeners for iOS PWA compatibility
     onMounted(() => {
-      // Only add listeners on mobile/PWA
-      if (window.innerWidth <= 991.98 || isPWA()) {
-        // Add passive listeners to document for better PWA compatibility
-        document.addEventListener('touchstart', handleDocumentTouchStart, { passive: true });
-        document.addEventListener('touchmove', handleDocumentTouchMove, { passive: false });
-        document.addEventListener('touchend', handleDocumentTouchEnd, { passive: true });
+      console.log('SwipeNavigationComponent mounted', {
+        isPWA: isPWA(),
+        isIOS: isIOS(),
+        windowWidth: window.innerWidth,
+        userAgent: navigator.userAgent
+      });
+
+      // Add touch listeners to the main container or body for iOS PWA
+      const targetElement = document.body;
+
+      if (targetElement) {
+        // Use non-passive listeners for better control
+        targetElement.addEventListener('touchstart', handleTouchStart, { passive: false });
+        targetElement.addEventListener('touchmove', handleTouchMove, { passive: false });
+        targetElement.addEventListener('touchend', handleTouchEnd, { passive: false });
+
+        console.log('Touch event listeners added to body');
       }
     });
 
     onUnmounted(() => {
+      console.log('SwipeNavigationComponent unmounted - cleaning up listeners');
+
       // Clean up listeners
-      document.removeEventListener('touchstart', handleDocumentTouchStart);
-      document.removeEventListener('touchmove', handleDocumentTouchMove);
-      document.removeEventListener('touchend', handleDocumentTouchEnd);
+      const targetElement = document.body;
+      if (targetElement) {
+        targetElement.removeEventListener('touchstart', handleTouchStart);
+        targetElement.removeEventListener('touchmove', handleTouchMove);
+        targetElement.removeEventListener('touchend', handleTouchEnd);
+      }
     });
 
-    // Document-level touch handlers for PWA compatibility
-    const handleDocumentTouchStart = (event) => {
-      // Only handle if we're in a main navigation page
-      const currentIndex = getCurrentPageIndex();
-      if (currentIndex === -1) return;
-
-      handleTouchStart(event);
-    };
-
-    const handleDocumentTouchMove = (event) => {
-      // Only handle if we're tracking a touch
-      if (!isTouchActive.value) return;
-
-      handleTouchMove(event);
-    };
-
-    const handleDocumentTouchEnd = (event) => {
-      // Only handle if we're tracking a touch
-      if (!isTouchActive.value) return;
-
-      handleTouchEnd(event);
-    };
-
     return {
-      handleTouchStart,
-      handleTouchMove,
-      handleTouchEnd,
-      handleClick
+      shouldShowOverlay,
+      swipeOverlay
     };
   }
 };
@@ -252,40 +264,38 @@ export default {
 
 <style scoped>
 .swipe-navigation-overlay {
+  /* Minimal overlay for visual debugging only */
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 1000; /* High enough to capture events but below modal dialogs */
-  pointer-events: none; /* Allow clicks to pass through - document listeners handle touch */
-  touch-action: pan-y; /* Allow vertical scrolling but capture horizontal */
-  display: none; /* Hidden on desktop */
-  -webkit-touch-callout: none; /* Disable iOS callout */
-  -webkit-user-select: none; /* Disable iOS text selection */
-  user-select: none; /* Disable text selection */
+  z-index: -1; /* Behind everything - not used for event capture */
+  pointer-events: none; /* Never interfere with clicks */
+  display: none; /* Hidden by default */
+  background: transparent;
 }
 
-/* Only show the swipe overlay on mobile devices */
+/* Show overlay on mobile for debugging (optional) */
 @media (max-width: 991.98px) {
   .swipe-navigation-overlay {
     display: block;
   }
 }
 
-/* PWA specific styles - still use pointer-events: none since we use document listeners */
+/* Global iOS PWA touch optimizations */
 @media (display-mode: standalone) {
-  .swipe-navigation-overlay {
-    display: block;
-    pointer-events: none; /* Document listeners handle touch events */
-    touch-action: pan-y; /* Critical for iOS PWA */
-    -webkit-overflow-scrolling: touch; /* Enable momentum scrolling */
+  :global(body) {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: pan-y; /* Allow vertical scrolling, capture horizontal */
   }
 }
 
-/* iOS specific styles */
+/* iOS specific optimizations */
 @supports (-webkit-touch-callout: none) {
-  .swipe-navigation-overlay {
+  :global(body) {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -webkit-tap-highlight-color: transparent;
