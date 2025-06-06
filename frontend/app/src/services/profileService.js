@@ -36,5 +36,20 @@ export const profile = {
   },
   importData(formData) {
     return fetchPostFileRequest('profile/import', formData)
+  },
+  editProfile(data) {
+    return fetchPutRequest('profile', data)
+  },
+  editUserPrivacySettings(data) {
+    return fetchPutRequest('profile/privacy', data)
+  },
+  editProfilePassword(data) {
+    return fetchPutRequest('profile/password', data)
+  },
+  deleteProfilePhoto() {
+    return fetchPutRequest('profile/photo')
+  },
+  deleteProfileSession(session_id) {
+    return fetchDeleteRequest(`profile/sessions/${session_id}`)
   }
 }

@@ -8,8 +8,8 @@ class Activity(BaseModel):
     distance: int
     name: str
     activity_type: int
-    start_time: str
-    end_time: str
+    start_time: str | None = None
+    end_time: str | None = None
     timezone: str | None = None
     total_elapsed_time: float | None = None
     total_timer_time: float | None = None
@@ -38,6 +38,18 @@ class Activity(BaseModel):
     strava_activity_id: int | None = None
     garminconnect_activity_id: int | None = None
     garminconnect_gear_id: str | None = None
+    hide_start_time: bool | None = None
+    hide_location: bool | None = None
+    hide_map: bool | None = None
+    hide_hr: bool | None = None
+    hide_power: bool | None = None
+    hide_cadence: bool | None = None
+    hide_elevation: bool | None = None
+    hide_speed: bool | None = None
+    hide_pace: bool | None = None
+    hide_laps: bool | None = None
+    hide_workout_sets_steps: bool | None = None
+    hide_gear: bool | None = None
 
     class Config:
         orm_mode = True
@@ -61,3 +73,15 @@ class ActivityEdit(BaseModel):
     activity_type: int
     visibility: int | None = None
     gear_id: int | None = None
+    hide_start_time: bool | None = None
+    hide_location: bool | None = None
+    hide_map: bool | None = None
+    hide_hr: bool | None = None
+    hide_power: bool | None = None
+    hide_cadence: bool | None = None
+    hide_elevation: bool | None = None
+    hide_speed: bool | None = None
+    hide_pace: bool | None = None
+    hide_laps: bool | None = None
+    hide_workout_sets_steps: bool | None = None
+    hide_gear: bool | None = None

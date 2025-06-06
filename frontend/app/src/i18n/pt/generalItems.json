@@ -1,6 +1,10 @@
 {
     "buttonBack": "Voltar",
     "buttonClose": "Fechar",
+    "true": "Verdade",
+    "false": "Falso",
+    "yes": "Sim",
+    "no": "Não",
     "languageOption1": "Inglês (EUA)",
     "languageOption2": "Catalão (CA)",
     "languageOption3": "Português (PT)",
@@ -28,7 +32,7 @@
     "unitsMph": "mph",
     "unitsLbs": "las",
     "labelWeightInLbs": "Peso em libras",
-    "unitsCalories": "cal",
+    "unitsCalories": "kcal",
     "unitsBpm": "bpm",
     "labelHRinBpm": "Frequência cardíaca em bpm",
     "unitsWattsShort": "W",
@@ -49,4 +53,3 @@
     "startDateLabel": "Data de início",
     "endDateLabel": "Data de fim"
 }
-

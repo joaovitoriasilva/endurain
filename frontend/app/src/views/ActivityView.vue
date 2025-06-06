@@ -4,22 +4,23 @@
 
 		<div v-else>
 			<ActivitySummaryComponent v-if="activity" :activity="activity" :source="'activity'" @activityEditedFields="updateActivityFieldsOnEdit" :units="units" />
+			<AlertComponent v-if="activity && activity.user_id === authStore.user.id && (activity.hide_start_time || activity.hide_location || activity.hide_map || activity.hide_hr || activity.hide_power || activity.hide_cadence || activity.hide_elevation || activity.hide_speed || activity.hide_pace || activity.hide_laps || activity.hide_workout_sets_steps || activity.hide_gear)" :message="alertPrivacyMessage" :dismissible="true" class="mt-2"/>
 		</div>
 
 		<!-- map zone -->
 		<div class="mt-3 mb-3" v-if="isLoading">
 			<LoadingComponent />
 		</div>
-		<div class="mt-3 mb-3" v-else-if="activity">
+		<div class="mt-3 mb-3" v-else-if="activity && ((authStore.isAuthenticated && authStore.user.id === activity.user_id) || (authStore.isAuthenticated && authStore.user.id !== activity.user_id && activity.hide_map === false) || (!authStore.isAuthenticated && activity.hide_map === false))">
 			<ActivityMapComponent :activity="activity" :source="'activity'"/>
 		</div>
 		
 		<!-- gear zone -->
-		<hr class="mb-2 mt-2" v-if="activity && authStore.isAuthenticated">
+		<hr class="mb-2 mt-2" v-if="activity && ((authStore.isAuthenticated && authStore.user.id === activity.user_id) || (authStore.isAuthenticated && authStore.user.id !== activity.user_id && activity.hide_gear === false))">
 		<div class="mt-3 mb-3" v-if="isLoading && authStore.isAuthenticated">
 			<LoadingComponent />
 		</div>
-		<div class="d-flex justify-content-between align-items-center" v-else-if="activity && authStore.isAuthenticated">
+		<div class="d-flex justify-content-between align-items-center" v-else-if="activity && ((authStore.isAuthenticated && authStore.user.id === activity.user_id) || (authStore.isAuthenticated && authStore.user.id !== activity.user_id && activity.hide_gear === false))">
 			<p class="pt-2">
 				<span class="fw-lighter">
 					{{ $t("activityView.labelGear") }}
@@ -65,13 +66,13 @@
 		</div>
 
 		<!-- graphs -->
-		<hr class="mb-2 mt-2">
+		<hr class="mb-2 mt-2" v-if="activity && (activityActivityLaps && activityActivityLaps.length > 0 || activityActivityWorkoutSteps && activityActivityWorkoutSteps.length > 0 || activityActivitySets && activityActivitySets.length > 0)">
 
 		<!-- graphs and laps medium and above screens -->
 		<div class="d-none d-sm-block" v-if="isLoading">
 			<LoadingComponent />
 		</div>
-		<div class="d-none d-sm-block" v-else>
+		<div class="d-none d-sm-block" v-else-if="activity && (activityActivityLaps && activityActivityLaps.length > 0 || activityActivityWorkoutSteps && activityActivityWorkoutSteps.length > 0 || activityActivitySets && activityActivitySets.length > 0)">
 			<ActivityMandAbovePillsComponent :activity="activity" :activityActivityLaps="activityActivityLaps" :activityActivityWorkoutSteps="activityActivityWorkoutSteps" :activityActivityStreams="activityActivityStreams" :units="units" :activityActivityExerciseTitles="activityActivityExerciseTitles" :activityActivitySets="activityActivitySets" />
 		</div>
 
@@ -79,7 +80,7 @@
 		<div class="d-lg-none d-block" v-if="isLoading">
 			<LoadingComponent />
 		</div>
-		<div class="d-lg-none d-block" v-else>
+		<div class="d-lg-none d-block" v-else-if="activity && (activityActivityLaps && activityActivityLaps.length > 0 || activityActivityWorkoutSteps && activityActivityWorkoutSteps.length > 0 || activityActivitySets && activityActivitySets.length > 0)">
 			<ActivityBellowMPillsComponent :activity="activity" :activityActivityLaps="activityActivityLaps" :activityActivityWorkoutSteps="activityActivityWorkoutSteps" :activityActivityStreams="activityActivityStreams" :units="units" :activityActivityExerciseTitles="activityActivityExerciseTitles" :activityActivitySets="activityActivitySets" />
 		</div>
 
@@ -106,6 +107,7 @@ import LoadingComponent from "@/components/GeneralComponents/LoadingComponent.vu
 import BackButtonComponent from "@/components/GeneralComponents/BackButtonComponent.vue";
 import ModalComponent from "@/components/Modals/ModalComponent.vue";
 import AddGearToActivityModalComponent from "@/components/Activities/Modals/AddGearToActivityModalComponent.vue";
+import AlertComponent from "@/components/GeneralComponents/AlertComponent.vue";
 // Importing the services
 import { gears } from "@/services/gearsService";
 import { activities } from "@/services/activitiesService";
@@ -125,6 +127,7 @@ export default {
 		BackButtonComponent,
 		ModalComponent,
 		AddGearToActivityModalComponent,
+		AlertComponent,
 	},
 	setup() {
 		const { t } = useI18n();
@@ -143,6 +146,7 @@ export default {
 		const units = ref(1);
 		const activityActivityExerciseTitles = ref([]);
 		const activityActivitySets = ref([]);
+		const alertPrivacyMessage = ref(null);
 
 		async function submitDeleteGearFromActivity() {
 			try {
@@ -176,6 +180,18 @@ export default {
 			activity.value.description = data.description;
 			activity.value.activity_type = data.activity_type;
 			activity.value.visibility = data.visibility;
+			activity.value.hide_start_time = data.hide_start_time;
+			activity.value.location = data.location;
+			activity.value.hide_map = data.hide_map;
+			activity.value.hide_hr = data.hide_hr;
+			activity.value.hide_power = data.hide_power;
+			activity.value.hide_cadence = data.hide_cadence;
+			activity.value.hide_elevation = data.hide_elevation;
+			activity.value.hide_speed = data.hide_speed;
+			activity.value.hide_pace = data.hide_pace;
+			activity.value.hide_laps = data.hide_laps;
+			activity.value.hide_workout_sets_steps = data.hide_workout_sets_steps;
+			activity.value.hide_gear = data.hide_gear;
 		}
 
 		onMounted(async () => {
@@ -327,6 +343,9 @@ export default {
 			}
 
 			isLoading.value = false;
+			if (authStore.user.id === activity.value.user_id) {
+				alertPrivacyMessage.value = t("activityView.alertPrivacyMessage");
+			}
 		});
 
 		return {
@@ -346,6 +365,7 @@ export default {
 			activityActivityWorkoutSteps,
 			activityActivityExerciseTitles,
 			activityActivitySets,
+			alertPrivacyMessage,
 		};
 	},
 };

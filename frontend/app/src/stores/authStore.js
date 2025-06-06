@@ -20,9 +20,21 @@ export const useAuthStore = defineStore('auth', {
             access_type: null,
             photo_path: '',
             is_active: null,
-            default_activity_visibility: null,
             is_strava_linked: null,
             is_garminconnect_linked: null,
+            default_activity_visibility: 0,
+            hide_activity_start_time: false,
+            hide_activity_location: false,
+            hide_activity_map: false,
+            hide_activity_hr: false,
+            hide_activity_power: false,
+            hide_activity_cadence: false,
+            hide_activity_elevation: false,
+            hide_activity_speed: false,
+            hide_activity_pace: false,
+            hide_activity_laps: false,
+            hide_activity_workout_sets_steps: false,
+            hide_activity_gear: false,
         },
         isAuthenticated: false,
         user_websocket: null,
@@ -41,7 +53,7 @@ export const useAuthStore = defineStore('auth', {
                 // Check if router is not null before trying to navigate
                 if (router) {
                     try {
-                        await router.push('/login');
+                        await router.push('/login?logoutSuccess=true');
                     } catch (navigationError) {
                         console.error('Navigation error:', navigationError);
                     }
@@ -59,6 +71,7 @@ export const useAuthStore = defineStore('auth', {
             this.setLocale(this.user.preferred_language, locale);
         },
         clearUser(locale) {
+            this.isAuthenticated = false;
             this.user = {
                 id: null,
                 name: '',
@@ -73,11 +86,22 @@ export const useAuthStore = defineStore('auth', {
                 access_type: null,
                 photo_path: '',
                 is_active: null,
-                default_activity_visibility: null,
                 is_strava_linked: null,
                 is_garminconnect_linked: null,
+                default_activity_visibility: 0,
+                hide_activity_start_time: false,
+                hide_activity_location: false,
+                hide_activity_map: false,
+                hide_activity_hr: false,
+                hide_activity_power: false,
+                hide_activity_cadence: false,
+                hide_activity_elevation: false,
+                hide_activity_speed: false,
+                hide_activity_pace: false,
+                hide_activity_laps: false,
+                hide_activity_workout_sets_steps: false,
+                hide_activity_gear: false,
             };
-            this.isAuthenticated = false;
             if (this.user_websocket && this.user_websocket.readyState === WebSocket.OPEN) {
                 this.user_websocket.close();
             }
