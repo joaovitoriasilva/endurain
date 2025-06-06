@@ -68,6 +68,23 @@
               <p class="text-muted">
                 Navigation order: Home → Activities → Gears → Health → Menu
               </p>
+
+              <!-- iOS PWA Detection -->
+              <div class="alert alert-info mt-2">
+                <strong>Environment:</strong><br>
+                PWA: {{ isPWA ? 'Yes' : 'No' }}<br>
+                iOS: {{ isIOS ? 'Yes' : 'No' }}<br>
+                Mobile: {{ isMobile ? 'Yes' : 'No' }}<br>
+                User Agent: {{ userAgent.substring(0, 50) }}...
+              </div>
+
+              <!-- Touch Status -->
+              <div class="alert alert-secondary mt-2">
+                <strong>Touch Status:</strong><br>
+                Touch Active: {{ touchActive ? 'Yes' : 'No' }}<br>
+                Swipe in Progress: {{ swipeInProgress ? 'Yes' : 'No' }}<br>
+                Last Touch: {{ lastTouchInfo }}
+              </div>
             </div>
           </div>
         </div>
@@ -95,7 +112,7 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
 export default {
@@ -107,8 +124,31 @@ export default {
     const buttonClickCount = ref(0);
     const linkClickCount = ref(0);
     const eventLog = ref([]);
-    
+    const touchActive = ref(false);
+    const swipeInProgress = ref(false);
+    const lastTouchInfo = ref('None');
+
     const currentRoute = computed(() => route.name);
+
+    // Environment detection
+    const isPWA = computed(() => {
+      return window.matchMedia('(display-mode: standalone)').matches ||
+             window.navigator.standalone ||
+             document.referrer.includes('android-app://');
+    });
+
+    const isIOS = computed(() => {
+      return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+             (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    });
+
+    const isMobile = computed(() => {
+      return window.innerWidth <= 991.98;
+    });
+
+    const userAgent = computed(() => {
+      return navigator.userAgent;
+    });
     
     const addToLog = (message) => {
       const timestamp = new Date().toLocaleTimeString();
@@ -134,8 +174,44 @@ export default {
       addToLog('Event log cleared');
     };
     
+    // Touch event tracking
+    const handleTestTouchStart = (event) => {
+      touchActive.value = true;
+      const touch = event.touches[0];
+      lastTouchInfo.value = `Start: ${touch.clientX}, ${touch.clientY}`;
+      addToLog(`Touch Start: ${touch.clientX}, ${touch.clientY}`);
+    };
+
+    const handleTestTouchMove = (event) => {
+      if (touchActive.value) {
+        const touch = event.touches[0];
+        lastTouchInfo.value = `Move: ${touch.clientX}, ${touch.clientY}`;
+      }
+    };
+
+    const handleTestTouchEnd = (event) => {
+      touchActive.value = false;
+      swipeInProgress.value = false;
+      const touch = event.changedTouches[0];
+      lastTouchInfo.value = `End: ${touch.clientX}, ${touch.clientY}`;
+      addToLog(`Touch End: ${touch.clientX}, ${touch.clientY}`);
+    };
+
     onMounted(() => {
       addToLog('SwipeTestView mounted - ready for testing');
+      addToLog(`Environment: PWA=${isPWA.value}, iOS=${isIOS.value}, Mobile=${isMobile.value}`);
+
+      // Add touch listeners for testing
+      document.addEventListener('touchstart', handleTestTouchStart, { passive: true });
+      document.addEventListener('touchmove', handleTestTouchMove, { passive: true });
+      document.addEventListener('touchend', handleTestTouchEnd, { passive: true });
+    });
+
+    onUnmounted(() => {
+      // Clean up test listeners
+      document.removeEventListener('touchstart', handleTestTouchStart);
+      document.removeEventListener('touchmove', handleTestTouchMove);
+      document.removeEventListener('touchend', handleTestTouchEnd);
     });
     
     return {
@@ -143,6 +219,13 @@ export default {
       linkClickCount,
       eventLog,
       currentRoute,
+      touchActive,
+      swipeInProgress,
+      lastTouchInfo,
+      isPWA,
+      isIOS,
+      isMobile,
+      userAgent,
       handleButtonClick,
       handleLinkClick,
       clearLog
