@@ -57,12 +57,14 @@ export async function attemptFetch(url, options) {
 	const fullUrl = `${API_URL}${url}`;
 	const response = await fetch(fullUrl, options);
 	if (!response.ok) {
-		const errorBody = await response.json(); // Parse the response as JSON
-		const errorMessage = errorBody.detail || "Unknown error"; // Get the 'detail' field or a default message
-		throw new Error(`${response.status} - ${errorMessage}`);
+	  const errorBody = await response.clone().json().catch(() => null);
+	  console.error('Import error payload:', errorBody);
+	  const errorMessage = errorBody?.detail || "Unknown error";
+	  throw new Error(`${response.status} - ${errorMessage}`);
 	}
 	return response.json();
-}
+  }
+  
 
 async function refreshAccessToken() {
 	if (refreshTokenPromise) {
@@ -92,8 +94,8 @@ async function refreshAccessToken() {
 	return refreshTokenPromise;
 }
 
-export async function fetchGetRequest(url) {
-	const options = {
+export async function fetchGetRequest(url, options = {}) {
+	const requestOptions = {
 		method: "GET",
 		credentials: "include",
 		headers: {
@@ -101,7 +103,23 @@ export async function fetchGetRequest(url) {
 			"X-Client-Type": "web",
 		},
 	};
-	return fetchWithRetry(url, options);
+
+	// For blob responses
+	if (options.responseType === 'blob') {
+		const fullUrl = `${API_URL}${url}`;
+		const response = await fetch(fullUrl, requestOptions);
+		
+		if (!response.ok) {
+			const errorBody = await response.json();
+			const errorMessage = errorBody.detail || "Unknown error";
+			throw new Error(`${response.status} - ${errorMessage}`);
+		}
+		
+		return response.blob();
+	}
+
+	// Regular JSON response
+	return fetchWithRetry(url, requestOptions);
 }
 
 export async function fetchPostFileRequest(url, formData) {
