@@ -31,7 +31,7 @@
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.10.4",
     "@types/bootstrap": "^5.2.10",
-    "@types/leaflet": "^1.9.14",
+    "@types/leaflet": "^1.9.18",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/eslint-config-prettier": "^10.1.0",
     "@vue/test-utils": "^2.4.6",
