@@ -1,11 +1,12 @@
 {
-    "labelGear": "Uitrusting",
-    "labelGearNotSet": "Niet ingesteld",
-    "modalLabelDeleteGear": "Verwijder uitrusting uit activiteit",
-    "modalLabelDeleteGearBody": "Weet je zeker dat je de uitrusting uit de activiteit wilt verwijderen?",
-    "modalLabelDeleteGearButton": "Verwijder uitrusting",
-    "successMessageGearAdded": "Uitrusting toegevoegd aan activiteit",
-    "successMessageGearDeleted": "Uitrusting verwijderd uit activiteit",
-    "errorMessageDeleteGear": "Fout bij verwijderen van uitrusting uit activiteit",
-    "errorMessageActivityNotFound": "Activiteit niet gevonden"
+  "labelGear": "Uitrusting",
+  "labelGearNotSet": "Niet ingesteld",
+  "modalLabelDeleteGear": "Verwijder uitrusting uit activiteit",
+  "modalLabelDeleteGearBody": "Weet je zeker dat je de uitrusting uit de activiteit wilt verwijderen?",
+  "modalLabelDeleteGearButton": "Verwijder uitrusting",
+  "successMessageGearAdded": "Uitrusting toegevoegd aan activiteit",
+  "successMessageGearDeleted": "Uitrusting verwijderd uit activiteit",
+  "errorMessageDeleteGear": "Fout bij verwijderen van uitrusting uit activiteit",
+  "errorMessageActivityNotFound": "Activiteit niet gevonden",
+  "alertPrivacyMessage": "You have hidden information in this activity. You can see it, but others cannot."
 }

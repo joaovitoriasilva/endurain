@@ -22,6 +22,9 @@ import users.user_integrations.schema as user_integrations_schema
 
 import users.user_default_gear.utils as user_default_gear_utils
 
+import users.user_privacy_settings.crud as users_privacy_settings_crud
+import users.user_privacy_settings.schema as users_privacy_settings_schema
+
 import users.user.crud as users_crud
 
 import gears.crud as gears_crud
@@ -60,6 +63,8 @@ def fetch_and_process_activities(
             )
         # Return 0 to indicate no activities were processed
         return 0
+    except HTTPException as http_err:
+        raise http_err
     except Exception as err:
         # Log an error event if an exception occurred
         core_logger.print_to_log(
@@ -93,6 +98,10 @@ def fetch_and_process_activities(
                 detail="User not found",
             )
 
+    user_privacy_settings = (
+        users_privacy_settings_crud.get_user_privacy_settings_by_user_id(user.id, db)
+    )
+
     processed_activities = []
 
     # Process the activities
@@ -101,7 +110,7 @@ def fetch_and_process_activities(
             process_activity(
                 activity,
                 user_id,
-                user.default_activity_visibility,
+                user_privacy_settings,
                 strava_client,
                 user_integrations,
                 db,
@@ -115,7 +124,7 @@ def fetch_and_process_activities(
 def parse_activity(
     activity,
     user_id: int,
-    default_activity_visibility: int,
+    user_privacy_settings: users_privacy_settings_schema.UsersPrivacySettings,
     strava_client: Client,
     user_integrations: user_integrations_schema.UsersIntegrations,
     db: Session,
@@ -184,7 +193,9 @@ def parse_activity(
         is_velocity_set,
         pace_waypoints,
     ) = fetch_and_process_activity_streams(
-        strava_client, activity.id, user_id,
+        strava_client,
+        activity.id,
+        user_id,
     )
 
     ele_gain, ele_loss = None, None
@@ -312,12 +323,32 @@ def parse_activity(
         gear_id=gear_id,
         strava_gear_id=detailedActivity.gear_id,
         strava_activity_id=int(activity.id),
-        visibility=default_activity_visibility,
+        visibility=(
+            user_privacy_settings.default_activity_visibility
+            if user_privacy_settings.default_activity_visibility is not None
+            else 0
+        ),
+        hide_start_time=user_privacy_settings.hide_activity_start_time or False,
+        hide_location=user_privacy_settings.hide_activity_location or False,
+        hide_map=user_privacy_settings.hide_activity_map or False,
+        hide_hr=user_privacy_settings.hide_activity_hr or False,
+        hide_power=user_privacy_settings.hide_activity_power or False,
+        hide_cadence=user_privacy_settings.hide_activity_cadence or False,
+        hide_elevation=user_privacy_settings.hide_activity_elevation or False,
+        hide_speed=user_privacy_settings.hide_activity_speed or False,
+        hide_pace=user_privacy_settings.hide_activity_pace or False,
+        hide_laps=user_privacy_settings.hide_activity_laps or False,
+        hide_workout_sets_steps=user_privacy_settings.hide_activity_workout_sets_steps
+        or False,
+        hide_gear=user_privacy_settings.hide_activity_gear or False,
     )
 
     # Fetch and process activity laps
     laps = fetch_and_process_activity_laps(
-        strava_client, activity.id, user_id, stream_data,
+        strava_client,
+        activity.id,
+        user_id,
+        stream_data,
     )
 
     # Return the activity and stream data
@@ -365,7 +396,7 @@ def save_activity_streams_laps(
 def process_activity(
     activity,
     user_id: int,
-    default_activity_visibility: int,
+    user_privacy_settings: users_privacy_settings_schema.UsersPrivacySettings,
     strava_client: Client,
     user_integrations: user_integrations_schema.UsersIntegrations,
     db: Session,
@@ -386,7 +417,7 @@ def process_activity(
     parsed_activity = parse_activity(
         activity,
         user_id,
-        default_activity_visibility,
+        user_privacy_settings,
         strava_client,
         user_integrations,
         db,

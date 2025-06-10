@@ -1,15 +1,15 @@
 {
-    "userListAccessTypeLabel": "Tipus d'accés: ",
-    "userListAccessTypeOption1": "Usuari normal",
-    "userListAccessTypeOption2": "Administrador",
-    "userListUserIsMeBadge": "Jo",
-    "userListUserIsAdminBadge": "Admin",
-    "userListUserIsActiveBadge": "Actiu",
-    "userListUserIsInactiveBadge": "Inactiu",
-    "userEditErrorMessage": "Error editant usuari",
-    "modalDeleteUserTitle": "Esborra usuari",
-    "modalDeleteUserBody": "Segur que vols esborrar l'usuari ",
-    "userListUserSessionsTitle": "Sessions d'usuari",
-    "userSessionDeleteSuccessMessage": "Sessió eliminada correctament",
-    "userSessionDeleteErrorMessage": "Error esborrant sessió"
+  "userListAccessTypeLabel": "Tipus d'accés: ",
+  "userListAccessTypeOption1": "Usuari normal",
+  "userListAccessTypeOption2": "Administrador",
+  "userListUserIsMeBadge": "Jo",
+  "userListUserIsAdminBadge": "Admin",
+  "userListUserIsActiveBadge": "Actiu",
+  "userListUserIsInactiveBadge": "Inactiu",
+  "userEditErrorMessage": "Error editant usuari",
+  "modalDeleteUserTitle": "Esborra usuari",
+  "modalDeleteUserBody": "Segur que vols esborrar l'usuari ",
+  "userListUserSessionsTitle": "Sessions d'usuari",
+  "userSessionDeleteSuccessMessage": "Sessió eliminada correctament",
+  "userSessionDeleteErrorMessage": "Error esborrant sessió"
 }

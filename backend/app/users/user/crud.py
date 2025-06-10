@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 from sqlalchemy import func
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.exc import IntegrityError
 from urllib.parse import unquote
 
@@ -19,18 +19,14 @@ import core.logger as core_logger
 
 def authenticate_user(username: str, db: Session):
     try:
-        # Get the user from the database
         user = (
             db.query(users_models.User)
             .filter(users_models.User.username == username)
             .first()
         )
 
-        # Check if the user exists and if the password is correct and if not return None
         if not user:
             return None
-
-        # Return the user if the password is correct
         return user
     except Exception as err:
         # Log the exception
@@ -328,6 +324,8 @@ def edit_user(user_id: int, user: users_schema.User, db: Session):
         if db_user.photo_path is None:
             # Delete the user photo in the filesystem
             users_utils.delete_user_photo_filesystem(db_user.id)
+    except HTTPException as http_err:
+        raise http_err
     except IntegrityError as integrity_error:
         # Rollback the transaction
         db.rollback()
@@ -458,6 +456,8 @@ def delete_user(user_id: int, db: Session):
 
         # Delete the user photo in the filesystem
         users_utils.delete_user_photo_filesystem(user_id)
+    except HTTPException as http_err:
+        raise http_err
     except Exception as err:
         # Rollback the transaction
         db.rollback()

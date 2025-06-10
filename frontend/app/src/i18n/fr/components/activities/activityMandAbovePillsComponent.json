@@ -1,15 +1,15 @@
 {
-    "labelPillGraphs": "Graphiques",
-    "labelPillLaps": "Intervalle",
-    "labelPillWorkoutSets": "Ensembles",
-    "labelGraph": "Graphiques des données d'activité",
-    "labelGraphHR": "Fréquence cardiaque",
-    "labelGraphPower": "Puissance",
-    "labelGraphCadence": "Cadence",
-    "labelGraphElevation": "Élévation",
-    "labelGraphVelocity": "Vitesse ",
-    "labelGraphPace": "Allure",
-    "labelDownsampling": "Données abaissées à ~200 points",
-    "errorMessageProcessingActivityStreams": "Erreur lors du traitement des flux d'activité",
-    "labelGraphStrokeRate": "Stroke rate"
+  "labelPillGraphs": "Graphiques",
+  "labelPillLaps": "Intervalle",
+  "labelPillWorkoutSets": "Ensembles",
+  "labelGraph": "Graphiques des données d'activité",
+  "labelGraphHR": "Fréquence cardiaque",
+  "labelGraphPower": "Puissance",
+  "labelGraphCadence": "Cadence",
+  "labelGraphElevation": "Élévation",
+  "labelGraphVelocity": "Speed",
+  "labelGraphPace": "Allure",
+  "labelDownsampling": "Données abaissées à ~200 points",
+  "errorMessageProcessingActivityStreams": "Erreur lors du traitement des flux d'activité",
+  "labelGraphStrokeRate": "Stroke rate"
 }

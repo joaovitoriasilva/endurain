@@ -1,14 +1,16 @@
 {
-    "gearListTypeLabel": "Soort",
-    "gearListTypeOption1": "Fiets",
-    "gearListTypeOption2": "Schoenen",
-    "gearListTypeOption3": "Wetsuit",
-    "gearListTypeOption4": "Raket",
-    "gearListGearIsInactiveBadge": "Inactief",
-    "gearListGearFromStrava": "Strava",
-    "gearListGearFromGarminConnect": "Garmin Connect",
-    "gearListModalDeleteGearTitle": "Verwijder uitrusting",
-    "gearListModalDeleteGearBody": "Weet u zeker dat u de uitrusting wilt verwijderen? ",
-    "gearListGearDeleteSuccessMessage": "Uitrusting succesvol verwijderd",
-    "gearListGearDeleteErrorMessage": "Fout bij verwijderen uitrusting"
+  "gearListTypeLabel": "Soort",
+  "gearListTypeOption1": "Fiets",
+  "gearListTypeOption2": "Schoenen",
+  "gearListTypeOption3": "Wetsuit",
+  "gearListTypeOption4": "Raket",
+  "gearListTypeOption5": "Skis",
+  "gearListTypeOption6": "Snowboard",
+  "gearListGearIsInactiveBadge": "Inactief",
+  "gearListGearFromStrava": "Strava",
+  "gearListGearFromGarminConnect": "Garmin Connect",
+  "gearListModalDeleteGearTitle": "Verwijder uitrusting",
+  "gearListModalDeleteGearBody": "Weet u zeker dat u de uitrusting wilt verwijderen? ",
+  "gearListGearDeleteSuccessMessage": "Uitrusting succesvol verwijderd",
+  "gearListGearDeleteErrorMessage": "Fout bij verwijderen uitrusting"
 }

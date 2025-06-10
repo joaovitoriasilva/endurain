@@ -1,15 +1,15 @@
 {
-    "labelPillGraphs": "Gráficos",
-    "labelPillLaps": "Voltas",
-    "labelPillWorkoutSets": "Jogos",
-    "labelGraph": "Gráficos de dados da atividade",
-    "labelGraphHR": "Frequência cardíaca",
-    "labelGraphPower": "Potência",
-    "labelGraphCadence": "Cadência",
-    "labelGraphElevation": "Elevação",
-    "labelGraphVelocity": "Velocidade",
-    "labelGraphPace": "Ritmo",
-    "labelDownsampling": "Dados downsampled para ~200 pontos",
-    "errorMessageProcessingActivityStreams": "Erro ao processar fluxos de atividade",
-    "labelGraphStrokeRate": "Velocidade de braçada"
+  "labelPillGraphs": "Gráficos",
+  "labelPillLaps": "Voltas",
+  "labelPillWorkoutSets": "Jogos",
+  "labelGraph": "Gráficos de dados da atividade",
+  "labelGraphHR": "Frequência cardíaca",
+  "labelGraphPower": "Potência",
+  "labelGraphCadence": "Cadência",
+  "labelGraphElevation": "Elevação",
+  "labelGraphVelocity": "Velocidade",
+  "labelGraphPace": "Ritmo",
+  "labelDownsampling": "Dados downsampled para ~200 pontos",
+  "errorMessageProcessingActivityStreams": "Erro ao processar fluxos de atividade",
+  "labelGraphStrokeRate": "Velocidade de braçada"
 }

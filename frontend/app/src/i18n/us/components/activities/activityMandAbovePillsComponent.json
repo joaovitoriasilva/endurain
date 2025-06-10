@@ -1,15 +1,15 @@
 {
-    "labelPillGraphs": "Graphs",
-    "labelPillLaps": "Laps",
-    "labelPillWorkoutSets": "Sets",
-    "labelGraph": "Activity data graphs",
-    "labelGraphHR": "Heart rate",
-    "labelGraphPower": "Power",
-    "labelGraphCadence": "Cadence",
-    "labelGraphElevation": "Elevation",
-    "labelGraphVelocity": "Velocity",
-    "labelGraphPace": "Pace",
-    "labelDownsampling": "Data downsampled to ~200 points",
-    "errorMessageProcessingActivityStreams": "Error processing activity streams",
-    "labelGraphStrokeRate": "Stroke rate"
+  "labelPillGraphs": "Graphs",
+  "labelPillLaps": "Laps",
+  "labelPillWorkoutSets": "Sets",
+  "labelGraph": "Activity data graphs",
+  "labelGraphHR": "Heart rate",
+  "labelGraphPower": "Power",
+  "labelGraphCadence": "Cadence",
+  "labelGraphElevation": "Elevation",
+  "labelGraphVelocity": "Speed",
+  "labelGraphPace": "Pace",
+  "labelDownsampling": "Data downsampled to ~200 points",
+  "errorMessageProcessingActivityStreams": "Error processing activity streams",
+  "labelGraphStrokeRate": "Stroke rate"
 }

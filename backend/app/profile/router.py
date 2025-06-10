@@ -1,13 +1,19 @@
 from io import BytesIO, StringIO
+from pathlib import Path
 from zipfile import ZipFile
+
 import os
 import json
 import csv
+import logging
 
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
+
+import users.user_privacy_settings.crud as users_privacy_settings_crud
+import users.user_privacy_settings.schema as users_privacy_settings_schema
 
 import core.database as core_database
 import session.security as session_security
@@ -24,32 +30,69 @@ router = APIRouter()
 # Where your processed GPX/FIT files live; each user gets a subfolder named by their ID
 PROCESSED_DIR = os.getenv("PROCESSED_DIR", "files/processed")
 
+import users.user_privacy_settings.crud as users_privacy_settings_crud
+import users.user_privacy_settings.schema as users_privacy_settings_schema
+
+router = APIRouter()
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PROCESSED_DIR = PROJECT_ROOT / "files" / "processed"
+PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+PROCESSED_DIR = str(PROCESSED_DIR)
+
 
 @router.get("", response_model=users_schema.UserMe)
 async def read_users_me(
     token_user_id: Annotated[
-        int, Depends(session_security.get_user_id_from_access_token)
+        int,
+        Depends(session_security.get_user_id_from_access_token),
     ],
-    db: Annotated[Session, Depends(core_database.get_db)],
+    db: Annotated[
+        Session,
+        Depends(core_database.get_db),
+    ],
 ):
+    # Get the user from the database
     user = users_crud.get_user_by_id(token_user_id, db)
-    if not user:
+
+    # If the user does not exist raise the exception
+    if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials (user not found)",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    integrations = user_integrations_crud.get_user_integrations_by_user_id(user.id, db)
-    if not integrations:
+    user_integrations = user_integrations_crud.get_user_integrations_by_user_id(
+        user.id, db
+    )
+
+    if user_integrations is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials (user integrations not found)",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    user.is_strava_linked = bool(integrations.strava_token)
-    user.is_garminconnect_linked = bool(integrations.garminconnect_oauth1)
+    user.is_strava_linked = 1 if user_integrations.strava_token else 0
+    user.is_garminconnect_linked = 1 if user_integrations.garminconnect_oauth1 else 0
+
+    user_privacy_settings = (
+        users_privacy_settings_crud.get_user_privacy_settings_by_user_id(user.id, db)
+    )
+
+    if user_privacy_settings is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials (user privacy settings not found)",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    else:
+        for attr in vars(user_privacy_settings):
+            if not attr.startswith("_") and attr != "id" and attr != "user_id":
+                setattr(user, attr, getattr(user_privacy_settings, attr))
+
+    # Return the user
     return user
 
 
@@ -86,19 +129,54 @@ async def edit_user(
     return {"detail": f"User ID {user_attrs.id} updated successfully"}
 
 
+@router.put("/privacy")
+async def edit_profile_privacy_settings(
+    user_privacy_settings: users_privacy_settings_schema.UsersPrivacySettings,
+    token_user_id: Annotated[
+        int,
+        Depends(session_security.get_user_id_from_access_token),
+    ],
+    db: Annotated[
+        Session,
+        Depends(core_database.get_db),
+    ],
+):
+    # Edit the user privacy settings in the database
+    users_privacy_settings_crud.edit_user_privacy_settings(
+        token_user_id, user_privacy_settings, db
+    )
+
+    # Return success message
+    return {f"User ID {token_user_id} privacy settings updated successfully"}
+
+
 @router.put("/password")
 async def edit_profile_password(
-    user_attrs: users_schema.UserEditPassword,
+    user_attributtes: users_schema.UserEditPassword,
     token_user_id: Annotated[
-        int, Depends(session_security.get_user_id_from_access_token)
+        int,
+        Depends(session_security.get_user_id_from_access_token),
     ],
-    db: Annotated[Session, Depends(core_database.get_db)],
+    db: Annotated[
+        Session,
+        Depends(core_database.get_db),
+    ],
 ):
-    valid, msg = session_security.is_password_complexity_valid(user_attrs.password)
-    if not valid:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=msg)
-    users_crud.edit_user_password(token_user_id, user_attrs.password, db)
-    return {"detail": f"User ID {token_user_id} password updated successfully"}
+    # Check if the password meets the complexity requirements
+    is_valid, message = session_security.is_password_complexity_valid(
+        user_attributtes.password
+    )
+    if not is_valid:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=message,
+        )
+
+    # Update the user password in the database
+    users_crud.edit_user_password(token_user_id, user_attributtes.password, db)
+
+    # Return success message
+    return {f"User ID {token_user_id} password updated successfully"}
 
 
 @router.put("/photo")
@@ -120,6 +198,7 @@ async def delete_profile_session(
     ],
     db: Annotated[Session, Depends(core_database.get_db)],
 ):
+    # Delete the session from the database
     return session_crud.delete_session(session_id, token_user_id, db)
 
 

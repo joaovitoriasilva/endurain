@@ -22,6 +22,9 @@ export const profile = {
   editProfile(data) {
     return fetchPutRequest('profile', data)
   },
+  editUserPrivacySettings(data) {
+    return fetchPutRequest('profile/privacy', data)
+  },
   editProfilePassword(data) {
     return fetchPutRequest('profile/password', data)
   },

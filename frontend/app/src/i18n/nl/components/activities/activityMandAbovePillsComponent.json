@@ -1,15 +1,15 @@
 {
-    "labelPillGraphs": "Grafieken",
-    "labelPillLaps": "Rondes",
-    "labelPillWorkoutSets": "Sets",
-    "labelGraph": "Activiteit data grafieken",
-    "labelGraphHR": "Hartslag",
-    "labelGraphPower": "Vermogen",
-    "labelGraphCadence": "Cadans",
-    "labelGraphElevation": "Hoogte",
-    "labelGraphVelocity": "Snelheid",
-    "labelGraphPace": "Tempo",
-    "labelDownsampling": "Gegevens teruggeschaald naar ~200 punten",
-    "errorMessageProcessingActivityStreams": "Fout bij verwerken activiteit streams",
-    "labelGraphStrokeRate": "Stroke rate"
+  "labelPillGraphs": "Grafieken",
+  "labelPillLaps": "Rondes",
+  "labelPillWorkoutSets": "Sets",
+  "labelGraph": "Activiteit data grafieken",
+  "labelGraphHR": "Hartslag",
+  "labelGraphPower": "Vermogen",
+  "labelGraphCadence": "Cadans",
+  "labelGraphElevation": "Hoogte",
+  "labelGraphVelocity": "Speed",
+  "labelGraphPace": "Tempo",
+  "labelDownsampling": "Gegevens teruggeschaald naar ~200 punten",
+  "errorMessageProcessingActivityStreams": "Fout bij verwerken activiteit streams",
+  "labelGraphStrokeRate": "Stroke rate"
 }

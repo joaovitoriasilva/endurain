@@ -1,11 +1,12 @@
 {
-    "search": "Suche",
-    "activities": "Aktivitäten",
-    "gear": "Ausrüstung",
-    "health": "Gesundheit",
-    "profile": "Profil",
-    "settings": "Einstellungen",
-    "login": "Anmelden",
-    "logout": "Abmelden",
-    "errorLogout": "Fehler beim Ausloggen"
+  "search": "Suche",
+  "activities": "Aktivitäten",
+  "summary": "Summary",
+  "gear": "Ausrüstung",
+  "health": "Gesundheit",
+  "profile": "Profil",
+  "settings": "Einstellungen",
+  "login": "Anmelden",
+  "logout": "Abmelden",
+  "errorLogout": "Fehler beim Ausloggen"
 }

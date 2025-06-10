@@ -1,4 +1,4 @@
-import { DateTime } from 'luxon';
+import { DateTime } from 'luxon'
 
 /**
  * Formats a date string into a localized date format.
@@ -8,21 +8,19 @@ import { DateTime } from 'luxon';
  */
 export function formatDateShort(dateString) {
   // Create a DateTime object from the date string
-  const date = DateTime.fromISO(dateString, { setZone: true });
+  const date = DateTime.fromISO(dateString, { setZone: true })
 
   // Return the formatted date string respecting browser's locale
-  return date.toLocaleString(DateTime.DATE_SHORT);
+  return date.toLocaleString(DateTime.DATE_SHORT)
 }
-
 
 export function formatDateMed(dateString) {
   // Create a DateTime object from the date string
-  const date = DateTime.fromISO(dateString, { setZone: true });
+  const date = DateTime.fromISO(dateString, { setZone: true })
 
   // Return the formatted date string respecting browser's locale
-  return date.toLocaleString(DateTime.DATE_MED);
+  return date.toLocaleString(DateTime.DATE_MED)
 }
-  
 
 /**
  * Formats a given date string into a time string.
@@ -31,12 +29,12 @@ export function formatDateMed(dateString) {
  */
 export function formatTime(dateString) {
   // Create a DateTime object from the date string and preserve its time zone offset
-  const date = DateTime.fromISO(dateString, { setZone: true });
+  const date = DateTime.fromISO(dateString, { setZone: true })
 
   // Return the formatted time string, respecting the browser's locale
-  return date.toLocaleString(DateTime.TIME_SIMPLE);
+  return date.toLocaleString(DateTime.TIME_SIMPLE)
 }
-  
+
 /**
  * Calculates the time difference between two given timestamps.
  *
@@ -46,22 +44,22 @@ export function formatTime(dateString) {
  */
 export function calculateTimeDifference(startTime, endTime) {
   // Create new Date objects from the timestamps
-  const startDateTime = new Date(startTime);
-  const endDateTime = new Date(endTime);
-  const interval = new Date(endDateTime - startDateTime);
+  const startDateTime = new Date(startTime)
+  const endDateTime = new Date(endTime)
+  const interval = new Date(endDateTime - startDateTime)
 
   // Get the hours, minutes, and seconds from the interval
-  const hours = interval.getUTCHours();
-  const minutes = interval.getUTCMinutes();
-  const seconds = interval.getUTCSeconds();
+  const hours = interval.getUTCHours()
+  const minutes = interval.getUTCMinutes()
+  const seconds = interval.getUTCSeconds()
 
   // Return the formatted time difference
   if (hours < 1) {
     // If the difference is less than an hour, return the minutes and seconds
-    return `${minutes}m ${seconds}s`;
+    return `${minutes}m ${seconds}s`
   }
   // If the difference is greater than an hour, return the hours and minutes
-  return `${hours}h ${minutes}m`;
+  return `${hours}h ${minutes}m`
 }
 
 /**
@@ -71,15 +69,82 @@ export function calculateTimeDifference(startTime, endTime) {
  * @returns {string} The formatted time string in minutes:seconds.
  */
 export function formatSecondsToMinutes(totalSeconds) {
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = Math.floor(totalSeconds % 60);
+  const hours = Math.floor(totalSeconds / 3600)
+  const minutes = Math.floor((totalSeconds % 3600) / 60)
+  const seconds = Math.floor(totalSeconds % 60)
 
-  const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
-  const formattedMinutes = minutes < 10 && hours > 0 ? `0${minutes}` : minutes;
+  const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds
+  const formattedMinutes = minutes < 10 && hours > 0 ? `0${minutes}` : minutes
 
   if (hours > 0) {
-    return `${hours}:${formattedMinutes}:${formattedSeconds}`;
+    return `${hours}h ${formattedMinutes}m ${formattedSeconds}s`
   }
-  return `${minutes}:${formattedSeconds}`;
+  return `${minutes}m ${formattedSeconds}s`
+}
+
+/**
+ * Gets the start date (Monday) of the week for a given date object, in UTC.
+ * @param {Date} date - The input data object.
+ * @returns {Date} - The data object for the Monday of that week (UTC).
+ */
+export function getWeekStartDate(date) {
+  return DateTime.fromJSDate(date, { zone: 'utc' }).startOf('week').toJSDate()
+}
+
+/**
+ * Gets the end date (start of next week) for a given JavaScript Date object's week, in UTC.
+ * This means it's the first day of the next week, making the range exclusive for the end date.
+ * @param {Date} jsDate - The input JavaScript Date object.
+ * @returns {Date} - The JavaScript Date object for the start of the next week (UTC).
+ */
+export function getWeekEndDate(jsDate) {
+  return DateTime.fromJSDate(jsDate, { zone: 'utc' }).startOf('week').plus({ days: 7 }).toJSDate()
+}
+
+/**
+ * Gets the start date (1st) of the month for a given JavaScript Date object, in UTC.
+ * @param {Date} jsDate - The input JavaScript Date object.
+ * @returns {Date} - The JavaScript Date object for the first day of that month (UTC).
+ */
+export function getMonthStartDate(jsDate) {
+  return DateTime.fromJSDate(jsDate, { zone: 'utc' }).startOf('month').toJSDate()
+}
+
+/**
+ * Gets the end date (start of next month) for a given JavaScript Date object's month, in UTC.
+ * This means it's the first day of the next month, making the range exclusive for the end date.
+ * @param {Date} jsDate - The input JavaScript Date object.
+ * @returns {Date} - The JavaScript Date object for the start of the next month (UTC).
+ */
+export function getMonthEndDate(jsDate) {
+  return DateTime.fromJSDate(jsDate, { zone: 'utc' })
+    .startOf('month')
+    .plus({ months: 1 })
+    .toJSDate()
+}
+
+/**
+ * Formats a Date object into a string with the format "YYYY-MM".
+ *
+ * @param {Date} date - The date to format.
+ * @returns {string} The formatted date string in "YYYY-MM" format.
+ */
+export function formatDateToMonthString(date) {
+  let year = date.getFullYear()
+  let month = String(date.getMonth() + 1).padStart(2, '0')
+  return `${year}-${month}`
+}
+
+/**
+ * Formats a Date object into an ISO date string (YYYY-MM-DD).
+ *
+ * @param {Date} date - The date to format.
+ * @returns {string} The formatted date string in ISO format.
+ */
+export function formatDateISO(date) {
+  let year = date.getFullYear()
+  let month = String(date.getMonth() + 1).padStart(2, '0')
+  let day = String(date.getDate()).padStart(2, '0')
+
+  return `${year}-${month}-${day}`
 }

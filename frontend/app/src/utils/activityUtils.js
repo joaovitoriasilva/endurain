@@ -1,15 +1,6 @@
-import i18n from "@/i18n";
-import {
-	metersToKm,
-	metersToMiles,
-	metersToFeet,
-	metersToYards,
-} from "@/utils/unitsUtils";
-import {
-	formatDateMed,
-	formatTime,
-	formatSecondsToMinutes,
-} from "@/utils/dateTimeUtils"; // Import date/time utils
+import i18n from '@/i18n'
+import { metersToKm, metersToMiles, metersToFeet, metersToYards } from '@/utils/unitsUtils'
+import { formatDateMed, formatTime, formatSecondsToMinutes } from '@/utils/dateTimeUtils' // Import date/time utils
 
 /**
  * Formats a given pace in meters per minute to a string representation in minutes per kilometer.
@@ -19,20 +10,20 @@ import {
  * @returns {string} The formatted pace as a string in the format "MM:SS min/km".
  */
 export function formatPaceMetric(pace, units = true) {
-	// Convert pace to seconds per kilometer
-	const pacePerKm = (pace * 1000) / 60;
-	// Calculate minutes and seconds
-	const minutes = Math.floor(pacePerKm);
-	const seconds = Math.round((pacePerKm - minutes) * 60);
+  // Convert pace to seconds per kilometer
+  const pacePerKm = (pace * 1000) / 60
+  // Calculate minutes and seconds
+  const minutes = Math.floor(pacePerKm)
+  const seconds = Math.round((pacePerKm - minutes) * 60)
 
-	// Format the seconds
-	const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
+  // Format the seconds
+  const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds
 
-	// Return the formatted pace
-	if (units) {
-		return `${minutes}:${formattedSeconds} min/km`;
-	}
-	return `${minutes}:${formattedSeconds}`;
+  // Return the formatted pace
+  if (units) {
+    return `${minutes}:${formattedSeconds} min/km`
+  }
+  return `${minutes}:${formattedSeconds}`
 }
 
 /**
@@ -43,20 +34,20 @@ export function formatPaceMetric(pace, units = true) {
  * @returns {string} The formatted pace in minutes per mile (min/mi).
  */
 export function formatPaceImperial(pace, units = true) {
-	// Convert pace to seconds per mile (1 mile = 1609.34 meters)
-	const pacePerMile = (pace * 1609.34) / 60;
-	// Calculate minutes and seconds
-	const minutes = Math.floor(pacePerMile);
-	const seconds = Math.round((pacePerMile - minutes) * 60);
+  // Convert pace to seconds per mile (1 mile = 1609.34 meters)
+  const pacePerMile = (pace * 1609.34) / 60
+  // Calculate minutes and seconds
+  const minutes = Math.floor(pacePerMile)
+  const seconds = Math.round((pacePerMile - minutes) * 60)
 
-	// Format the seconds
-	const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
+  // Format the seconds
+  const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds
 
-	// Return the formatted pace
-	if (units) {
-		return `${minutes}:${formattedSeconds} min/mi`;
-	}
-	return `${minutes}:${formattedSeconds}`;
+  // Return the formatted pace
+  if (units) {
+    return `${minutes}:${formattedSeconds} min/mi`
+  }
+  return `${minutes}:${formattedSeconds}`
 }
 
 /**
@@ -67,20 +58,20 @@ export function formatPaceImperial(pace, units = true) {
  * @returns {string} The formatted pace as a string in the format "MM:SS min/100m".
  */
 export function formatPaceSwimMetric(pace, units = true) {
-	// Convert pace to seconds per 100 meters
-	const pacePerKm = (pace * 100) / 60;
-	// Calculate minutes and seconds
-	const minutes = Math.floor(pacePerKm);
-	const seconds = Math.round((pacePerKm - minutes) * 60);
+  // Convert pace to seconds per 100 meters
+  const pacePerKm = (pace * 100) / 60
+  // Calculate minutes and seconds
+  const minutes = Math.floor(pacePerKm)
+  const seconds = Math.round((pacePerKm - minutes) * 60)
 
-	// Format the seconds
-	const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
+  // Format the seconds
+  const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds
 
-	// Return the formatted pace
-	if (units) {
-		return `${minutes}:${formattedSeconds} min/100m`;
-	}
-	return `${minutes}:${formattedSeconds}`;
+  // Return the formatted pace
+  if (units) {
+    return `${minutes}:${formattedSeconds} min/100m`
+  }
+  return `${minutes}:${formattedSeconds}`
 }
 
 /**
@@ -91,20 +82,20 @@ export function formatPaceSwimMetric(pace, units = true) {
  * @returns {string} The formatted pace in minutes per 100 yards (min/100yd).
  */
 export function formatPaceSwimImperial(pace, units = true) {
-	// Convert pace to seconds per 100 yards (1 yard = 0.9144 meters)
-	const pacePer100Yards = (pace * 100 * 0.9144) / 60;
-	// Calculate minutes and seconds
-	const minutes = Math.floor(pacePer100Yards);
-	const seconds = Math.round((pacePer100Yards - minutes) * 60);
+  // Convert pace to seconds per 100 yards (1 yard = 0.9144 meters)
+  const pacePer100Yards = (pace * 100 * 0.9144) / 60
+  // Calculate minutes and seconds
+  const minutes = Math.floor(pacePer100Yards)
+  const seconds = Math.round((pacePer100Yards - minutes) * 60)
 
-	// Format the seconds
-	const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
+  // Format the seconds
+  const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds
 
-	// Return the formatted pace
-	if (units) {
-		return `${minutes}:${formattedSeconds} min/100yd`;
-	}
-	return `${minutes}:${formattedSeconds}`;
+  // Return the formatted pace
+  if (units) {
+    return `${minutes}:${formattedSeconds} min/100yd`
+  }
+  return `${minutes}:${formattedSeconds}`
 }
 
 /**
@@ -114,7 +105,7 @@ export function formatPaceSwimImperial(pace, units = true) {
  * @returns {string} The speed converted to kilometers per hour (km/h) and rounded to the nearest whole number.
  */
 export function formatAverageSpeedMetric(speed) {
-	return (speed * 3.6).toFixed(0);
+  return (speed * 3.6).toFixed(0)
 }
 
 /**
@@ -124,7 +115,7 @@ export function formatAverageSpeedMetric(speed) {
  * @returns {string} The speed in miles per hour, rounded to the nearest whole number.
  */
 export function formatAverageSpeedImperial(speed) {
-	return (speed * 2.23694).toFixed(0);
+  return (speed * 2.23694).toFixed(0)
 }
 
 /**
@@ -134,7 +125,45 @@ export function formatAverageSpeedImperial(speed) {
  * @returns {boolean} True if the type of the activity is swimming (Indoor or Outdoor), false otherwise.
  */
 export function activityTypeIsSwimming(activity) {
-    return activity.activity_type === 8 || activity.activity_type === 9;
+  return activity.activity_type === 8 || activity.activity_type === 9
+}
+
+/**
+ * Checks if the activity type is a running activity.
+ *
+ * @param {object} activity - The activity object.
+ * @returns {boolean} True if the type of the activity is running, false otherwise.
+ */
+export function activityTypeIsRunning(activity) {
+  return (
+    activity.activity_type === 1 || activity.activity_type === 2 || activity.activity_type === 3
+  )
+}
+
+/**
+ * Checks if the activity type is a running activity.
+ *
+ * @param {object} activity - The activity object.
+ * @returns {boolean} True if the type of the activity is cycling, false otherwise.
+ */
+export function activityTypeIsCycling(activity) {
+  return (
+    activity.activity_type === 4 ||
+    activity.activity_type === 5 ||
+    activity.activity_type === 6 ||
+    activity.activity_type === 7 ||
+    activity.activity_type === 27
+  )
+}
+
+/**
+ * Checks if the activity type is a running activity.
+ *
+ * @param {object} activity - The activity object.
+ * @returns {boolean} True if the type of the activity is walking, false otherwise.
+ */
+export function activityTypeIsWalking(activity) {
+  return activity.activity_type === 11 || activity.activity_type === 12
 }
 
 /**
@@ -148,28 +177,24 @@ export function activityTypeIsSwimming(activity) {
  * @returns {string} The formatted pace string.
  */
 export function formatPace(activity, unitSystem, lap = null, units = true, isRest = false) {
-	let pace = activity.pace;
-	if (lap) {
-		pace = lap.enhanced_avg_pace;
-	}
-    if (isRest) {
-        return i18n.global.t("generalItems.labelRest");
+  let pace = activity.pace
+  if (lap) {
+    pace = lap.enhanced_avg_pace
+  }
+  if (isRest) {
+    return i18n.global.t('generalItems.labelRest')
+  }
+  if (activityTypeIsSwimming(activity) || activity.activity_type === 13) {
+    if (Number(unitSystem) === 1) {
+      return formatPaceSwimMetric(pace, units)
     }
-	if (
-		activityTypeIsSwimming(activity) ||
-		activity.activity_type === 13
-	) {
-		if (Number(unitSystem) === 1) {
-			return formatPaceSwimMetric(pace, units);
-		}
-		return formatPaceSwimImperial(pace, units);
-	}
-	if (Number(unitSystem) === 1) {
-		return formatPaceMetric(pace, units);
-	}
-	return formatPaceImperial(pace, units);
+    return formatPaceSwimImperial(pace, units)
+  }
+  if (Number(unitSystem) === 1) {
+    return formatPaceMetric(pace, units)
+  }
+  return formatPaceImperial(pace, units)
 }
-
 
 /**
  * Formats the average speed of an activity based on the unit system and activity type.
@@ -180,50 +205,45 @@ export function formatPace(activity, unitSystem, lap = null, units = true, isRes
  * @param {boolean} [units=true] - Whether to include units in the formatted string.
  * @returns {string} The formatted average speed, including units if specified, or a "No Data" label if unavailable.
  */
-export function formatAverageSpeed(
-	activity,
-	unitSystem,
-	lap = null,
-	units = true,
-) {
-	let speed = activity.average_speed;
-	if (lap) {
-		speed = lap.enhanced_avg_speed;
-	}
-	if (
-		activity.average_speed === null ||
-		activity.average_speed === undefined ||
-		activity.average_speed < 0
-	)
-		return i18n.global.t("generalItems.labelNoData");
-	if (Number(unitSystem) === 1) {
-		if (
-			activity.activity_type === 4 ||
-			activity.activity_type === 5 ||
-			activity.activity_type === 6 ||
-			activity.activity_type === 7 ||
-			activity.activity_type === 27
-		) {
-			if (units) {
-				return `${formatAverageSpeedImperial(speed)} ${i18n.global.t("generalItems.unitsKmH")}`;
-			}
-			return `${formatAverageSpeedMetric(speed)}`;
-		}
-		return i18n.global.t("generalItems.labelNoData");
-	}
-	if (
-		activity.activity_type === 4 ||
-		activity.activity_type === 5 ||
-		activity.activity_type === 6 ||
-		activity.activity_type === 7 ||
-		activity.activity_type === 27
-	) {
-		if (units) {
-			return `${formatAverageSpeedMetric(speed)} ${i18n.global.t("generalItems.unitsMph")}`;
-		}
-		return `${formatAverageSpeedImperial(speed)}`;
-	}
-	return i18n.global.t("generalItems.labelNoData");
+export function formatAverageSpeed(activity, unitSystem, lap = null, units = true) {
+  let speed = activity.average_speed
+  if (lap) {
+    speed = lap.enhanced_avg_speed
+  }
+  if (
+    activity.average_speed === null ||
+    activity.average_speed === undefined ||
+    activity.average_speed < 0
+  )
+    return i18n.global.t('generalItems.labelNoData')
+  if (Number(unitSystem) === 1) {
+    if (
+      activity.activity_type === 4 ||
+      activity.activity_type === 5 ||
+      activity.activity_type === 6 ||
+      activity.activity_type === 7 ||
+      activity.activity_type === 27
+    ) {
+      if (units) {
+        return `${formatAverageSpeedImperial(speed)} ${i18n.global.t('generalItems.unitsKmH')}`
+      }
+      return `${formatAverageSpeedMetric(speed)}`
+    }
+    return i18n.global.t('generalItems.labelNoData')
+  }
+  if (
+    activity.activity_type === 4 ||
+    activity.activity_type === 5 ||
+    activity.activity_type === 6 ||
+    activity.activity_type === 7 ||
+    activity.activity_type === 27
+  ) {
+    if (units) {
+      return `${formatAverageSpeedMetric(speed)} ${i18n.global.t('generalItems.unitsMph')}`
+    }
+    return `${formatAverageSpeedImperial(speed)}`
+  }
+  return i18n.global.t('generalItems.labelNoData')
 }
 
 /**
@@ -233,9 +253,9 @@ export function formatAverageSpeed(
  * @param {string} [separator=", "] - The separator to use between the date and time. Defaults to ", ".
  * @returns {string} The formatted date and time string, or a "Not Applicable" label if the input is invalid.
  */
-export function formatDateTime(dateTimeString, separator = ", ") {
-	if (!dateTimeString) return i18n.global.t("generalItems.labelNoData");
-	return `${formatDateMed(dateTimeString)}${separator}${formatTime(dateTimeString)}`;
+export function formatDateTime(dateTimeString, separator = ', ') {
+  if (!dateTimeString) return i18n.global.t('generalItems.labelNoData')
+  return `${formatDateMed(dateTimeString)}${separator}${formatTime(dateTimeString)}`
 }
 
 /**
@@ -246,9 +266,9 @@ export function formatDateTime(dateTimeString, separator = ", ") {
  * @returns {string} The formatted duration or a "Not Applicable" label if the input is invalid.
  */
 export function formatDuration(seconds) {
-	if (seconds === null || seconds === undefined || seconds < 0)
-		return i18n.global.t("generalItems.labelNoData");
-	return formatSecondsToMinutes(seconds);
+  if (seconds === null || seconds === undefined || seconds < 0)
+    return i18n.global.t('generalItems.labelNoData')
+  return formatSecondsToMinutes(seconds)
 }
 
 /**
@@ -260,22 +280,22 @@ export function formatDuration(seconds) {
  * @returns {string} The formatted distance string with appropriate units or a "No Data" label.
  */
 export function formatDistance(activity, unitSystem, lap = null) {
-	let distance = activity.distance;
-	if (lap) {
-		distance = lap.total_distance;
-	}
-	if (distance === null || distance === undefined || distance < 0)
-		return i18n.global.t("generalItems.labelNoData");
-	if (Number(unitSystem) === 1) {
-		if (!activityTypeIsSwimming(activity)) {
-			return `${metersToKm(distance)} ${i18n.global.t("generalItems.unitsKm")}`;
-		}
-		return `${distance} ${i18n.global.t("generalItems.unitsM")}`;
-	}
-	if (!activityTypeIsSwimming(activity)) {
-		return `${metersToMiles(distance)} ${i18n.global.t("generalItems.unitsMiles")}`;
-	}
-	return `${metersToYards(distance)} ${i18n.global.t("generalItems.unitsYards")}`;
+  let distance = activity.distance
+  if (lap) {
+    distance = lap.total_distance
+  }
+  if (distance === null || distance === undefined || distance < 0)
+    return i18n.global.t('generalItems.labelNoData')
+  if (Number(unitSystem) === 1) {
+    if (!activityTypeIsSwimming(activity)) {
+      return `${metersToKm(distance)} ${i18n.global.t('generalItems.unitsKm')}`
+    }
+    return `${distance} ${i18n.global.t('generalItems.unitsM')}`
+  }
+  if (!activityTypeIsSwimming(activity)) {
+    return `${metersToMiles(distance)} ${i18n.global.t('generalItems.unitsMiles')}`
+  }
+  return `${metersToYards(distance)} ${i18n.global.t('generalItems.unitsYards')}`
 }
 
 /**
@@ -290,15 +310,14 @@ export function formatDistance(activity, unitSystem, lap = null) {
  *                   or a "Not Applicable" label if the input is invalid.
  */
 export function formatHr(hr) {
-	if (hr === null || hr === undefined || hr <= 0)
-		return i18n.global.t("generalItems.labelNoData");
-	return `${Math.round(hr)} ${i18n.global.t("generalItems.unitsBpm")}`;
+  if (hr === null || hr === undefined || hr <= 0) return i18n.global.t('generalItems.labelNoData')
+  return `${Math.round(hr)} ${i18n.global.t('generalItems.unitsBpm')}`
 }
 
 export function formatPower(power) {
-	if (power === null || power === undefined || power <= 0)
-		return i18n.global.t("generalItems.labelNoData");
-	return `${Math.round(power)} ${i18n.global.t("generalItems.unitsWattsShort")}`;
+  if (power === null || power === undefined || power <= 0)
+    return i18n.global.t('generalItems.labelNoData')
+  return `${Math.round(power)} ${i18n.global.t('generalItems.unitsWattsShort')}`
 }
 
 /**
@@ -309,18 +328,22 @@ export function formatPower(power) {
  * @returns {string} The formatted elevation string with the appropriate unit, or a "not applicable" label if the input is null or undefined.
  */
 export function formatElevation(meters, unitSystem, units = true) {
-	if (meters === null || meters === undefined)
-		return i18n.global.t("generalItems.labelNoData");
-	if (Number(unitSystem) === 1) {
-		if (units) {
-			return `${meters} ${i18n.global.t("generalItems.unitsM")}`;
-		}
-		return `${meters}`;
-	}
-	if (units) {
-		return `${metersToFeet(meters)} ${i18n.global.t("generalItems.unitsFeet")}`;
-	}
-	return `${metersToFeet(meters)}`;
+  if (meters === null || meters === undefined) {
+    return i18n.global.t('generalItems.labelNoData')
+  }
+  const numericValue =
+    Number(unitSystem) === 1 ? parseFloat(meters) : parseFloat(metersToFeet(meters))
+  const formattedValue = numericValue.toLocaleString(undefined, { maximumFractionDigits: 0 })
+
+  if (!units) {
+    return formattedValue
+  }
+
+  const unitLabel =
+    Number(unitSystem) === 1
+      ? i18n.global.t('generalItems.unitsM')
+      : i18n.global.t('generalItems.unitsFeet')
+  return `${formattedValue} ${unitLabel}`
 }
 
 /**
@@ -330,9 +353,12 @@ export function formatElevation(meters, unitSystem, units = true) {
  * @returns {string} A formatted string representing the calorie value with units, or a "not applicable" label if the input is null or undefined.
  */
 export function formatCalories(calories) {
-	if (calories === null || calories === undefined)
-		return i18n.global.t("generalItems.labelNoData");
-	return `${calories} ${i18n.global.t("generalItems.unitsCalories")}`;
+  if (calories === null || calories === undefined) {
+    return i18n.global.t('generalItems.labelNoData')
+  }
+  const numericValue = parseFloat(calories)
+  const formattedValue = numericValue.toLocaleString(undefined, { maximumFractionDigits: 0 })
+  return `${formattedValue} ${i18n.global.t('generalItems.unitsCalories')}`
 }
 
 /**
@@ -343,34 +369,34 @@ export function formatCalories(calories) {
  *                      Defaults to ["fas", "dumbbell"] if the typeId is not found.
  */
 export function getIcon(typeId) {
-	const iconMap = {
-		1: ["fas", "person-running"],
-		2: ["fas", "person-running"],
-		3: ["fas", "person-running"],
-		4: ["fas", "person-biking"],
-		5: ["fas", "person-biking"],
-		6: ["fas", "person-biking"],
-		7: ["fas", "person-biking"],
-		8: ["fas", "person-swimming"],
-		9: ["fas", "person-swimming"],
-		11: ["fas", "person-walking"],
-		12: ["fas", "person-hiking"],
-		13: ["fas", "sailboat"], // Rowing icon might be better if available
-		14: ["fas", "hands-praying"], // Yoga icon might be better if available
-		15: ["fas", "person-skiing"],
-		16: ["fas", "person-skiing-nordic"],
-		17: ["fas", "person-snowboarding"],
-		18: ["fas", "repeat"],
-		21: ["fas", "table-tennis-paddle-ball"], // Racquet sports
-		22: ["fas", "table-tennis-paddle-ball"],
-		23: ["fas", "table-tennis-paddle-ball"],
-		24: ["fas", "table-tennis-paddle-ball"],
-		25: ["fas", "table-tennis-paddle-ball"],
-		26: ["fas", "table-tennis-paddle-ball"],
-		27: ["fas", "person-biking"],
-	};
+  const iconMap = {
+    1: ['fas', 'person-running'],
+    2: ['fas', 'person-running'],
+    3: ['fas', 'person-running'],
+    4: ['fas', 'person-biking'],
+    5: ['fas', 'person-biking'],
+    6: ['fas', 'person-biking'],
+    7: ['fas', 'person-biking'],
+    8: ['fas', 'person-swimming'],
+    9: ['fas', 'person-swimming'],
+    11: ['fas', 'person-walking'],
+    12: ['fas', 'person-hiking'],
+    13: ['fas', 'sailboat'], // Rowing icon might be better if available
+    14: ['fas', 'hands-praying'], // Yoga icon might be better if available
+    15: ['fas', 'person-skiing'],
+    16: ['fas', 'person-skiing-nordic'],
+    17: ['fas', 'person-snowboarding'],
+    18: ['fas', 'repeat'],
+    21: ['fas', 'table-tennis-paddle-ball'],
+    22: ['fas', 'table-tennis-paddle-ball'],
+    23: ['fas', 'table-tennis-paddle-ball'],
+    24: ['fas', 'table-tennis-paddle-ball'],
+    25: ['fas', 'table-tennis-paddle-ball'],
+    26: ['fas', 'table-tennis-paddle-ball'],
+    27: ['fas', 'person-biking']
+  }
 
-	return iconMap[typeId] || ["fas", "dumbbell"];
+  return iconMap[typeId] || ['fas', 'dumbbell']
 }
 
 /**
@@ -381,27 +407,54 @@ export function getIcon(typeId) {
  * it returns a localized "Not Applicable" label.
  */
 export function formatLocation(activity) {
-	const { town, city, country } = activity;
+  const { town, city, country } = activity
 
-	if (!town && !city && !country) {
-		return i18n.global.t("generalItems.labelNoData");
-	}
+  if (!town && !city && !country) {
+    return i18n.global.t('generalItems.labelNoData')
+  }
 
-	const locationParts = [];
-	if (town) {
-		locationParts.push(town);
-	} else if (city) {
-		locationParts.push(city);
-	}
+  const locationParts = []
+  if (town) {
+    locationParts.push(town)
+  } else if (city) {
+    locationParts.push(city)
+  }
 
-	if (country) {
-		// Add country, adding a comma only if town/city was already added
-		if (locationParts.length > 0) {
-			locationParts.push(`, ${country}`);
-		} else {
-			locationParts.push(country);
-		}
-	}
+  if (country) {
+    // Add country, adding a comma only if town/city was already added
+    if (locationParts.length > 0) {
+      locationParts.push(`, ${country}`)
+    } else {
+      locationParts.push(country)
+    }
+  }
 
-	return locationParts.join(""); // Join without extra spaces, comma is handled above
+  return locationParts.join('') // Join without extra spaces, comma is handled above
+}
+
+/**
+ * Formats a raw distance in meters based on the unit system.
+ *
+ * @param {number|null|undefined} meters - The distance in meters.
+ * @param {number|string} unitSystem - The unit system to use (1 for metric, otherwise imperial).
+ * @returns {string} The formatted distance string with appropriate units or a "No Data" label.
+ */
+export function formatRawDistance(meters, unitSystem) {
+  if (meters === null || meters === undefined || meters < 0) {
+    return i18n.global.t('generalItems.labelNoData')
+  }
+  const numericValue =
+    Number(unitSystem) === 1 ? parseFloat(metersToKm(meters)) : parseFloat(metersToMiles(meters))
+  // Assuming metersToKm and metersToMiles return numbers or strings that can be parsed to numbers
+  // Use toLocaleString for formatting, allow for some decimal places for precision if needed
+  const formattedValue = numericValue.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })
+
+  const unitLabel =
+    Number(unitSystem) === 1
+      ? i18n.global.t('generalItems.unitsKm')
+      : i18n.global.t('generalItems.unitsMiles')
+  return `${formattedValue} ${unitLabel}`
 }

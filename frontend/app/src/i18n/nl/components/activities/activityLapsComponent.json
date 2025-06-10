@@ -1,14 +1,14 @@
 {
-    "labelLapNumber": "Ronde",
-    "labelLapIntensity": "Intensiteit",
-    "labelLapDistance": "Afstand",
-    "labelLapTime": "Tijd",
-    "labelLapPace": "Tempo",
-    "labelLapSpeed": "Snelheid",
-    "labelLapElevation": "Hoogte",
-    "labelLapElev": "Hoogte",
-    "labelLapAvgHr": "Gem hartslag",
-    "labelLapHR": "HS",
-    "labelLapStrokeRate": "Stroke rate",
-    "labelLapSR": "SR"
+  "labelLapNumber": "Ronde",
+  "labelLapIntensity": "Intensiteit",
+  "labelLapDistance": "Afstand",
+  "labelLapTime": "Tijd",
+  "labelLapPace": "Tempo",
+  "labelLapSpeed": "Snelheid",
+  "labelLapElevation": "Hoogte",
+  "labelLapElev": "Hoogte",
+  "labelLapAvgHr": "Gem hartslag",
+  "labelLapHR": "HS",
+  "labelLapStrokeRate": "Stroke rate",
+  "labelLapSR": "SR"
 }

@@ -171,6 +171,7 @@
           <div class="col-lg-4 col-md-12">
             <h5>{{ $t('settingsUserProfileZone.subTitleShoeActivities') }}</h5>
             <form>
+              <!-- run zone -->
               <label class="form-label" for="settingsUserProfileRunGearSelect">{{
                 $t('settingsUserProfileZone.subTitleRun')
               }}</label>
@@ -187,6 +188,7 @@
                   {{ gear.nickname }}
                 </option>
               </select>
+              <!-- trail run zone -->
               <label class="form-label" for="settingsUserProfileTrailRunGearSelect">{{
                 $t('settingsUserProfileZone.subTitleTrailRun')
               }}</label>
@@ -203,6 +205,7 @@
                   {{ gear.nickname }}
                 </option>
               </select>
+              <!-- virtual run zone -->
               <label class="form-label" for="settingsUserProfileVirtualRunGearSelect">{{
                 $t('settingsUserProfileZone.subTitleVirtualRun')
               }}</label>
@@ -219,6 +222,7 @@
                   {{ gear.nickname }}
                 </option>
               </select>
+              <!-- walk zone -->
               <label class="form-label" for="settingsUserProfileWalkGearSelect">{{
                 $t('settingsUserProfileZone.subTitleWalk')
               }}</label>
@@ -235,6 +239,7 @@
                   {{ gear.nickname }}
                 </option>
               </select>
+              <!-- hike zone -->
               <label class="form-label" for="settingsUserProfileHikeGearSelect">{{
                 $t('settingsUserProfileZone.subTitleHike')
               }}</label>
@@ -256,6 +261,7 @@
           <div class="col-lg-4 col-md-12">
             <h5>{{ $t('settingsUserProfileZone.subTitleBikeActivities') }}</h5>
             <form>
+              <!-- bike ride zone -->
               <label class="form-label" for="settingsUserProfileRideGearSelect">{{
                 $t('settingsUserProfileZone.subTitleBike')
               }}</label>
@@ -272,6 +278,7 @@
                   {{ gear.nickname }}
                 </option>
               </select>
+              <!-- mountain bike ride zone -->
               <label class="form-label" for="settingsUserProfileMTBRideGearSelect">{{
                 $t('settingsUserProfileZone.subTitleMTBBike')
               }}</label>
@@ -288,6 +295,7 @@
                   {{ gear.nickname }}
                 </option>
               </select>
+              <!-- gravel ride zone -->
               <label class="form-label" for="settingsUserProfileGravelRideGearSelect">{{
                 $t('settingsUserProfileZone.subTitleGravelBike')
               }}</label>
@@ -304,6 +312,7 @@
                   {{ gear.nickname }}
                 </option>
               </select>
+              <!-- virtual ride zone -->
               <label class="form-label" for="settingsUserProfileVirtualRideGearSelect">{{
                 $t('settingsUserProfileZone.subTitleVirtualBike')
               }}</label>
@@ -325,6 +334,7 @@
           <div class="col-lg-4 col-md-12">
             <h5>{{ $t('settingsUserProfileZone.subTitleSwimActivities') }}</h5>
             <form>
+              <!-- open water swim zone -->
               <label class="form-label" for="settingsUserProfileOWSGearSelect">{{
                 $t('settingsUserProfileZone.subTitleSwim')
               }}</label>
@@ -346,6 +356,7 @@
           <div class="col-lg-4 col-md-12 mt-md-2">
             <h5>{{ $t('settingsUserProfileZone.subTitleRacquetActivities') }}</h5>
             <form>
+              <!-- racquet tennis zone -->
               <label class="form-label" for="settingsUserProfileTennisGearSelect">{{
                 $t('settingsUserProfileZone.subTitleTennis')
               }}</label>
@@ -364,6 +375,62 @@
               </select>
             </form>
           </div>
+          <div class="col-lg-4 col-md-12 mt-md-2">
+            <h5>{{ $t('settingsUserProfileZone.subTitleSnowActivities') }}</h5>
+            <form>
+              <!-- alpine sli zone -->
+              <label class="form-label" for="settingsUserProfileAlpineSkiGearSelect">{{
+                $t('settingsUserProfileZone.subTitleAlpineSki')
+              }}</label>
+              <select
+                class="form-select"
+                name="settingsUserProfileAlpineSkiGearSelect"
+                v-model="defaultAlpineSkiGear"
+                required
+              >
+                <option :value="null">
+                  {{ $t('settingsUserProfileZone.selectOptionNotDefined') }}
+                </option>
+                <option v-for="gear in skisGear" :key="gear.id" :value="gear.id">
+                  {{ gear.nickname }}
+                </option>
+              </select>
+              <!-- nordic ski zone -->
+              <label class="form-label" for="settingsUserProfileNordicSkiGearSelect">{{
+                $t('settingsUserProfileZone.subTitleNordicSki')
+              }}</label>
+              <select
+                class="form-select"
+                name="settingsUserProfileNordicSkiGearSelect"
+                v-model="defaultNordicSkiGear"
+                required
+              >
+                <option :value="null">
+                  {{ $t('settingsUserProfileZone.selectOptionNotDefined') }}
+                </option>
+                <option v-for="gear in skisGear" :key="gear.id" :value="gear.id">
+                  {{ gear.nickname }}
+                </option>
+              </select>
+              <!-- snowboard zone -->
+              <label class="form-label" for="settingsUserProfileSnowboardGearSelect">{{
+                $t('settingsUserProfileZone.subTitleSnowboard')
+              }}</label>
+              <select
+                class="form-select"
+                name="settingsUserProfileSnowboardGearSelect"
+                v-model="defaultSnowboardGear"
+                required
+              >
+                <option :value="null">
+                  {{ $t('settingsUserProfileZone.selectOptionNotDefined') }}
+                </option>
+                <option v-for="gear in snowboardGear" :key="gear.id" :value="gear.id">
+                  {{ gear.nickname }}
+                </option>
+              </select>
+            </form>
+          </div>
         </div>
       </div>
       <hr />
@@ -371,124 +438,273 @@
         <h4 class="mt-4">{{ $t('settingsUserProfileZone.titlePrivacy') }}</h4>
         <LoadingComponent v-if="isLoading" />
         <div class="row" v-else>
-          <div class="col">
+          <div class="col-lg-4 col-md-12">
             <!-- user default_activity_visibility -->
-            <p>
-              <font-awesome-icon :icon="['fas', 'eye-slash']" class="me-2" />
-              <b>{{ $t('settingsUserProfileZone.defaultActivityVisibility') }}: </b>
-              <span v-if="authStore.user.default_activity_visibility === 0">{{
-                $t('settingsUserProfileZone.privacyOption1')
-              }}</span>
-              <span v-if="authStore.user.default_activity_visibility === 1">{{
-                $t('settingsUserProfileZone.privacyOption2')
-              }}</span>
-              <span v-if="authStore.user.default_activity_visibility === 2">{{
-                $t('settingsUserProfileZone.privacyOption3')
-              }}</span>
-            </p>
-            <!-- Edit profile section -->
-            <div class="row">
-              <div class="col">
-                <a
-                  class="btn btn-primary w-100"
-                  href="#"
-                  role="button"
-                  data-bs-toggle="modal"
-                  data-bs-target="#editProfileModal"
-                  ><font-awesome-icon :icon="['fas', 'user-pen']" class="me-1" />{{
-                    $t('settingsUserProfileZone.buttonChangeDefaultActivityVisibility')
-                  }}</a
-                >
-              </div>
-
-              <div class="col">
-                <!-- Edit activities visibility section -->
-                <a
-                  class="btn btn-primary w-100"
-                  href="#"
-                  role="button"
-                  data-bs-toggle="modal"
-                  data-bs-target="#editUserActivitiesVisibilityModal"
-                  ><font-awesome-icon :icon="['fas', 'eye-slash']" class="me-1" />{{
-                    $t('settingsUserProfileZone.buttonChangeUserActivitiesVisibility')
-                  }}</a
-                >
-
-                <!-- modal retrieve Garmin Connect health data by days -->
-                <ModalComponentSelectInput
-                  modalId="editUserActivitiesVisibilityModal"
-                  :title="t('settingsUserProfileZone.buttonChangeUserActivitiesVisibility')"
-                  :selectFieldLabel="`${t('settingsUserProfileZone.changeUserActivitiesVisibilityModalVisibilityLabel')}`"
-                  :selectOptions="visibilityOptionsForModal"
-                  :selectCurrentOption="authStore.user.default_activity_visibility"
-                  :actionButtonType="`success`"
-                  :actionButtonText="
-                    t('settingsUserProfileZone.changeUserActivitiesVisibilityModalButton')
-                  "
-                  @optionToEmitAction="submitChangeUserActivitiesVisibility"
-                />
-              </div>
-              <!-- Import / Export Buttons -->
-               <!-- Export / Import -->
-            <div class="row mt-3">
-              <div class="col d-flex gap-3">
-                <button
-                  class="btn btn-primary w-50"
-                  :disabled="loadingExport"
-                  @click="handleExport"
-                >
-                  <font-awesome-icon :icon="['fas', 'file-export']" class="me-1" />
-                  <span v-if="loadingExport">{{ $t('generalItems.loading') }}...</span>
-                  <span v-else>{{ $t('settingsUserProfileZone.buttonExportData') }}</span>
-                </button>
-
-                <button
-                  class="btn btn-primary w-50"
-                  data-bs-toggle="modal"
-                  data-bs-target="#importDataModal"
-                  :disabled="loadingImport"
-                >
-                  <font-awesome-icon :icon="['fas', 'file-import']" class="me-1" />
-                  {{ $t('settingsUserProfileZone.buttonImportData') }}
-                </button>
-              </div>
-            </div>
-
-            <!-- Import Data Modal -->
-            <ModalComponent
-              modalId="importDataModal"
-              :title="$t('settingsUserProfileZone.modalImportTitle')"
-              :body="$t('settingsUserProfileZone.modalImportBody')"
-              actionButtonType="primary"
-              :actionButtonText="$t('settingsUserProfileZone.buttonImportData')"
-              :actionButtonDisabled="loadingImport || !importFile"
-              @submitAction="uploadImportFile"
+            <form>
+              <label for="activityVisibility">{{
+                $t('settingsUserProfileZone.defaultActivityVisibility')
+              }}</label>
+              <select
+                class="form-select"
+                name="activityVisibility"
+                v-model="activityVisibility"
+                required
+              >
+                <option :value="0">{{ $t('settingsUserProfileZone.privacyOption1') }}</option>
+                <option :value="1">{{ $t('settingsUserProfileZone.privacyOption2') }}</option>
+                <option :value="2">{{ $t('settingsUserProfileZone.privacyOption3') }}</option>
+              </select>
+            </form>
+            <!-- user hide_activity_start_time -->
+            <form>
+              <label for="activityStartTime">{{
+                $t('settingsUserProfileZone.defaultActivityStartTime')
+              }}</label>
+              <select
+                class="form-select"
+                name="activityStartTime"
+                v-model="activityStartTime"
+                required
+              >
+                <option :value="true">{{ $t('generalItems.yes') }}</option>
+                <option :value="false">{{ $t('generalItems.no') }}</option>
+              </select>
+            </form>
+            <!-- user hide_activity_location -->
+            <form>
+              <label for="activityLocation">{{
+                $t('settingsUserProfileZone.defaultActivityLocation')
+              }}</label>
+              <select
+                class="form-select"
+                name="activityLocation"
+                v-model="activityLocation"
+                required
+              >
+                <option :value="true">{{ $t('generalItems.yes') }}</option>
+                <option :value="false">{{ $t('generalItems.no') }}</option>
+              </select>
+            </form>
+            <!-- user hide_activity_map -->
+            <form>
+              <label for="activityMap">{{
+                $t('settingsUserProfileZone.defaultActivityMap')
+              }}</label>
+              <select class="form-select" name="activityMap" v-model="activityMap" required>
+                <option :value="true">{{ $t('generalItems.yes') }}</option>
+                <option :value="false">{{ $t('generalItems.no') }}</option>
+              </select>
+            </form>
+            <!-- user hide_activity_hr -->
+            <form>
+              <label for="activityHr">{{
+                $t('settingsUserProfileZone.defaultActivityHeartRate')
+              }}</label>
+              <select class="form-select" name="activityHr" v-model="activityHr" required>
+                <option :value="true">{{ $t('generalItems.yes') }}</option>
+                <option :value="false">{{ $t('generalItems.no') }}</option>
+              </select>
+            </form>
+          </div>
+          <div class="col-lg-4 col-md-12">
+            <!-- user hide_activity_power -->
+            <form>
+              <label for="activityPower">{{
+                $t('settingsUserProfileZone.defaultActivityPower')
+              }}</label>
+              <select class="form-select" name="activityPower" v-model="activityPower" required>
+                <option :value="true">{{ $t('generalItems.yes') }}</option>
+                <option :value="false">{{ $t('generalItems.no') }}</option>
+              </select>
+            </form>
+            <!-- user hide_activity_cadence -->
+            <form>
+              <label for="activityCadence">{{
+                $t('settingsUserProfileZone.defaultActivityCadence')
+              }}</label>
+              <select class="form-select" name="activityCadence" v-model="activityCadence" required>
+                <option :value="true">{{ $t('generalItems.yes') }}</option>
+                <option :value="false">{{ $t('generalItems.no') }}</option>
+              </select>
+            </form>
+            <!-- user hide_activity_elevation -->
+            <form>
+              <label for="activityElevation">{{
+                $t('settingsUserProfileZone.defaultActivityElevation')
+              }}</label>
+              <select
+                class="form-select"
+                name="activityElevation"
+                v-model="activityElevation"
+                required
+              >
+                <option :value="true">{{ $t('generalItems.yes') }}</option>
+                <option :value="false">{{ $t('generalItems.no') }}</option>
+              </select>
+            </form>
+            <!-- user hide_activity_speed -->
+            <form>
+              <label for="activitySpeed">{{
+                $t('settingsUserProfileZone.defaultActivitySpeed')
+              }}</label>
+              <select class="form-select" name="activitySpeed" v-model="activitySpeed" required>
+                <option :value="true">{{ $t('generalItems.yes') }}</option>
+                <option :value="false">{{ $t('generalItems.no') }}</option>
+              </select>
+            </form>
+            <!-- user hide_activity_pace -->
+            <form>
+              <label for="activityPace">{{
+                $t('settingsUserProfileZone.defaultActivityPace')
+              }}</label>
+              <select class="form-select" name="activityPace" v-model="activityPace" required>
+                <option :value="true">{{ $t('generalItems.yes') }}</option>
+                <option :value="false">{{ $t('generalItems.no') }}</option>
+              </select>
+            </form>
+          </div>
+          <div class="col-lg-4 col-md-12">
+            <!-- user hide_activity_laps -->
+            <form>
+              <label for="activityLaps">{{
+                $t('settingsUserProfileZone.defaultActivityLaps')
+              }}</label>
+              <select class="form-select" name="activityLaps" v-model="activityLaps" required>
+                <option :value="true">{{ $t('generalItems.yes') }}</option>
+                <option :value="false">{{ $t('generalItems.no') }}</option>
+              </select>
+            </form>
+            <!-- user hide_activity_workout_sets_steps -->
+            <form>
+              <label for="activitySetsSteps">{{
+                $t('settingsUserProfileZone.defaultActivitySetsSteps')
+              }}</label>
+              <select
+                class="form-select"
+                name="activitySetsSteps"
+                v-model="activitySetsSteps"
+                required
+              >
+                <option :value="true">{{ $t('generalItems.yes') }}</option>
+                <option :value="false">{{ $t('generalItems.no') }}</option>
+              </select>
+            </form>
+            <!-- user hide_activity_gear -->
+            <form>
+              <label for="activityGear">{{
+                $t('settingsUserProfileZone.defaultActivityGear')
+              }}</label>
+              <select class="form-select" name="activityGear" v-model="activityGear" required>
+                <option :value="true">{{ $t('generalItems.yes') }}</option>
+                <option :value="false">{{ $t('generalItems.no') }}</option>
+              </select>
+            </form>
+          </div>
+        </div>
+        <!-- Edit profile section -->
+        <div class="row mt-3">
+          <div class="col">
+            <!-- Edit activities visibility section -->
+            <a
+              class="btn btn-primary w-100"
+              href="#"
+              role="button"
+              data-bs-toggle="modal"
+              data-bs-target="#editUserActivitiesVisibilityModal"
+              ><font-awesome-icon :icon="['fas', 'eye-slash']" class="me-1" />{{
+                $t('settingsUserProfileZone.buttonChangeUserActivitiesVisibility')
+              }}</a
             >
+
+            <!-- modal retrieve Garmin Connect health data by days -->
+            <ModalComponentSelectInput
+              modalId="editUserActivitiesVisibilityModal"
+              :title="t('settingsUserProfileZone.buttonChangeUserActivitiesVisibility')"
+              :selectFieldLabel="`${t('settingsUserProfileZone.changeUserActivitiesVisibilityModalVisibilityLabel')}`"
+              :selectOptions="visibilityOptionsForModal"
+              :selectCurrentOption="authStore.user.default_activity_visibility"
+              :actionButtonType="`success`"
+              :actionButtonText="
+                t('settingsUserProfileZone.changeUserActivitiesVisibilityModalButton')
+              "
+              @optionToEmitAction="submitChangeUserActivitiesVisibility"
+            />
+          </div>
+        </div>
+      </div>
+      <!-- Import / Export Buttons -->
+      <div class="row mt-3">
+        <div class="col d-flex gap-3">
+          <button class="btn btn-primary w-50" :disabled="loadingExport" @click="handleExport">
+            <font-awesome-icon :icon="['fas', 'file-export']" class="me-1" />
+            <span v-if="loadingExport">{{ $t('generalItems.loading') }}...</span>
+            <span v-else>{{ $t('settingsUserProfileZone.buttonExportData') }}</span>
+          </button>
+
+          <button
+            class="btn btn-primary w-50"
+            data-bs-toggle="modal"
+            data-bs-target="#importDataModal"
+            :disabled="loadingImport"
+          >
+            <font-awesome-icon :icon="['fas', 'file-import']" class="me-1" />
+            {{ $t('settingsUserProfileZone.buttonImportData') }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Import Data Modal -->
+      <div
+        class="modal fade"
+        id="importDataModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="importDataModalLabel"
+        aria-describedby="importDataModalDescription"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="importDataModalLabel">
+                {{ $t('settingsUserProfileZone.modalImportTitle') }}
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <p id="importDataModalDescription">
+                {{ $t('settingsUserProfileZone.modalImportBody') }}
+              </p>
+
               <div class="mb-3">
                 <label for="importFileInput" class="form-label">
                   {{ $t('settingsUserProfileZone.selectFileLabel') }}
                 </label>
                 <input
                   id="importFileInput"
+                  ref="fileInput"
                   type="file"
                   accept=".zip"
                   @change="onImportFileSelected"
                   :disabled="loadingImport"
                   class="form-control"
-                  ref="fileInput"
                 />
                 <div class="form-text">
                   {{ $t('settingsUserProfileZone.fileFormatHelp') }}
                 </div>
               </div>
-              
+
               <!-- Selected file info -->
               <div v-if="importFile" class="alert alert-info">
                 <font-awesome-icon :icon="['fas', 'file-zipper']" class="me-2" />
                 <strong>{{ $t('settingsUserProfileZone.selectedFile') }}:</strong>
                 {{ importFile.name }} ({{ formatFileSize(importFile.size) }})
               </div>
-              
+
               <!-- Loading indicator -->
               <div v-if="loadingImport" class="text-center">
                 <div class="spinner-border text-primary" role="status">
@@ -496,9 +712,22 @@
                 </div>
                 <p class="mt-2">{{ $t('settingsUserProfileZone.importingData') }}...</p>
               </div>
-            </ModalComponent>
             </div>
-            
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                {{ $t('generalItems.cancel') }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                :disabled="loadingImport || !importFile"
+                @click="uploadImportFile"
+              >
+                <font-awesome-icon :icon="['fas', 'file-import']" class="me-1" />
+                <span v-if="loadingImport">{{ $t('generalItems.loading') }}...</span>
+                <span v-else>{{ $t('settingsUserProfileZone.buttonImportData') }}</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -506,7 +735,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref, onMounted, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 // Importing the services
@@ -527,232 +756,332 @@ import ModalComponent from '@/components/Modals/ModalComponent.vue'
 import LoadingComponent from '../GeneralComponents/LoadingComponent.vue'
 import ModalComponentSelectInput from '@/components/Modals/ModalComponentSelectInput.vue'
 
-export default {
-  components: {
-    UserAvatarComponent,
-    UsersAddEditUserModalComponent,
-    ModalComponent,
-    LoadingComponent,
-    ModalComponentSelectInput
-  },
-  setup() {
-    const authStore = useAuthStore()
-    const { t, locale } = useI18n()
-    const { feet, inches } = cmToFeetInches(authStore.user.height)
-    const isLoading = ref(false)
-    const isMounted = ref(false)
-    const allGears = ref(null)
-    const runGear = ref(null)
-    const bikeGear = ref(null)
-    const swimGear = ref(null)
-    const racquetGear = ref(null)
-    const defaultGear = ref(null)
-    const defaultRunGear = ref(null)
-    const defaultTrailRunGear = ref(null)
-    const defaultVirtualRunGear = ref(null)
-    const defaultWalkGear = ref(null)
-    const defaultHikeGear = ref(null)
-    const defaultRideGear = ref(null)
-    const defaultMTBRideGear = ref(null)
-    const defaultGravelRideGear = ref(null)
-    const defaultVirtualRideGear = ref(null)
-    const defaultOWSGear = ref(null)
-    const defaultTennisGear = ref(null)
+const authStore = useAuthStore()
+const { t, locale } = useI18n()
+const { feet, inches } = cmToFeetInches(authStore.user.height)
+const isLoading = ref(false)
+const isMounted = ref(false)
+const allGears = ref(null)
+const runGear = ref(null)
+const bikeGear = ref(null)
+const swimGear = ref(null)
+const racquetGear = ref(null)
+const skisGear = ref(null)
+const snowboardGear = ref(null)
+const defaultGear = ref(null)
+const defaultRunGear = ref(null)
+const defaultTrailRunGear = ref(null)
+const defaultVirtualRunGear = ref(null)
+const defaultWalkGear = ref(null)
+const defaultHikeGear = ref(null)
+const defaultRideGear = ref(null)
+const defaultMTBRideGear = ref(null)
+const defaultGravelRideGear = ref(null)
+const defaultVirtualRideGear = ref(null)
+const defaultOWSGear = ref(null)
+const defaultTennisGear = ref(null)
+const defaultAlpineSkiGear = ref(null)
+const defaultNordicSkiGear = ref(null)
+const defaultSnowboardGear = ref(null)
+const visibilityOptionsForModal = ref([
+  { id: 0, name: t('settingsUserProfileZone.privacyOption1') },
+  { id: 1, name: t('settingsUserProfileZone.privacyOption2') },
+  { id: 2, name: t('settingsUserProfileZone.privacyOption3') }
+])
+const activityVisibility = ref(authStore.user.default_activity_visibility)
+const activityStartTime = ref(authStore.user.hide_activity_start_time)
+const activityLocation = ref(authStore.user.hide_activity_location)
+const activityMap = ref(authStore.user.hide_activity_map)
+const activityHr = ref(authStore.user.hide_activity_hr)
+const activityPower = ref(authStore.user.hide_activity_power)
+const activityCadence = ref(authStore.user.hide_activity_cadence)
+const activityElevation = ref(authStore.user.hide_activity_elevation)
+const activitySpeed = ref(authStore.user.hide_activity_speed)
+const activityPace = ref(authStore.user.hide_activity_pace)
+const activityLaps = ref(authStore.user.hide_activity_laps)
+const activitySetsSteps = ref(authStore.user.hide_activity_workout_sets_steps)
+const activityGear = ref(authStore.user.hide_activity_gear)
 
-    const visibilityOptionsForModal = ref([
-      { id: 0, name: t('settingsUserProfileZone.privacyOption1') },
-      { id: 1, name: t('settingsUserProfileZone.privacyOption2') },
-      { id: 2, name: t('settingsUserProfileZone.privacyOption3') }
-    ])
+// export/import
+const loadingExport = ref(false)
+const loadingImport = ref(false)
+const importFile = ref(null)
+const fileInput = ref(null)
 
-    // export/import
-    const loadingExport = ref(false)
-    const loadingImport = ref(false)
-    let importFile = null
+function onImportFileSelected(e) {
+  importFile.value = e.target.files?.[0] || null
+}
 
-    function onImportFileSelected(e) {
-      importFile = e.target.files?.[0] || null
+async function uploadImportFile() {
+  if (!importFile.value) return
+  console.log('Uploading file:', importFile.value.name)
+  loadingImport.value = true
+  const form = new FormData()
+  form.append('file', importFile.value)
+  try {
+    const payload = await profile.importData(form)
+    push.success(t('settingsUserProfileZone.importSuccess', payload.imported))
+    // Clear the file and reset input
+    importFile.value = null
+    if (fileInput.value) {
+      fileInput.value.value = ''
     }
-
-    async function handleExport() {
-      loadingExport.value = true
-      try {
-        const blob = await profile.exportData()
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.href = url
-        a.download = `health_backup_${new Date().toISOString()}.zip`
-        a.click()
-        URL.revokeObjectURL(url)
-      } catch (e) {
-        push.error(t('settingsUserProfileZone.exportError', { error: e.message }))
-      } finally {
-        loadingExport.value = false
+    // Close modal
+    const modal = document.getElementById('importDataModal')
+    if (modal) {
+      const bootstrapModal = bootstrap.Modal.getInstance(modal)
+      if (bootstrapModal) {
+        bootstrapModal.hide()
       }
     }
-
-    async function uploadImportFile() {
-      if (!importFile) return
-      loadingImport.value = true
-      const form = new FormData()
-      form.append('file', importFile)
-      try {
-        const payload = await profile.importData(form)
-        push.success(t('settingsUserProfileZone.importSuccess', payload.imported))
-      } catch (e) {
-        push.error(t('settingsUserProfileZone.importError', { error: e.message }))
-      } finally {
-        loadingImport.value = false
-      }
-    }
-
-    async function submitDeleteUserPhoto() {
-      try {
-        // Delete the user photo from the server
-        await profile.deleteProfilePhoto()
-
-        // Update the user photo
-        const user = authStore.user
-        user.photo_path = null
-
-        // Save the user data in the local storage and in the store.
-        authStore.setUser(user, authStore.session_id, locale)
-
-        // Set the success message and show the success alert.
-        push.success(t('settingsUserProfileZone.userPhotoDeleteSuccess'))
-      } catch (error) {
-        // Show the error message
-        push.error(`${t('settingsUserProfileZone.userPhotoDeleteError')} - ${error}`)
-      }
-    }
-
-    async function updateDefaultGear() {
-      const data = {
-        id: defaultGear.value.id,
-        user_id: authStore.user.id,
-        run_gear_id: defaultRunGear.value,
-        trail_run_gear_id: defaultTrailRunGear.value,
-        virtual_run_gear_id: defaultVirtualRunGear.value,
-        walk_gear_id: defaultWalkGear.value,
-        hike_gear_id: defaultHikeGear.value,
-        ride_gear_id: defaultRideGear.value,
-        mtb_ride_gear_id: defaultMTBRideGear.value,
-        gravel_ride_gear_id: defaultGravelRideGear.value,
-        virtual_ride_gear_id: defaultVirtualRideGear.value,
-        ows_gear_id: defaultOWSGear.value,
-        tennis_gear_id: defaultTennisGear.value
-      }
-      try {
-        // Update the default gear in the DB
-        await userDefaultGear.editUserDefaultGear(data)
-
-        push.success(t('settingsUserProfileZone.successUpdateDefaultGear'))
-      } catch (error) {
-        push.error(t('settingsUserProfileZone.errorUpdateDefaultGear'))
-      }
-    }
-
-    async function submitChangeUserActivitiesVisibility(visibility) {
-      try {
-        await activities.editUserActivitiesVisibility(visibility)
-
-        // Show the success alert.
-        push.success(t('settingsUserProfileZone.successUpdateUserActivitiesVisibility'))
-      } catch (error) {
-        // If there is an error, show the error alert.
-        push.error(`${t('settingsUserProfileZone.errorUpdateUserActivitiesVisibility')} - ${error}`)
-      }
-    }
-
-    onMounted(async () => {
-      isLoading.value = true
-      try {
-        allGears.value = await gears.getGears()
-        runGear.value = allGears.value.filter((gear) => gear.gear_type === 2)
-        bikeGear.value = allGears.value.filter((gear) => gear.gear_type === 1)
-        swimGear.value = allGears.value.filter((gear) => gear.gear_type === 3)
-        racquetGear.value = allGears.value.filter((gear) => gear.gear_type === 4)
-
-        try {
-          defaultGear.value = await userDefaultGear.getUserDefaultGear()
-          defaultRunGear.value = defaultGear.value.run_gear_id
-          defaultTrailRunGear.value = defaultGear.value.trail_run_gear_id
-          defaultVirtualRunGear.value = defaultGear.value.virtual_run_gear_id
-          defaultWalkGear.value = defaultGear.value.walk_gear_id
-          defaultHikeGear.value = defaultGear.value.hike_gear_id
-          defaultRideGear.value = defaultGear.value.ride_gear_id
-          defaultMTBRideGear.value = defaultGear.value.mtb_ride_gear_id
-          defaultGravelRideGear.value = defaultGear.value.gravel_ride_gear_id
-          defaultVirtualRideGear.value = defaultGear.value.virtual_ride_gear_id
-          defaultOWSGear.value = defaultGear.value.ows_gear_id
-          defaultTennisGear.value = defaultGear.value.tennis_gear_id
-        } catch (error) {
-          // If there is an error, set the error message and show the error alert.
-          push.error(`${t('settingsUserProfileZone.errorUnableToGetDefaultGear')} - ${error}`)
-        }
-      } catch (error) {
-        // If there is an error, set the error message and show the error alert.
-        push.error(`${t('settingsUserProfileZone.errorUnableToGetGear')} - ${error}`)
-      } finally {
-        isLoading.value = false
-        await nextTick()
-        isMounted.value = true
-      }
-    })
-
-    // watchers
-    watch(
-      [
-        defaultRunGear,
-        defaultTrailRunGear,
-        defaultVirtualRunGear,
-        defaultWalkGear,
-        defaultHikeGear,
-        defaultRideGear,
-        defaultMTBRideGear,
-        defaultGravelRideGear,
-        defaultVirtualRideGear,
-        defaultOWSGear,
-        defaultTennisGear
-      ],
-      async () => {
-        if (!isMounted.value || isLoading.value) return
-        await updateDefaultGear()
-      },
-      { immediate: false }
-    )
-
-    return {
-      authStore,
-      t,
-      submitDeleteUserPhoto,
-      feet,
-      inches,
-      isLoading,
-      runGear,
-      bikeGear,
-      swimGear,
-      racquetGear,
-      defaultGear,
-      defaultRunGear,
-      defaultTrailRunGear,
-      defaultVirtualRunGear,
-      defaultWalkGear,
-      defaultHikeGear,
-      defaultRideGear,
-      defaultMTBRideGear,
-      defaultGravelRideGear,
-      defaultVirtualRideGear,
-      defaultOWSGear,
-      defaultTennisGear,
-      visibilityOptionsForModal,
-      submitChangeUserActivitiesVisibility,
-      loadingExport,
-      loadingImport,
-      onImportFileSelected,
-      handleExport,
-      uploadImportFile
-    }
+  } catch (e) {
+    push.error(t('settingsUserProfileZone.importError', { error: e.message }))
+  } finally {
+    loadingImport.value = false
   }
 }
+
+function handleModalShown() {
+  // Ensure focus is properly managed when modal opens
+  nextTick(() => {
+    const modal = document.getElementById('importDataModal')
+    if (modal) {
+      modal.removeAttribute('aria-hidden')
+    }
+  })
+}
+
+function handleModalHidden() {
+  // Clear file when modal is closed
+  importFile.value = null
+  if (fileInput.value) {
+    fileInput.value.value = ''
+  }
+}
+
+onMounted(() => {
+  // Set up modal event listeners
+  const modal = document.getElementById('importDataModal')
+  if (modal) {
+    modal.addEventListener('shown.bs.modal', handleModalShown)
+    modal.addEventListener('hidden.bs.modal', handleModalHidden)
+  }
+})
+
+function formatFileSize(bytes) {
+  if (bytes === 0) return '0 Bytes'
+  const k = 1024
+  const sizes = ['Bytes', 'KB', 'MB', 'GB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+}
+
+async function handleExport() {
+  loadingExport.value = true
+  try {
+    const blob = await profile.exportData()
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `health_backup_${new Date().toISOString()}.zip`
+    a.click()
+    URL.revokeObjectURL(url)
+  } catch (e) {
+    push.error(t('settingsUserProfileZone.exportError', { error: e.message }))
+  } finally {
+    loadingExport.value = false
+  }
+}
+
+async function submitDeleteUserPhoto() {
+  try {
+    // Delete the user photo from the server
+    await profile.deleteProfilePhoto()
+
+    // Update the user photo
+    const user = authStore.user
+    user.photo_path = null
+
+    // Save the user data in the local storage and in the store.
+    authStore.setUser(user, authStore.session_id, locale)
+
+    // Set the success message and show the success alert.
+    push.success(t('settingsUserProfileZone.userPhotoDeleteSuccess'))
+  } catch (error) {
+    // Show the error message
+    push.error(`${t('settingsUserProfileZone.userPhotoDeleteError')} - ${error}`)
+  }
+}
+
+async function updateDefaultGear() {
+  const data = {
+    id: defaultGear.value.id,
+    user_id: authStore.user.id,
+    run_gear_id: defaultRunGear.value,
+    trail_run_gear_id: defaultTrailRunGear.value,
+    virtual_run_gear_id: defaultVirtualRunGear.value,
+    walk_gear_id: defaultWalkGear.value,
+    hike_gear_id: defaultHikeGear.value,
+    ride_gear_id: defaultRideGear.value,
+    mtb_ride_gear_id: defaultMTBRideGear.value,
+    gravel_ride_gear_id: defaultGravelRideGear.value,
+    virtual_ride_gear_id: defaultVirtualRideGear.value,
+    ows_gear_id: defaultOWSGear.value,
+    tennis_gear_id: defaultTennisGear.value,
+    alpine_ski_gear_id: defaultAlpineSkiGear.value,
+    nordic_ski_gear_id: defaultNordicSkiGear.value,
+    snowboard_gear_id: defaultSnowboardGear.value
+  }
+  try {
+    // Update the default gear in the DB
+    await userDefaultGear.editUserDefaultGear(data)
+
+    push.success(t('settingsUserProfileZone.successUpdateDefaultGear'))
+  } catch (error) {
+    push.error(t('settingsUserProfileZone.errorUpdateDefaultGear'))
+  }
+}
+
+async function submitChangeUserActivitiesVisibility(visibility) {
+  try {
+    await activities.editUserActivitiesVisibility(visibility)
+
+    // Show the success alert.
+    push.success(t('settingsUserProfileZone.successUpdateUserActivitiesVisibility'))
+  } catch (error) {
+    // If there is an error, show the error alert.
+    push.error(`${t('settingsUserProfileZone.errorUpdateUserActivitiesVisibility')} - ${error}`)
+  }
+}
+
+async function updateUserPrivacySettings() {
+  const data = {
+    user_id: authStore.user.id,
+    default_activity_visibility: activityVisibility.value,
+    hide_activity_start_time: activityStartTime.value,
+    hide_activity_location: activityLocation.value,
+    hide_activity_map: activityMap.value,
+    hide_activity_hr: activityHr.value,
+    hide_activity_power: activityPower.value,
+    hide_activity_cadence: activityCadence.value,
+    hide_activity_elevation: activityElevation.value,
+    hide_activity_speed: activitySpeed.value,
+    hide_activity_pace: activityPace.value,
+    hide_activity_laps: activityLaps.value,
+    hide_activity_workout_sets_steps: activitySetsSteps.value,
+    hide_activity_gear: activityGear.value
+  }
+  try {
+    // Update the user privacy settings in the DB
+    await profile.editUserPrivacySettings(data)
+
+    // Update the user privacy settings in the store
+    authStore.user.default_activity_visibility = activityVisibility.value
+    authStore.user.hide_activity_start_time = activityStartTime.value
+    authStore.user.hide_activity_location = activityLocation.value
+    authStore.user.hide_activity_map = activityMap.value
+    authStore.user.hide_activity_hr = activityHr.value
+    authStore.user.hide_activity_power = activityPower.value
+    authStore.user.hide_activity_cadence = activityCadence.value
+    authStore.user.hide_activity_elevation = activityElevation.value
+    authStore.user.hide_activity_speed = activitySpeed.value
+    authStore.user.hide_activity_pace = activityPace.value
+    authStore.user.hide_activity_laps = activityLaps.value
+    authStore.user.hide_activity_workout_sets_steps = activitySetsSteps.value
+    authStore.user.hide_activity_gear = activityGear.value
+
+    push.success(t('settingsUserProfileZone.successUpdateUserPrivacySettings'))
+  } catch (error) {
+    push.error(`${t('settingsUserProfileZone.errorUpdateUserPrivacySettings')} - ${error}`)
+  }
+}
+
+onMounted(async () => {
+  isLoading.value = true
+  try {
+    allGears.value = await gears.getGears()
+    runGear.value = allGears.value.filter((gear) => gear.gear_type === 2)
+    bikeGear.value = allGears.value.filter((gear) => gear.gear_type === 1)
+    swimGear.value = allGears.value.filter((gear) => gear.gear_type === 3)
+    racquetGear.value = allGears.value.filter((gear) => gear.gear_type === 4)
+    skisGear.value = allGears.value.filter((gear) => gear.gear_type === 5)
+    snowboardGear.value = allGears.value.filter((gear) => gear.gear_type === 6)
+
+    try {
+      defaultGear.value = await userDefaultGear.getUserDefaultGear()
+      defaultRunGear.value = defaultGear.value.run_gear_id
+      defaultTrailRunGear.value = defaultGear.value.trail_run_gear_id
+      defaultVirtualRunGear.value = defaultGear.value.virtual_run_gear_id
+      defaultWalkGear.value = defaultGear.value.walk_gear_id
+      defaultHikeGear.value = defaultGear.value.hike_gear_id
+      defaultRideGear.value = defaultGear.value.ride_gear_id
+      defaultMTBRideGear.value = defaultGear.value.mtb_ride_gear_id
+      defaultGravelRideGear.value = defaultGear.value.gravel_ride_gear_id
+      defaultVirtualRideGear.value = defaultGear.value.virtual_ride_gear_id
+      defaultOWSGear.value = defaultGear.value.ows_gear_id
+      defaultTennisGear.value = defaultGear.value.tennis_gear_id
+      defaultAlpineSkiGear.value = defaultGear.value.alpine_ski_gear_id
+      defaultNordicSkiGear.value = defaultGear.value.nordic_ski_gear_id
+      defaultSnowboardGear.value = defaultGear.value.snowboard_gear_id
+    } catch (error) {
+      // If there is an error, set the error message and show the error alert.
+      push.error(`${t('settingsUserProfileZone.errorUnableToGetDefaultGear')} - ${error}`)
+    }
+  } catch (error) {
+    // If there is an error, set the error message and show the error alert.
+    push.error(`${t('settingsUserProfileZone.errorUnableToGetGear')} - ${error}`)
+  } finally {
+    isLoading.value = false
+    await nextTick()
+    isMounted.value = true
+  }
+})
+
+// watchers
+watch(
+  [
+    defaultRunGear,
+    defaultTrailRunGear,
+    defaultVirtualRunGear,
+    defaultWalkGear,
+    defaultHikeGear,
+    defaultRideGear,
+    defaultMTBRideGear,
+    defaultGravelRideGear,
+    defaultVirtualRideGear,
+    defaultOWSGear,
+    defaultTennisGear,
+    defaultAlpineSkiGear,
+    defaultNordicSkiGear,
+    defaultSnowboardGear
+  ],
+  async () => {
+    if (!isMounted.value || isLoading.value) return
+    await updateDefaultGear()
+  },
+  { immediate: false }
+)
+
+watch(
+  [
+    activityVisibility,
+    activityStartTime,
+    activityLocation,
+    activityMap,
+    activityHr,
+    activityPower,
+    activityCadence,
+    activityElevation,
+    activitySpeed,
+    activityPace,
+    activityLaps,
+    activitySetsSteps,
+    activityGear
+  ],
+  async () => {
+    if (!isMounted.value || isLoading.value) return
+    await updateUserPrivacySettings()
+  },
+  { immediate: false }
+)
 </script>

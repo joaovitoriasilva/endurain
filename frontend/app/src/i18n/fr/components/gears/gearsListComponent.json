@@ -1,14 +1,16 @@
 {
-    "gearListTypeLabel": "Type",
-    "gearListTypeOption1": "Vélo",
-    "gearListTypeOption2": "Chaussures",
-    "gearListTypeOption3": "Combinaison",
-    "gearListTypeOption4": "Racquet",
-    "gearListGearIsInactiveBadge": "Inactif",
-    "gearListGearFromStrava": "Strava",
-    "gearListGearFromGarminConnect": "Garmin Connect",
-    "gearListModalDeleteGearTitle": "Supprimer l'équipement",
-    "gearListModalDeleteGearBody": "Êtes-vous sûr de vouloir supprimer l'équipement ",
-    "gearListGearDeleteSuccessMessage": "Équipement supprimé avec succès",
-    "gearListGearDeleteErrorMessage": "Erreur lors de l'édition de l'équipement"
+  "gearListTypeLabel": "Type",
+  "gearListTypeOption1": "Vélo",
+  "gearListTypeOption2": "Chaussures",
+  "gearListTypeOption3": "Combinaison",
+  "gearListTypeOption4": "Racquet",
+  "gearListTypeOption5": "Skis",
+  "gearListTypeOption6": "Snowboard",
+  "gearListGearIsInactiveBadge": "Inactif",
+  "gearListGearFromStrava": "Strava",
+  "gearListGearFromGarminConnect": "Garmin Connect",
+  "gearListModalDeleteGearTitle": "Supprimer l'équipement",
+  "gearListModalDeleteGearBody": "Êtes-vous sûr de vouloir supprimer l'équipement ",
+  "gearListGearDeleteSuccessMessage": "Équipement supprimé avec succès",
+  "gearListGearDeleteErrorMessage": "Erreur lors de l'édition de l'équipement"
 }

@@ -132,6 +132,19 @@ def get_user_activities(
         for activity in activities:
             serialized_activities.append(activities_utils.serialize_activity(activity))
 
+            if activity.user_id != user_id:
+                if activity.hide_start_time:
+                    activity.start_time = None
+                    activity.end_time = None
+                if activity.hide_location:
+                    activity.city = None
+                    activity.town = None
+                    activity.country = None
+                if activity.hide_gear:
+                    activity.gear_id = None
+                    activity.strava_gear_id = None
+                    activity.garminconnect_gear_id = None
+
         # Return the activities
         return serialized_activities
 
@@ -170,6 +183,19 @@ def get_user_activities_by_user_id_and_garminconnect_gear_set(
         for activity in activities:
             activity = activities_utils.serialize_activity(activity)
 
+            if activity.user_id != user_id:
+                if activity.hide_start_time:
+                    activity.start_time = None
+                    activity.end_time = None
+                if activity.hide_location:
+                    activity.city = None
+                    activity.town = None
+                    activity.country = None
+                if activity.hide_gear:
+                    activity.gear_id = None
+                    activity.strava_gear_id = None
+                    activity.garminconnect_gear_id = None
+
         # Return the activities
         return activities
     except Exception as err:
@@ -197,6 +223,7 @@ def get_user_activities_with_pagination(
     name_search: str | None = None,
     sort_by: str | None = None,
     sort_order: str | None = None,
+    user_is_owner: bool = False,
 ) -> list[activities_schema.Activity] | None:
     try:
         # Mapping from frontend sort keys to database model fields
@@ -311,6 +338,18 @@ def get_user_activities_with_pagination(
         serialized_activities = []
         if activities:
             for activity in activities:
+                if not user_is_owner:
+                    if activity.hide_start_time:
+                        activity.start_time = None
+                        activity.end_time = None
+                    if activity.hide_location:
+                        activity.city = None
+                        activity.town = None
+                        activity.country = None
+                    if activity.hide_gear:
+                        activity.gear_id = None
+                        activity.strava_gear_id = None
+                        activity.garminconnect_gear_id = None
                 serialized_activities.append(
                     activities_utils.serialize_activity(activity)
                 )
@@ -364,6 +403,7 @@ def get_user_activities_per_timeframe(
     start: datetime,
     end: datetime,
     db: Session,
+    user_is_owner: bool = False,
 ):
     try:
         # Get the activities from the database
@@ -383,6 +423,19 @@ def get_user_activities_per_timeframe(
 
         for activity in activities:
             activity = activities_utils.serialize_activity(activity)
+
+            if not user_is_owner:
+                if activity.hide_start_time:
+                    activity.start_time = None
+                    activity.end_time = None
+                if activity.hide_location:
+                    activity.city = None
+                    activity.town = None
+                    activity.country = None
+                if activity.hide_gear:
+                    activity.gear_id = None
+                    activity.strava_gear_id = None
+                    activity.garminconnect_gear_id = None
 
         # Return the activities
         return activities
@@ -426,6 +479,17 @@ def get_user_following_activities_per_timeframe(
 
         for activity in activities:
             activity = activities_utils.serialize_activity(activity)
+            if activity.hide_start_time:
+                activity.start_time = None
+                activity.end_time = None
+            if activity.hide_location:
+                activity.city = None
+                activity.town = None
+                activity.country = None
+            if activity.hide_gear:
+                activity.gear_id = None
+                activity.strava_gear_id = None
+                activity.garminconnect_gear_id = None
 
         # Return the activities
         return activities
@@ -477,6 +541,17 @@ def get_user_following_activities_with_pagination(
         # Iterate and format the dates
         for activity in activities:
             activity = activities_utils.serialize_activity(activity)
+            if activity.hide_start_time:
+                activity.start_time = None
+                activity.end_time = None
+            if activity.hide_location:
+                activity.city = None
+                activity.town = None
+                activity.country = None
+            if activity.hide_gear:
+                activity.gear_id = None
+                activity.strava_gear_id = None
+                activity.garminconnect_gear_id = None
 
         # Return the activities
         return activities
@@ -556,6 +631,18 @@ def get_user_activities_by_gear_id_and_user_id(user_id: int, gear_id: int, db: S
         # Iterate and format the dates
         for activity in activities:
             activity = activities_utils.serialize_activity(activity)
+            if activity.user_id != user_id:
+                if activity.hide_start_time:
+                    activity.start_time = None
+                    activity.end_time = None
+                if activity.hide_location:
+                    activity.city = None
+                    activity.town = None
+                    activity.country = None
+                if activity.hide_gear:
+                    activity.gear_id = None
+                    activity.strava_gear_id = None
+                    activity.garminconnect_gear_id = None
 
         # Return the activities
         return activities
@@ -595,6 +682,19 @@ def get_activity_by_id_from_user_id_or_has_visibility(
             return None
 
         activity = activities_utils.serialize_activity(activity)
+
+        if activity.user_id != user_id:
+            if activity.hide_start_time:
+                activity.start_time = None
+                activity.end_time = None
+            if activity.hide_location:
+                activity.city = None
+                activity.town = None
+                activity.country = None
+            if activity.hide_gear:
+                activity.gear_id = None
+                activity.strava_gear_id = None
+                activity.garminconnect_gear_id = None
 
         # Return the activities
         return activity
@@ -638,12 +738,57 @@ def get_activity_by_id_if_is_public(activity_id: int, db: Session):
 
         activity = activities_utils.serialize_activity(activity)
 
+        if activity.hide_start_time:
+            activity.start_time = None
+            activity.end_time = None
+        if activity.hide_location:
+            activity.city = None
+            activity.town = None
+            activity.country = None
+        if activity.hide_gear:
+            activity.gear_id = None
+            activity.strava_gear_id = None
+            activity.garminconnect_gear_id = None
+
         # Return the activities
         return activity
     except Exception as err:
         # Log the exception
         core_logger.print_to_log(
             f"Error in get_activity_by_id_if_is_public: {err}", "error", exc=err
+        )
+        # Raise an HTTPException with a 500 Internal Server Error status code
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal Server Error",
+        ) from err
+
+
+def get_activity_by_id(activity_id: int, db: Session) -> activities_schema.Activity:
+    try:
+        # Get the activities from the database
+        activity = (
+            db.query(activities_models.Activity)
+            .filter(
+                activities_models.Activity.id == activity_id,
+            )
+            .first()
+        )
+
+        # Check if there are activities if not return None
+        if not activity:
+            return None
+
+        if not isinstance(activity.start_time, str):
+            activity = activities_utils.serialize_activity(activity)
+
+        # Return the activities
+        return activity
+
+    except Exception as err:
+        # Log the exception
+        core_logger.print_to_log(
+            f"Error in get_activity_by_id: {err}", "error", exc=err
         )
         # Raise an HTTPException with a 500 Internal Server Error status code
         raise HTTPException(
@@ -831,14 +976,16 @@ def create_activity(
         ) from err
 
 
-def edit_activity(user_id: int, activity: activities_schema.Activity, db: Session):
+def edit_activity(
+    user_id: int, activity_attributes: activities_schema.ActivityEdit, db: Session
+):
     try:
         # Get the activity from the database
         db_activity = (
             db.query(activities_models.Activity)
             .filter(
                 activities_models.Activity.user_id == user_id,
-                activities_models.Activity.id == activity.id,
+                activities_models.Activity.id == activity_attributes.id,
             )
             .first()
         )
@@ -851,11 +998,13 @@ def edit_activity(user_id: int, activity: activities_schema.Activity, db: Sessio
             )
 
         # Check if 'activity' is a Pydantic model instance and convert it to a dictionary
-        if isinstance(activity, BaseModel):
-            activity_data = activity.model_dump(exclude_unset=True)
+        if isinstance(activity_attributes, BaseModel):
+            activity_data = activity_attributes.model_dump(exclude_unset=True)
         else:
             activity_data = {
-                key: value for key, value in vars(activity).items() if value is not None
+                key: value
+                for key, value in vars(activity_attributes).items()
+                if value is not None
             }
 
         # Iterate over the fields and update the db_activity dynamically
@@ -864,6 +1013,8 @@ def edit_activity(user_id: int, activity: activities_schema.Activity, db: Sessio
 
         # Commit the transaction
         db.commit()
+    except HTTPException as http_err:
+        raise http_err
     except Exception as err:
         # Rollback the transaction
         db.rollback()
@@ -902,6 +1053,8 @@ def edit_user_activities_visibility(user_id: int, visibility: int, db: Session):
 
         # Commit the transaction
         db.commit()
+    except HTTPException as http_err:
+        raise http_err
     except Exception as err:
         # Rollback the transaction
         db.rollback()
@@ -966,6 +1119,8 @@ def delete_activity(activity_id: int, db: Session):
 
         # Commit the transaction
         db.commit()
+    except HTTPException as http_err:
+        raise http_err
     except Exception as err:
         # Rollback the transaction
         db.rollback()

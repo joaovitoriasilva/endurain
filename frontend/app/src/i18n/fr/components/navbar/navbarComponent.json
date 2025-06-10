@@ -1,11 +1,12 @@
 {
-    "search": "Rechercher",
-    "activities": "Activities",
-    "gear": "Équipement",
-    "health": "Santé",
-    "profile": "Profil",
-    "settings": "Paramètres",
-    "login": "Connexion",
-    "logout": "Déconnexion",
-    "errorLogout": "Erreur de déconnexion"
+  "search": "Rechercher",
+  "activities": "Activities",
+  "summary": "Summary",
+  "gear": "Équipement",
+  "health": "Santé",
+  "profile": "Profil",
+  "settings": "Paramètres",
+  "login": "Connexion",
+  "logout": "Déconnexion",
+  "errorLogout": "Erreur de déconnexion"
 }
