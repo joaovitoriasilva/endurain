@@ -1,10 +1,12 @@
 // Importing the auth store
 import { useAuthStore } from "@/stores/authStore";
+import { getConfig } from "@/utils/configUtils.js";
 
 let refreshTokenPromise = null;
 
-export const API_URL = `${import.meta.env.VITE_ENDURAIN_HOST}/api/v1/`;
-export const FRONTEND_URL = `${import.meta.env.VITE_ENDURAIN_HOST}/`;
+const config = await getConfig();
+export const API_URL = `${config?.ENDURAIN_HOST}/api/v1/`;
+export const FRONTEND_URL = `${config?.ENDURAIN_HOST}/`;
 
 async function fetchWithRetry(url, options) {
 	// Add CSRF token to headers for state-changing requests

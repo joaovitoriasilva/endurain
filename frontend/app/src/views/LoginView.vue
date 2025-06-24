@@ -50,6 +50,8 @@ import { useServerSettingsStore } from "@/stores/serverSettingsStore";
 // Importing the services for the login
 import { session } from "@/services/sessionService";
 import { profile } from "@/services/profileService";
+import {getConfig} from "@/utils/configUtils.js";
+const config = await getConfig();
 
 // Exporting the default object
 export default {
@@ -65,7 +67,7 @@ export default {
 		const serverSettingsStore = useServerSettingsStore();
 		const showPassword = ref(false);
 		const loginPhotoUrl = serverSettingsStore.serverSettings.login_photo_set
-			? `${import.meta.env.VITE_ENDURAIN_HOST}/server_images/login.png`
+			? `${config?.ENDURAIN_HOST}/server_images/login.png`
 			: null;
 
 		// Toggle password visibility

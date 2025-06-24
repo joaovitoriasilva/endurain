@@ -7,7 +7,9 @@
   
 <script>
 import { ref } from 'vue';
-  
+import {getConfig} from "@/utils/configUtils.js";
+const config = await getConfig();
+
 export default {
     props: {
         user: {
@@ -31,7 +33,7 @@ export default {
     emits: ['userDeleted'],
     setup(props) {
         const altText = ref('User Avatar');
-        const userPhotoUrl = ref(props.user?.photo_path ? `${import.meta.env.VITE_ENDURAIN_HOST}/${props.user.photo_path}` : null);
+        const userPhotoUrl = ref(props.user?.photo_path ? `${config?.ENDURAIN_HOST}/${props.user.photo_path}` : null);
         const alignTopValue = ref(props.alignTop);
 
         return {
