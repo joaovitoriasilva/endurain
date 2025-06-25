@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Getting started easy - Endurain documentation</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../../css/brands.min.css" rel="stylesheet">
+        <link href="../../css/solid.min.css" rel="stylesheet">
+        <link href="../../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" disabled>
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">Endurain documentation</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Hosting Guide</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="./" class="dropdown-item active" aria-current="page">Getting started easy</a>
+</li>
+                                    
+<li>
+    <a href="../advanced-started/" class="dropdown-item">Getting started advanced</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Integrations</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../integrations/3rd-party-apps/" class="dropdown-item">3rd party apps</a>
+</li>
+                                    
+<li>
+    <a href="../../integrations/3rd-party-services/" class="dropdown-item">3rd party services</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../developer-guide/" class="nav-link">Developer guide</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../gallery/" class="nav-link">Gallery</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../.." class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../advanced-started/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/joaovitoriasilva/endurain/edit/master/docs/getting-started/getting-started.md" class="nav-link"><i class="fa-brands fa-github"></i> Edit on GitHub</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                              <button id="theme-menu" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Toggle theme" class="nav-link dropdown-toggle">
+                                <i class="fa-solid fa-circle-half-stroke fa-fw"></i>
+                                <span class="d-lg-none ms-2">Toggle theme</span>
+                              </button>
+                              <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                  <button class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
+                                    <i class="fa-solid fa-sun fa-fw"></i>
+                                    <span class="ms-2">Light</span>
+                                    <i class="fa-solid fa-check ms-auto d-none"></i>
+                                  </button>
+                                </li>
+                                <li>
+                                  <button class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
+                                    <i class="fa-solid fa-moon fa-fw"></i>
+                                    <span class="ms-2">Dark</span>
+                                    <i class="fa-solid fa-check ms-auto d-none"></i>
+                                  </button>
+                                </li>
+                                <li>
+                                  <button class="dropdown-item d-flex align-items-center" data-bs-theme-value="auto" aria-pressed="true">
+                                    <i class="fa-solid fa-circle-half-stroke fa-fw"></i>
+                                    <span class="ms-2">Auto</span>
+                                    <i class="fa-solid fa-check ms-auto"></i>
+                                  </button>
+                                </li>
+                              </ul>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <script src="../../js/darkmode.js"></script>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#getting-started" class="nav-link">Getting started</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#prerequisites" class="nav-link">Prerequisites</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#installing-docker-and-caddy-reverse-proxy" class="nav-link">Installing docker and Caddy reverse proxy</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#create-directory-structure" class="nav-link">Create directory structure</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#docker-compose-deployment" class="nav-link">Docker compose Deployment</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#configure-caddy-as-reverse-proxy-and-get-ssl-cert-from-letsencrypt" class="nav-link">Configure Caddy as reverse proxy and get SSL cert from letsencrypt</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#how-to-update" class="nav-link">How to update</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#things-to-think-about" class="nav-link">Things to think about</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#default-credentials" class="nav-link">Default Credentials</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="getting-started">Getting started</h1>
+<hr />
+<p>Welcome to the guide for getting started on hosting your own production instance of Endurain. Like many other services, Endurain is easiest to get up and running trough Docker compose. It is possible to get Endurain up and running without a domain and reverse proxy, but this guide assumes you want to use a reverse proxy and your domain. Endurain can run on any computer that support OCI containers, but in this guide we are using Debian 13 (should also work with 12).</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li>Domain name pointed to your external IP address.</li>
+<li>Open FW rules to your server on port 443 and 80. (trough NAT if you are running ipv4)</li>
+<li>A computer/server with enough disk space for your activity files.</li>
+<li>API key from <a href="https://geocode.maps.co/">geocode.maps.co</a> (free, but need to register).</li>
+</ul>
+<h2 id="installing-docker-and-caddy-reverse-proxy">Installing docker and Caddy reverse proxy</h2>
+<p>We use apt to do this</p>
+<pre><code>sudo apt update -y
+sudo apt install docker.io docker-compose caddy -y
+</code></pre>
+<p>Confirm your user has the id 1000:</p>
+<pre><code>id
+</code></pre>
+<p>If you are not the user 1000, you need to set the <code>UID</code> and <code>GID</code> to your id in the .env file. But to keep this guide as easy to follow as possible, we will assume that you are user 1000.</p>
+<h2 id="create-directory-structure">Create directory structure</h2>
+<p>Lets use <code>/opt/endurain/</code> as the root directory for our project.</p>
+<pre><code class="language-bash">sudo mkdir /opt/endurain
+sudo chown 1000:1000 /opt/endurain
+mkdir -p \
+  /opt/endurain/app/{user_images,files/{bulk_import,processed},logs} \
+  /opt/endurain/postgres
+</code></pre>
+<h2 id="docker-compose-deployment">Docker compose Deployment</h2>
+<p>In this example of setting up Endurain, we will need two files. One <code>docker-compose.yml</code> and <code>.env</code>.</p>
+<ul>
+<li>docker-compose.yml tells your system how to set up the container, network and storage.</li>
+<li>.env holds our secrets and environment variables.</li>
+</ul>
+<p>Splitting up the setup like this make it easy to handle updates to the containers, without touching the secrets and other variables.</p>
+<h3 id="creating-the-docker-compose-and-env-file">Creating the docker-compose and .env file</h3>
+<p>To make it as easy as possible for selfhoster to get up and running examples of docker-compose.yml and .env is on the git repo. Here are links to the files on the repo:</p>
+<ul>
+<li><a href="https://raw.githubusercontent.com/joaovitoriasilva/endurain/refs/heads/master/docker-compose.yml.example">docker-compose.yml.example</a></li>
+<li><a href="https://raw.githubusercontent.com/joaovitoriasilva/endurain/refs/heads/master/env.example">.env.example</a></li>
+</ul>
+<pre><code class="language-bash">cd /opt/endurain
+wget https://raw.githubusercontent.com/joaovitoriasilva/endurain/refs/heads/master/docker-compose.yml.example
+wget https://raw.githubusercontent.com/joaovitoriasilva/endurain/refs/heads/master/env.example
+
+mv docker-compose.yml.example docker-compose.yml
+mv .env.example .env
+</code></pre>
+<p>Now we need to make changes to the files to reflect <em>your</em> environment. Inside docker-compose.yml there is not much we need to do. If you want to store the files another place then <code>/opt/endurain</code> this is the file you need to change.</p>
+<p>Here is an explaination on what you can set in the <code>.env</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Environment variable</th>
+<th>How to set it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DB_PASSWORD</td>
+<td>Run <code>openssl rand -hex 32</code> on a terminal to get a secret</td>
+</tr>
+<tr>
+<td>POSTGRES_PASSWORD</td>
+<td>Set the same value as DB_PASSWORD.</td>
+</tr>
+<tr>
+<td>SECRET_KEY</td>
+<td>Run <code>openssl rand -hex 32</code> on a terminal to get a secret</td>
+</tr>
+<tr>
+<td>FERNET_KEY</td>
+<td>Run <code>python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"</code> on a terminal to get a secret or go to <a href="https://fernetkeygen.com">https://fernetkeygen.com</a>. Example output is <code>7NfMMRSCWcoNDSjqBX8WoYH9nTFk1VdQOdZY13po53Y=</code></td>
+</tr>
+<tr>
+<td>GEOCODES_MAPS_API</td>
+<td><a href="https://geocode.maps.co/">Geocode maps</a> offers a free plan consisting of 1 Request/Second. Registration necessary.</td>
+</tr>
+<tr>
+<td>TZ</td>
+<td>Timezone definition. Insert your timezone. List of available time zones <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones">here</a>. Format <code>Europe/Lisbon</code> expected</td>
+</tr>
+<tr>
+<td>ENDURAIN_HOST</td>
+<td>https://endurain.yourdomain.com</td>
+</tr>
+<tr>
+<td>BEHIND_PROXY</td>
+<td>Change to true if behind reverse proxy</td>
+</tr>
+<tr>
+<td>POSTGRES_DB</td>
+<td>Postgres name for the database.</td>
+</tr>
+<tr>
+<td>POSTGRES_USER</td>
+<td>Postgres user for the database.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Please note:</strong></p>
+<p>POSTGRES_DB and POSTGRES_USER is values for the database. If you change it from endurain, you also need to set the environment variables for the app image. Please leave them as <code>endurain</code> if you are unsure.</p>
+<h3 id="start-the-stack">Start the stack</h3>
+<p>It is finally time to start the stack!</p>
+<pre><code class="language-bash">cd /opt/endurain
+sudo docker compose up -d
+</code></pre>
+<p>Check the log output:</p>
+<pre><code>docker compose logs -f
+</code></pre>
+<p>If you do not get any errors, continue to next step.</p>
+<h3 id="visit-the-site">Visit the site</h3>
+<ul>
+<li>Visit the site insecurly on http://<code>IP-OF-YOUR-SERVER</code>:8080</li>
+<li>We still can not login to the site, because the <code>ENDURAIN_HOST</code> doesn't match our local URL.</li>
+</ul>
+<h2 id="configure-caddy-as-reverse-proxy-and-get-ssl-cert-from-letsencrypt">Configure Caddy as reverse proxy and get SSL cert from letsencrypt</h2>
+<ul>
+<li>Before we configure caddy you need to set your DNS provider to point your domain to your external IP.</li>
+<li>You also need to open your firewall on port 443 and 80 to the server.</li>
+</ul>
+<p>We use caddy outside docker. This way Debian handles the updates (you just need to run <code>sudo apt get update -y</code> and <code>sudo apt get upgrade -y</code>)</p>
+<p>Caddy is configured in the file <code>/etc/caddy/Caddyfile</code></p>
+<p>Open the file in your favourite editor, delete the default text, and paste in this:</p>
+<pre><code>endurain.yourdomain.com {
+        reverse_proxy localhost:8080
+}
+</code></pre>
+<p>Restart caddy</p>
+<pre><code>sudo systemctl restart caddy
+</code></pre>
+<p>Check the ouput of caddy with:</p>
+<pre><code>sudo journalctl -u caddy
+</code></pre>
+<p>You should now be able to access your site on endurain.yourdomain.com</p>
+<p><strong>Log in with username: admin password: admin, and remember to change the password</strong></p>
+<p>🎉 <strong>Weee</strong> 🎉 You now have your own instance of Endurain up and running!</p>
+<h2 id="how-to-update">How to update</h2>
+<ul>
+<li>Take a backup of your files and db.</li>
+<li>Check for new releases of the container image <a href="https://github.com/joaovitoriasilva/endurain">here</a>. Read release notes carefully for breaking changes.</li>
+<li>Log on your server and run:</li>
+<li>Inside <code>/opt/endurain/docker-compose.yml</code>, change out the version tag (the version after <code>:</code>)</li>
+</ul>
+<pre><code class="language-bash">cd /opt/endurain
+sudo docker compose pull
+sudo docker compose up -d
+</code></pre>
+<p>The same is the case for Postgres. Check for breaking changes in release notes on <a href="https://www.postgresql.org/docs/release/">Postgres Website</a>.</p>
+<p>** It is generally pretty safe to upgrade postgres minor version f.eks 17.4 to 17.5, but major is often breaking change (example 17.2 to 18.1 )</p>
+<h2 id="things-to-think-about">Things to think about</h2>
+<p>You should implement backup strategy for the following directories:</p>
+<pre><code>/opt/endurain/app/user_images
+/opt/endurain/app/files/bulk_import
+/opt/endurain/app/files/processed
+/opt/endurain/app/logs
+</code></pre>
+<p>You also need to backup your postgres database. It is not good practice to just backup the volume <code>/opt/endurain/postgres</code> this might be corrupted if  the database is in the middle of a wright when the database goes down.</p>
+<h2 id="default-credentials">Default Credentials</h2>
+<ul>
+<li><strong>Username:</strong> admin  </li>
+<li><strong>Password:</strong> admin</li>
+</ul></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
