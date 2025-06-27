@@ -203,7 +203,7 @@ sudo apt install docker.io docker-compose caddy -y
 <pre><code class="language-bash">sudo mkdir /opt/endurain
 sudo chown 1000:1000 /opt/endurain
 mkdir -p \
-  /opt/endurain/app/{user_images,files/{bulk_import,processed},logs} \
+  /opt/endurain/app/{user_images,server_images,files,logs} \
   /opt/endurain/postgres
 </code></pre>
 <h2 id="docker-compose-deployment">Docker compose Deployment</h2>
@@ -331,8 +331,8 @@ sudo docker compose up -d
 <h2 id="things-to-think-about">Things to think about</h2>
 <p>You should implement backup strategy for the following directories:</p>
 <pre><code>/opt/endurain/app/user_images
-/opt/endurain/app/files/bulk_import
-/opt/endurain/app/files/processed
+/opt/endurain/app/server_images
+/opt/endurain/app/files
 /opt/endurain/app/logs
 </code></pre>
 <p>You also need to backup your postgres database. It is not good practice to just backup the volume <code>/opt/endurain/postgres</code> this might be corrupted if  the database is in the middle of a wright when the database goes down.</p>
