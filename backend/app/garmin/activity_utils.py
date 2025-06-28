@@ -58,11 +58,15 @@ def fetch_and_process_activities_by_dates(
             activity_id, user_id, db
         )
 
-        if activity_db:
-            # Log an informational event if the activity is already stored
+        # New: compare last modified timestamps
+        remote_modified_str = activity.get("lastModified") or activity.get("activityLastUpdateDate") or activity.get("updatedAt")
+        remote_modified = datetime.strptime(remote_modified_str, "%Y-%m-%d %H:%M:%S")
+
+        if activity_db and activity_db.last_modified >= remote_modified:
             core_logger.print_to_log(
-                f"User {user_id}: Activity {activity_id} already stored in the database"
+                f"User {user_id}: Activity {activity_id} is up-to-date, skipping."
             )
+            
             continue
 
         core_logger.print_to_log(f"User {user_id}: Processing activity {activity_id}")
