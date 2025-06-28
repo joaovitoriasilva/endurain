@@ -71,6 +71,9 @@ class Activity(Base):
     created_at = Column(
         DateTime, nullable=False, comment="Activity creation date (DATETIME)"
     )
+    last_modified = Column(
+        DateTime, nullable=True, comment="Last modified date (DATETIME)"
+    )
     elevation_gain = Column(Integer, nullable=True, comment="Elevation gain in meters")
     elevation_loss = Column(Integer, nullable=True, comment="Elevation loss in meters")
     pace = Column(
