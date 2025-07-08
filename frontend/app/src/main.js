@@ -1,6 +1,7 @@
 import { createApp } from "vue";
 import { createNotivue } from "notivue";
 import { createPinia } from "pinia";
+import Vue3TouchEvents from "vue3-touch-events";
 
 import { useAuthStore } from "./stores/authStore";
 import { useThemeStore } from "./stores/themeStore";
@@ -55,6 +56,7 @@ const app = createApp(App);
 
 app.use(createPinia());
 app.use(notivue);
+app.use(Vue3TouchEvents);
 app.component("font-awesome-icon", FontAwesomeIcon);
 app.use(router);
 app.use(i18n);
