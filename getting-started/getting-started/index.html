@@ -203,7 +203,7 @@ sudo apt install docker.io docker-compose caddy -y
 <pre><code class="language-bash">sudo mkdir /opt/endurain
 sudo chown 1000:1000 /opt/endurain
 mkdir -p \
-  /opt/endurain/app/{user_images,server_images,files,logs} \
+  /opt/endurain/backend/{user_images,server_images,files,logs} \
   /opt/endurain/postgres
 </code></pre>
 <h2 id="docker-compose-deployment">Docker compose Deployment</h2>
@@ -217,11 +217,11 @@ mkdir -p \
 <p>To make it as easy as possible for selfhoster to get up and running examples of docker-compose.yml and .env is on the git repo. Here are links to the files on the repo:</p>
 <ul>
 <li><a href="https://raw.githubusercontent.com/joaovitoriasilva/endurain/refs/heads/master/docker-compose.yml.example">docker-compose.yml.example</a></li>
-<li><a href="https://raw.githubusercontent.com/joaovitoriasilva/endurain/refs/heads/master/env.example">.env.example</a></li>
+<li><a href="https://raw.githubusercontent.com/joaovitoriasilva/endurain/refs/heads/master/.env.example">.env.example</a></li>
 </ul>
 <pre><code class="language-bash">cd /opt/endurain
 wget https://raw.githubusercontent.com/joaovitoriasilva/endurain/refs/heads/master/docker-compose.yml.example
-wget https://raw.githubusercontent.com/joaovitoriasilva/endurain/refs/heads/master/env.example
+wget https://raw.githubusercontent.com/joaovitoriasilva/endurain/refs/heads/master/.env.example
 
 mv docker-compose.yml.example docker-compose.yml
 mv .env.example .env
@@ -330,10 +330,10 @@ sudo docker compose up -d
 <p>** It is generally pretty safe to upgrade postgres minor version f.eks 17.4 to 17.5, but major is often breaking change (example 17.2 to 18.1 )</p>
 <h2 id="things-to-think-about">Things to think about</h2>
 <p>You should implement backup strategy for the following directories:</p>
-<pre><code>/opt/endurain/app/user_images
-/opt/endurain/app/server_images
-/opt/endurain/app/files
-/opt/endurain/app/logs
+<pre><code>/opt/endurain/backend/user_images
+/opt/endurain/backend/server_images
+/opt/endurain/backend/files
+/opt/endurain/backend/logs
 </code></pre>
 <p>You also need to backup your postgres database. It is not good practice to just backup the volume <code>/opt/endurain/postgres</code> this might be corrupted if  the database is in the middle of a wright when the database goes down.</p>
 <h2 id="default-credentials">Default Credentials</h2>
