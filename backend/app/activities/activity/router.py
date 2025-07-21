@@ -575,7 +575,7 @@ async def create_activity_with_bulk_import(
 
             if os.path.isfile(file_path):
                 # Log the file being processed
-                core_logger.print_to_log_and_console(f"Processing file: {file_path}")
+                core_logger.print_to_log_and_console(f"Queuing file for processing: {file_path}")
                 # Parse and store the activity
                 background_tasks.add_task(
                     activities_utils.parse_and_store_activity_from_file,
