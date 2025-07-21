@@ -367,14 +367,20 @@ def parse_and_store_activity_from_file(
                 return created_activities
             else:
                 return None
-    except HTTPException as http_err:
-        raise http_err
+    #except HTTPException as http_err:  
+        # This is causing a crash on the back end when the try fails.  Looks like we cannot raise an http exception in a background task.
+        #raise http_err
     except Exception as err:
         # Log the exception
-        core_logger.print_to_log(
-            f"Error in parse_and_store_activity_from_file - {str(err)}", "error"
-        )
-
+        core_logger.print_to_log_and_console(f"Bulk file import: Error while parsing {file_path} in parse_and_store_activity_from_file - {str(err)}", "error")
+        try:
+            bulk_import_dir = core_config.FILES_BULK_IMPORT_DIR
+            error_file_dir = os.path.join(bulk_import_dir, "import_errors")
+            os.makedirs(error_file_dir, exist_ok=True)
+            move_file(error_file_dir, os.path.basename(file_path), file_path)
+            core_logger.print_to_log_and_console(f"Bulk file import: File {file_path} moved to {error_file_dir}")
+        except:
+            core_logger.print_to_log_and_console(f"Bulk file import: Okay, we are having a bad day, boss.  Moving the error-producing file {file_path} failed.")
 
 def parse_and_store_activity_from_uploaded_file(
     token_user_id: int, file: UploadFile, db: Session
