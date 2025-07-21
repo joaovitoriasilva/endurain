@@ -266,6 +266,8 @@ def parse_and_store_activity_from_file(
     garminconnect_gear: dict = None,
 ):
     try:
+        core_logger.print_to_log_and_console(f"Bulk file import: Beginning processing of {file_path}")
+
         # Get file extension
         _, file_extension = os.path.splitext(file_path)
         garmin_connect_activity_id = None
@@ -310,7 +312,6 @@ def parse_and_store_activity_from_file(
                     split_records_by_activity = fit_utils.split_records_by_activity(
                         parsed_info
                     )
-
                     # Create activity objects for each activity in the file
                     if from_garmin:
                         created_activities_objects = fit_utils.create_activity_objects(
@@ -330,12 +331,10 @@ def parse_and_store_activity_from_file(
                             None,
                             db,
                         )
-
                     for activity in created_activities_objects:
                         # Store the activity in the database
                         created_activity = store_activity(activity, db)
                         created_activities.append(created_activity)
-
                     for index, activity in enumerate(created_activities):
                         idsToFileName += str(activity.id)  # Add the id to the string
                         # Add an underscore if it's not the last item
@@ -344,9 +343,8 @@ def parse_and_store_activity_from_file(
                                 "_"  # Add an underscore if it's not the last item
                             )
                 else:
-                    core_logger.print_to_log_and_console(
-                        f"File extension not supported: {file_extension}", "error"
-                    )
+                    # Should no longer get here due to screening of extensions in router.py
+                    core_logger.print_to_log_and_console(f"File extension not supported: {file_extension}", "error")
                 # Define the directory where the processed files will be stored
                 processed_dir = core_config.FILES_PROCESSED_DIR
 
@@ -357,17 +355,25 @@ def parse_and_store_activity_from_file(
                 move_file(processed_dir, new_file_name, file_path)
 
                 # Return the created activity
+                core_logger.print_to_log_and_console(f"Bulk file import: File successfully processed and moved. {file_path} - has become {new_file_name}")
                 return created_activities
             else:
                 return None
-    except HTTPException as http_err:
-        raise http_err
+    #except HTTPException as http_err:  
+        # This is causing a crash on the back end when the try fails.  Looks like we cannot raise an http exception in a background task.
+        #raise http_err
     except Exception as err:
         # Log the exception
-        core_logger.print_to_log(
-            f"Error in parse_and_store_activity_from_file - {str(err)}", "error"
-        )
-
+        core_logger.print_to_log_and_console(f"Bulk file import: Error while parsing {file_path} in parse_and_store_activity_from_file - {str(err)}", "error")
+        try:
+            # Move the exception-causing file to an import errors directory.
+            bulk_import_dir = core_config.FILES_BULK_IMPORT_DIR
+            error_file_dir = os.path.join(bulk_import_dir, "import_errors")
+            os.makedirs(error_file_dir, exist_ok=True)
+            move_file(error_file_dir, os.path.basename(file_path), file_path)
+            core_logger.print_to_log_and_console(f"Bulk file import: Due to import error, file {file_path} has been moved to {error_file_dir}")
+        except:
+            core_logger.print_to_log_and_console(f"Bulk file import: Okay, we are having a bad day, boss. Moving the error-producing file {file_path} to the import-error directory failed.")
 
 def parse_and_store_activity_from_uploaded_file(
     token_user_id: int, file: UploadFile, db: Session

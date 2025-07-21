@@ -565,6 +565,8 @@ async def create_activity_with_bulk_import(
     background_tasks: BackgroundTasks,
 ):
     try:
+        core_logger.print_to_log_and_console("Bulk import initiated.")
+
         # Ensure the 'bulk_import' directory exists
         bulk_import_dir = core_config.FILES_BULK_IMPORT_DIR
         os.makedirs(bulk_import_dir, exist_ok=True)
@@ -575,7 +577,7 @@ async def create_activity_with_bulk_import(
 
             if os.path.isfile(file_path):
                 # Log the file being processed
-                core_logger.print_to_log_and_console(f"Processing file: {file_path}")
+                core_logger.print_to_log_and_console(f"Queuing file for processing: {file_path}")
                 # Parse and store the activity
                 background_tasks.add_task(
                     activities_utils.parse_and_store_activity_from_file,
@@ -583,9 +585,9 @@ async def create_activity_with_bulk_import(
                     file_path,
                     db,
                 )
-
+        core_logger.print_to_log_and_console("Bulk import initiated for all files found in bulk_import directory. Processing files will continue in the background.")
         # Return a success message
-        return {"Bulk import initiated. Processing files in the background."}
+        return {"Bulk import initiated for all files found in bulk_import directory. Processing files will continue in the background."}
     except Exception as err:
         # Log the exception
         core_logger.print_to_log(
