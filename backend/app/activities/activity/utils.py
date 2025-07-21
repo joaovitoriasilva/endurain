@@ -366,6 +366,7 @@ def parse_and_store_activity_from_file(
         # Log the exception
         core_logger.print_to_log_and_console(f"Bulk file import: Error while parsing {file_path} in parse_and_store_activity_from_file - {str(err)}", "error")
         try:
+            # Move the exception-causing file to an import errors directory.
             bulk_import_dir = core_config.FILES_BULK_IMPORT_DIR
             error_file_dir = os.path.join(bulk_import_dir, "import_errors")
             os.makedirs(error_file_dir, exist_ok=True)
