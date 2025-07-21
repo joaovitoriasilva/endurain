@@ -266,6 +266,8 @@ def parse_and_store_activity_from_file(
     garminconnect_gear: dict = None,
 ):
     try:
+        core_logger.print_to_log_and_console(f"Bulk file import: Beginning processing of {file_path}")
+
         # Get file extension
         _, file_extension = os.path.splitext(file_path)
         garmin_connect_activity_id = None
@@ -287,6 +289,7 @@ def parse_and_store_activity_from_file(
                     user.id, db
                 )
             )
+            core_logger.print_to_log_and_console(f"Bulk file import: File opened - {file_path}") # Testing code
 
             # Parse the file
             parsed_info = parse_file(
@@ -296,6 +299,8 @@ def parse_and_store_activity_from_file(
                 file_path,
                 db,
             )
+            core_logger.print_to_log_and_console(f"Bulk file import: File parsed - {file_path}") # Testing code
+
 
             if parsed_info is not None:
                 created_activities = []
@@ -305,12 +310,13 @@ def parse_and_store_activity_from_file(
                     created_activity = store_activity(parsed_info, db)
                     created_activities.append(created_activity)
                     idsToFileName = idsToFileName + str(created_activity.id)
+                    core_logger.print_to_log_and_console(f"Bulk file import: GPX file parsed and stored - {file_path}") # Testing code
                 elif file_extension.lower() == ".fit":
                     # Split the records by activity (check for multiple activities in the file)
                     split_records_by_activity = fit_utils.split_records_by_activity(
                         parsed_info
                     )
-
+                    core_logger.print_to_log_and_console(f"Bulk file import: .fit file split - {file_path}") # Testing code
                     # Create activity objects for each activity in the file
                     if from_garmin:
                         created_activities_objects = fit_utils.create_activity_objects(
@@ -321,6 +327,7 @@ def parse_and_store_activity_from_file(
                             garminconnect_gear,
                             db,
                         )
+                        core_logger.print_to_log_and_console(f"Bulk file import: .fit from garmin processed - {file_path}") # Testing code
                     else:
                         created_activities_objects = fit_utils.create_activity_objects(
                             split_records_by_activity,
@@ -330,12 +337,12 @@ def parse_and_store_activity_from_file(
                             None,
                             db,
                         )
-
+                        core_logger.print_to_log_and_console(f"Bulk file import: .fit file of generic origin processed - {file_path}") # Testing code
                     for activity in created_activities_objects:
                         # Store the activity in the database
                         created_activity = store_activity(activity, db)
                         created_activities.append(created_activity)
-
+                        core_logger.print_to_log_and_console(f"Bulk file import: .fit file stored - {file_path}") # Testing code
                     for index, activity in enumerate(created_activities):
                         idsToFileName += str(activity.id)  # Add the id to the string
                         # Add an underscore if it's not the last item
@@ -344,9 +351,8 @@ def parse_and_store_activity_from_file(
                                 "_"  # Add an underscore if it's not the last item
                             )
                 else:
-                    core_logger.print_to_log_and_console(
-                        f"File extension not supported: {file_extension}", "error"
-                    )
+                    # Should no longer get here due to screening of extensions in router.py
+                    core_logger.print_to_log_and_console(f"File extension not supported: {file_extension}", "error")
                 # Define the directory where the processed files will be stored
                 processed_dir = core_config.FILES_PROCESSED_DIR
 
@@ -357,6 +363,7 @@ def parse_and_store_activity_from_file(
                 move_file(processed_dir, new_file_name, file_path)
 
                 # Return the created activity
+                core_logger.print_to_log_and_console(f"Bulk file import: File successfully processed and moved - {file_path} - has become {new_file_name}")
                 return created_activities
             else:
                 return None
