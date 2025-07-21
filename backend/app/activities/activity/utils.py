@@ -340,9 +340,11 @@ def parse_and_store_activity_from_file(
                         core_logger.print_to_log_and_console(f"Bulk file import: .fit file of generic origin processed - {file_path}") # Testing code
                     for activity in created_activities_objects:
                         # Store the activity in the database
+                        core_logger.print_to_log_and_console(f"Bulk file import: .fit file stored 0- {file_path}") # Testing code
                         created_activity = store_activity(activity, db)
+                        core_logger.print_to_log_and_console(f"Bulk file import: .fit file stored 1- {file_path}") # Testing code
                         created_activities.append(created_activity)
-                        core_logger.print_to_log_and_console(f"Bulk file import: .fit file stored - {file_path}") # Testing code
+                        core_logger.print_to_log_and_console(f"Bulk file import: .fit file stored 2- {file_path}") # Testing code
                     for index, activity in enumerate(created_activities):
                         idsToFileName += str(activity.id)  # Add the id to the string
                         # Add an underscore if it's not the last item
