@@ -585,7 +585,7 @@ async def create_activity_with_bulk_import(
                     file_path,
                     db,
                 )
-
+        core_logger.print_to_log_and_console("Bulk import initiated for all files found in bulk_import directory. Processing files will continue in the background.")
         # Return a success message
         return {"Bulk import initiated for all files found in bulk_import directory. Processing files will continue in the background."}
     except Exception as err:
