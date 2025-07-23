@@ -221,10 +221,34 @@
 <td>Required for internal communication and Strava. For Strava https must be used. Host or local ip (example: http://192.168.1.10:8080 or https://endurain.com)</td>
 </tr>
 <tr>
+<td>REVERSE_GEO_PROVIDER</td>
+<td>geocode</td>
+<td>Yes</td>
+<td>Defines reverse geo provider. Expects <a href="https://geocode.maps.co/">geocode</a> or photon. photon can be the <a href="https://photon.komoot.io">SaaS by komoot</a> or a self hosted version like a <a href="https://github.com/rtuszik/photon-docker">self hosted version</a></td>
+</tr>
+<tr>
+<td>PHOTON_API_HOST</td>
+<td>photon.komoot.io</td>
+<td>Yes</td>
+<td>API host for photon. By default it uses the <a href="https://photon.komoot.io">SaaS by komoot</a></td>
+</tr>
+<tr>
+<td>PHOTON_API_USE_HTTPS</td>
+<td>true</td>
+<td>Yes</td>
+<td>Protocol used by photon. By default uses HTTPS to be inline with what <a href="https://photon.komoot.io">SaaS by komoot</a> expects</td>
+</tr>
+<tr>
 <td>GEOCODES_MAPS_API</td>
-<td>No default set</td>
-<td><code>No</code></td>
+<td>changeme</td>
+<td>Yes</td>
 <td><a href="https://geocode.maps.co/">Geocode maps</a> offers a free plan consisting of 1 Request/Second. Registration necessary.</td>
+</tr>
+<tr>
+<td>GEOCODES_MAPS_RATE_LIMIT</td>
+<td>1</td>
+<td>yes</td>
+<td>Change this if you have a paid Geocode maps tier</td>
 </tr>
 <tr>
 <td>DB_TYPE</td>
@@ -421,32 +445,29 @@
 </thead>
 <tbody>
 <tr>
-<td><code>&lt;local_path&gt;/endurain/backend/files/processed:/app/backend/files</code></td>
-<td>Necessary for files persistence on container image updates</td>
-</tr>
-<tr>
-<td><code>&lt;local_path&gt;/endurain/backend/user_images:/app/backend/user_images</code></td>
-<td>Necessary for user image persistence on container image updates</td>
-</tr>
-<tr>
-<td><code>&lt;local_path&gt;/endurain/backend/server_images:/app/backend/server_images</code></td>
-<td>Necessary for server image persistence on container image updates</td>
-</tr>
-<tr>
 <td><code>&lt;local_path&gt;/endurain/backend/logs:/app/backend/logs</code></td>
 <td>Log files for the backend</td>
+</tr>
+<tr>
+<td><code>&lt;local_path&gt;/endurain/backend/data:/app/backend/data</code></td>
+<td>Necessary for image and activity files persistence on docker image update</td>
 </tr>
 </tbody>
 </table>
 <h2 id="bulk-import-and-file-upload">Bulk import and file upload</h2>
-<p>.fit files are preferred. I noticed that Strava/Garmin Connect process of converting .fit to .gpx introduces additional data to the activity file leading to minor variances in the data, like for example additional meters in distance and elevation gain.
-Some notes:</p>
+<p>To perform a bulk import:
+- Place .fit, .tcx, .gz and/or .gpx files into the activity_files/bulk_import folder. Create the folder if needed.
+- In the "Settings" menu select "Integrations".
+- Click "Import" next to "Bulk Import".</p>
+<p>.fit files are preferred. I noticed that Strava/Garmin Connect process of converting .fit to .gpx introduces additional data to the activity file leading to minor variances in the data, like for example additional 
+meters in distance and elevation gain. Some notes:</p>
 <ul>
 <li>After the files are processed, the files are moved to the processed folder</li>
 <li>GEOCODES API has a limit of 1 Request/Second on the free plan, so if you have a large number of files, it might not be possible to import all in the same action</li>
+<li>The bulk import currently only imports data present in the .fit, .tcx or .gpx files - no metadata or other media are imported.</li>
 </ul>
 <h2 id="image-personalization">Image personalization</h2>
-<p>It is possible (v0.10.0 or higher) to personalize the login image in the login page. To do that, map the server_images directory for image persistence on container updates and:
+<p>It is possible (v0.10.0 or higher) to personalize the login image in the login page. To do that, map the data/server_images directory for image persistence on container updates and:
  - Set the image in the server settings zone of the settings page
  - A square image is expected. Default one uses 1000px vs 1000px</p></div>
             </div>
