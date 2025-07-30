@@ -188,9 +188,12 @@
 <li>Open FW rules to your server on port 443 and 80. (trough NAT if you are running ipv4)</li>
 <li>A computer/server with enough disk space for your activity files.</li>
 <li>API key from <a href="https://geocode.maps.co/">geocode.maps.co</a> (free, but need to register).</li>
+<li>A Linux distro that has <code>docker compose</code> cli, and <code>caddy</code> in the repositories.</li>
 </ul>
 <h2 id="installing-docker-and-caddy-reverse-proxy">Installing docker and Caddy reverse proxy</h2>
-<p>We use apt to do this</p>
+<p>Note:
+If you have a old-ish distro (Ubuntu 22.04 and older) you need to add the repos for caddy and docker. Read how to do it for <a href="https://docs.docker.com/compose/install/linux/">docker</a>, and <a href="https://caddyserver.com/docs/install#debian-ubuntu-raspbian">caddy</a>. Fore newer distroes (Debian 13 and Ubuntu 24.04 you do not have to do this step).</p>
+<p>We use apt to do this:</p>
 <pre><code>sudo apt update -y
 sudo apt install docker.io docker-compose caddy -y
 </code></pre>
@@ -203,7 +206,7 @@ sudo apt install docker.io docker-compose caddy -y
 <pre><code class="language-bash">sudo mkdir /opt/endurain
 sudo chown 1000:1000 /opt/endurain
 mkdir -p \
-  /opt/endurain/app/{data,logs} \
+  /opt/endurain/backend/{data,logs} \
   /opt/endurain/postgres
 </code></pre>
 <h2 id="docker-compose-deployment">Docker compose Deployment</h2>
@@ -320,7 +323,7 @@ sudo docker compose up -d
 <li>Take a backup of your files and db.</li>
 <li>Check for new releases of the container image <a href="https://github.com/joaovitoriasilva/endurain">here</a>. Read release notes carefully for breaking changes.</li>
 <li>Log on your server and run:</li>
-<li>Inside <code>/opt/endurain/docker-compose.yml</code>, change out the version tag (the version after <code>:</code>)</li>
+<li>Inside <code>/opt/endurain/docker-compose.yml</code>, change out the version tag (the version after <code>:</code>). If you are running <code>:latest</code> tag on the docker image, you do not have to edit anything in the docker-compose.yml file. </li>
 </ul>
 <pre><code class="language-bash">cd /opt/endurain
 sudo docker compose pull
