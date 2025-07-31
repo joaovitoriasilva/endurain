@@ -20,15 +20,15 @@
 						<a href="#" class="btn btn-primary" role="button" @click="submitBulkImport">{{ $t("settingsImportZone.buttonBulkImport") }}</a>
 					</div>
 				</li>
-				<!-- Strava bulk-export import zone -->
+				<!-- Strava gear bulk-export import zone -->
 				<li class="list-group-item d-flex justify-content-between bg-body-tertiary px-0">
 					<div class="d-flex align-items-center">
 						<font-awesome-icon :icon="['fas', 'file-import']" size="2x" />
 						<div class="ms-3">
 							<div class="fw-bold">
-								{{ $t("settingsImportZone.stravaImportIntegrationTitle") }}
+								{{ $t("settingsImportZone.stravaGearImportIntegrationTitle") }}
 							</div>
-							{{ $t("settingsImportZone.stravaImportIntegrationBody") }}
+							{{ $t("settingsImportZone.stravaGearImportIntegrationBody") }}
 						</div>
 					</div>
 					<div class="d-flex align-items-center">
