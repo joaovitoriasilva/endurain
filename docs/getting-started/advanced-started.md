@@ -95,6 +95,12 @@ meters in distance and elevation gain. Some notes:
 
 Strava allows users to create a bulk export of their historical activity on the site.  This information is stored in a zip file, primarily as .csv files, GPS recording files (e.g., .gpx, .fit), and media files (e.g., .jpg, .png).
 
+Strava bulk import work occurs in the data/strava_import folder. Create the folder if needed.
+
+Recommended procedure
+1. Import, or manually create, any gear that was present in Strava.
+2. Import the activities and media.
+
 ### Importing gear from a Strava bulk export
 
 At the present time, importing bikes from a Strava bulk export is implemented as a beta feature - use with caution.  Components of bikes are not imported - just the bikes themselves. 
@@ -108,6 +114,24 @@ To perform an import of bikes:
 Ensure the file is named "bikes.csv" and has a header row with at least the fields 'Bike Name', 'Bike Brand', and 'Bike Model'.
 
 Please report any problems observed with bike imports on GitHub.
+
+### Importing activities and media from a Strava bulk export
+
+At the present time, importing activities and media from a Strava bulk export is implemented as a beta feature - use with caution. There is currently no mechanism to undo or revert an import.
+
+To perform an import of activities and media: 
+- Place the extracted contents of the Strava bulk export .zip file in the data/strava_import folder. Create the folder if needed. 
+- In the "Settings" menu select "Import".
+- Click "Bikes Import" next to "Strava bulk activity import".
+- Status messages about the import, including why any activities or media were not imported, can be found in the logs.
+
+The bulk import of Strava activities and media does not also import gear.  Please import, or create, any gear referred to in the activities before importing the activities, ensuring the nickname of the gear matches precisely.
+
+The structure of files expected is:
+- an activities.csv file in the data/strava_import folder (required)
+- activities files in the data/strava_import/activities folder (required)
+- a media.csv file in the data/strava_import folder (optional, if you want media imported)
+- media files in the data/strava_import/media folder (optional, if you want media imported)
 
 ## Image personalization
 
