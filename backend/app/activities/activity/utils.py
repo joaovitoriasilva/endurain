@@ -521,7 +521,7 @@ async def parse_and_store_activity_from_file(
                                     strava_media_dir = core_config.STRAVA_BULK_IMPORT_MEDIA_DIR
                                     _, media_file_base_name = os.path.split(media_item)
                                     media_path = os.path.join(strava_media_dir, media_file_base_name)
-                                    activity_media_crud.create_activity_media_from_strava_bulk_import(created_activity.id, media_path, db)
+                                    activity_media_crud.create_activity_media_from_strava_bulk_import(created_activity.id, media_file_base_name, media_path, db)
                         else:
                             # .fit files can create multiple activities - it is unclear how Strava links media to these.  Skipping for now.
                             core_logger.print_to_log_and_console(f"Media import section - Activity {file_base_name} is a .fit; media import not supported yet for .fit files.")
