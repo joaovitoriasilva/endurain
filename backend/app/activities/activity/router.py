@@ -748,6 +748,10 @@ async def strava_bulk_import(
                 strava_activities_dict = None
                 core_logger.print_to_log_and_console(f"WARNING: Strava activities CSV parsing failed.")
 
+        if strava_activities_dict = None  # Potentially add other test conditions that should trigger an import abort
+                core_logger.print_to_log_and_console(f"ABORTING IMPORT: Aborting strava bulk import due to improperly parsed CSV.")
+                return {"Strava import ABORTED due to lack of, or improperly parsed, activities.csv file."}
+
         # Grab list of supported file formats
         supported_file_formats = core_config.SUPPORTED_FILE_FORMATS
 
@@ -772,6 +776,9 @@ async def strava_bulk_import(
                     file_path,
                     websocket_manager,
                     db,
+                    False,
+                    None,
+                    strava_activities_dict,
                 )
 
         # Log a success message that explains processing will continue elsewhere.

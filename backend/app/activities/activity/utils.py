@@ -319,6 +319,8 @@ async def parse_and_store_activity_from_file(
     db: Session,
     from_garmin: bool = False,
     garminconnect_gear: dict = None,
+    strava_activities: dict = None,  # dictionary with info for a Strava bulk import - format strava_activities["filename"]["column header from Strava activities spreadsheet"]
+    strava_media: dict = None,  # dictionary containing information on media for a Strava bulk import
 ):
     try:
         core_logger.print_to_log_and_console(f"Bulk file import: Beginning processing of {file_path}")
