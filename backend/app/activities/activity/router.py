@@ -711,16 +711,26 @@ async def strava_bulk_import(
     try:
         core_logger.print_to_log_and_console("Strava bulk import initiated.")
 
-        # Ensure the 'strava_import' directory exists
+        # Ensure the 'strava_import' directory exists (.csv files will be here)
         strava_import_dir = core_config.STRAVA_BULK_IMPORT_DIR
         os.makedirs(strava_import_dir, exist_ok=True)
+
+        # Ensure the 'strava_import/activities' directory exists (activity files will be here)
+        strava_activities_import_dir = core_config.STRAVA_BULK_IMPORT_ACTIVITIES_DIR
+        os.makedirs(strava_activities_import_dir, exist_ok=True)
+
+        # Ensure the 'strava_import/media' directory exists (media files will be here)
+        strava_media_import_dir = core_config.STRAVA_BULK_IMPORT_MEDIA_DIR
+        os.makedirs(strava_media_import_dir, exist_ok=True)
+
+        # Grab and parse activities.csv file
 
         # Grab list of supported file formats
         supported_file_formats = core_config.SUPPORTED_FILE_FORMATS
 
-        # Iterate over each file in the 'strava_import' directory
-        for filename in os.listdir(strava_import_dir):
-            file_path = os.path.join(strava_import_dir, filename)
+        # Iterate over each file in the 'strava_import/activities' directory
+        for filename in os.listdir(strava_activities_import_dir):
+            file_path = os.path.join(strava_activities_import_dir, filename)
 
             # Check if file is one we can process
             _, file_extension = os.path.splitext(file_path)
