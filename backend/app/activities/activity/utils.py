@@ -29,6 +29,8 @@ import users.user_privacy_settings.schema as users_privacy_settings_schema
 
 import activities.activity_laps.crud as activity_laps_crud
 
+import activities.activity_media.crud as activity_media_crud
+
 import activities.activity_sets.crud as activity_sets_crud
 
 import activities.activity_streams.crud as activity_streams_crud
@@ -425,9 +427,14 @@ async def parse_and_store_activity_from_file(
                     # Add time of import and that this came from a Strava bulk import to dictionary
                     # parsed_info["activity"].import_info = XXXXX
 
-                    # Strava media - being ignored for now.
-                    # strava schema: strava_activities[file_base_name]["Media"] : string that is a "|" separated list of file names
+                    # Import media, if present.
                     # STILL TO DO
+                    # TO DO: Add a function to media/crud to bulk import media from Strava.  Will allow better long term maintenance than doing it here.
+                    # activity_media_crud.NEWFUNCTIONNAME
+                    # strava schema: strava_activities[file_base_name]["Media"] : string that is a "|" separated list of file names
+                    # Core functions in: backend/app/activities/activity_media/crud.py
+                    # See also upload function for file naming procedure in     backend/app/activities/activity_media/router.py
+                    # Key function: create_activity_media(activity_id: int, media_path: str, db: Session):
 
                     # wrap up the processing.
                     core_logger.print_to_log_and_console(f"Strava activities.csv information saved for activity {file_base_name}.")
