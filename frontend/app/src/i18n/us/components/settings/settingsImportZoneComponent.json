@@ -9,7 +9,7 @@
     "stravaGearImportBody": "Import gear from a Strava bulk export (BETA - use with caution)",
     "stravaBikesImportButton": "Bikes import",
     "loadingMessageStravaBikesImport": "Importing bikes",
-    "errorMessageUnableToImportBikes": "An error occurred while importing Strava bikes"
+    "errorMessageUnableToImportBikes": "An error occurred while importing Strava bikes",
     "stravaBulkImportTitle": "Strava bulk activity import",
     "stravaBulkImportBody": "Import activities and their media from a Strava bulk export (BETA - use with caution)",
     "stravaBulkImportButton": "Strava bulk import",
