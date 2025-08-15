@@ -95,12 +95,14 @@ meters in distance and elevation gain. Some notes:
 
 Strava allows users to create a bulk export of their historical activity on the site.  This information is stored in a zip file, primarily as .csv files, GPS recording files (e.g., .gpx, .fit), and media files (e.g., .jpg, .png).
 
+### Importing gear from a Strava bulk export
+
 At the present time, importing bikes from a Strava bulk export is implemented as a beta feature - use with caution.  Components of bikes are not imported - just the bikes themselves. 
 
 To perform an import of bikes: 
-- Place the bikes.csv file from a Strava bulk export into the data/activity_files/bulk_import folder. Create the folder if needed.
+- Place the bikes.csv file from a Strava bulk export into the data/strava_import folder. Create the folder if needed.
 - In the "Settings" menu select "Import".
-- Click "Bikes Import" next to "Strava import".
+- Click "Bikes Import" next to "Strava gear import".
 - Status messages about the import, including why any gear was not imported, can be found in the logs.
 
 Ensure the file is named "bikes.csv" and has a header row with at least the fields 'Bike Name', 'Bike Brand', and 'Bike Model'.

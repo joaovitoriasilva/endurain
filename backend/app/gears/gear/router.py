@@ -292,7 +292,7 @@ async def import_bikes_from_Strava_CSV(
         core_logger.print_to_log("Entering bike importing function")
 
         # CSV file location
-        bulk_import_dir = core_config.FILES_BULK_IMPORT_DIR
+        bulk_import_dir = core_config.STRAVA_BULK_IMPORT_DIR
         bikesfilename = "bikes.csv" # Hard coding filename for now (this is the filename Strava uses)
         bikes_file_path = os.path.join(bulk_import_dir, bikesfilename)
 
