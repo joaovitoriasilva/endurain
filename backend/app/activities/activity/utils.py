@@ -394,12 +394,13 @@ async def parse_and_store_activity_from_file(
                     #core_logger.print_to_log_and_console(f"Gear for this activity is: {activity_gear}") # Testing code
 
                     # Add gear to activity, if it is already present.
-                    if activity_gear in users_existing_gear_nickname_to_id: 
-                         #core_logger.print_to_log_and_console(f"Gear for this activity found in user's gear list") # Testing code
-                         #core_logger.print_to_log_and_console(f"Gear name is {activity_gear}, and gear ID is {users_existing_gear_nickname_to_id[activity_gear][0]}") # Testing code
-                         parsed_info["activity"].gear_id = users_existing_gear_nickname_to_id[activity_gear][0]
-                    else:
-                         core_logger.print_to_log_and_console(f"Gear for activity {file_base_name}, which activities.csv shows as {activity_gear}, was not found in the user's existing gear. Not adding gear to activity.") # Testing code
+                    if activity_gear and activity_gear is not None: 
+                        if activity_gear in users_existing_gear_nickname_to_id:
+                             #core_logger.print_to_log_and_console(f"Gear for this activity found in user's gear list") # Testing code
+                             #core_logger.print_to_log_and_console(f"Gear name is {activity_gear}, and gear ID is {users_existing_gear_nickname_to_id[activity_gear][0]}") # Testing code
+                             parsed_info["activity"].gear_id = users_existing_gear_nickname_to_id[activity_gear][0]
+                        else:
+                             core_logger.print_to_log_and_console(f"Gear for activity {file_base_name}, which activities.csv shows as {activity_gear}, was not found in the user's existing gear. Not adding gear to activity.") # Testing code
 
                     # Get Strava activity id 
                     #core_logger.print_to_log_and_console(f"parsed_info's activity ID was: {parsed_info["activity"].strava_activity_id}")     # Testing code
