@@ -710,6 +710,9 @@ async def strava_bulk_import(
     background_tasks: BackgroundTasks,
 ):
     try:
+        # Get time of import to pass to function for recording in import_data
+        # STILL TO DO
+
         core_logger.print_to_log_and_console("Strava bulk import initiated.")
 
         # Ensure the 'strava_import' directory exists (.csv files will be here)
@@ -752,6 +755,12 @@ async def strava_bulk_import(
                 core_logger.print_to_log_and_console(f"ABORTING IMPORT: Aborting strava bulk import due to improperly parsed CSV.")
                 return {"Strava import ABORTED due to lack of, or improperly parsed, activities.csv file."}
 
+        # Parse media file here
+        # STILL TO DO
+
+        # Possibly move gear list parsing to here to save time.
+        # STILL TO DO
+
         # Grab list of supported file formats
         supported_file_formats = core_config.SUPPORTED_FILE_FORMATS
 
@@ -780,6 +789,8 @@ async def strava_bulk_import(
                     None,
                     strava_activities_dict,
                 )
+                    # TO DO - pass strava media
+                    # TO DO - pass import time to save in dictionary
 
         # Log a success message that explains processing will continue elsewhere.
         core_logger.print_to_log_and_console("Strava bulk import initiated for all files found in the strava_import directory. Processing of files will continue in the background.")

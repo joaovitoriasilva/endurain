@@ -420,10 +420,14 @@ async def parse_and_store_activity_from_file(
                     # QUESTION: Do we need a flag for "we have imported this from a bulk import" to differentiate this from Strava sync'ing?
 
                     # ADD IMPORT FLAG TO ACTIVITY - allows us to know an activity derived from a Strava bulk import for rollbacks of an import.
+                    # import_info expects a dictionary.
                     # STILL TO DO
+                    # Add time of import and that this came from a Strava bulk import to dictionary
+                    # parsed_info["activity"].import_info = XXXXX
 
                     # Strava media - being ignored for now.
                     # strava schema: strava_activities[file_base_name]["Media"] : string that is a "|" separated list of file names
+                    # STILL TO DO
 
                     # wrap up the processing.
                     core_logger.print_to_log_and_console(f"Strava activities.csv information saved for activity {file_base_name}.")
