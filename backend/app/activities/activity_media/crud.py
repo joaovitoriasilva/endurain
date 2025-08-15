@@ -216,6 +216,8 @@ def create_activity_medias(
             detail="Internal Server Error",
         ) from err
 
+def create_activity_media_from_strava_bulk_import(activity_id: int, media_path_from_strava: str, db: Session):
+    core_logger.print_to_log_and_console(f"Media import: Beginning processing of {media_path_from_strava}")
 
 def edit_activity_media_media_path(
     activity_media_id: int, media_path: str, db: Session
