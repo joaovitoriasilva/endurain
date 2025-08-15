@@ -5,9 +5,14 @@
     "stravaImportbuttonActivities": "Activities import",
     "loadingMessageBulkImport": "Importing activities",
     "errorMessageUnableToImportActivities": "An error occurred while importing activities",
-    "stravaGearImportIntegrationTitle": "Strava gear import",
-    "stravaGearImportIntegrationBody": "Import geat from a Strava bulk export (BETA - use with caution)",
-    "stravaImportbuttonBikes": "Bikes import",
+    "stravaGearImportTitle": "Strava gear import",
+    "stravaGearImportBody": "Import gear from a Strava bulk export (BETA - use with caution)",
+    "stravaBikesImportButton": "Bikes import",
     "loadingMessageStravaBikesImport": "Importing bikes",
     "errorMessageUnableToImportBikes": "An error occurred while importing Strava bikes"
+    "stravaBulkImportTitle": "Strava bulk activity import",
+    "stravaBulkImportBody": "Import activities and their media from a Strava bulk export (BETA - use with caution)",
+    "stravaBulkImportButton": "Strava bulk import",
+    "loadingMessageStravaBulkImport": "Importing Strava activities from a bulk export",
+    "errorMessageUnableToBulkImport": "An error occurred while importing Strava activities from a bulk export"
 }

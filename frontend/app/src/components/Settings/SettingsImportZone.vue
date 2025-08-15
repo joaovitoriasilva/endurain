@@ -26,14 +26,30 @@
 						<font-awesome-icon :icon="['fas', 'file-import']" size="2x" />
 						<div class="ms-3">
 							<div class="fw-bold">
-								{{ $t("settingsImportZone.stravaGearImportIntegrationTitle") }}
+								{{ $t("settingsImportZone.stravaGearImportTitle") }}
 							</div>
-							{{ $t("settingsImportZone.stravaGearImportIntegrationBody") }}
+							{{ $t("settingsImportZone.stravaGearImportBody") }}
 						</div>
 					</div>
 					<div class="d-flex align-items-center">
 						<!-- import button -->
-						<a href="#" class="btn btn-primary" role="button" @click="submitStravaBikesImport">{{ $t("settingsImportZone.stravaImportbuttonBikes") }}</a>
+						<a href="#" class="btn btn-primary" role="button" @click="submitStravaBikesImport">{{ $t("settingsImportZone.stravaBikesImportButton") }}</a>
+					</div>
+				</li>
+				<!-- Strava activity and media bulk-export import zone -->
+				<li class="list-group-item d-flex justify-content-between bg-body-tertiary px-0">
+					<div class="d-flex align-items-center">
+						<font-awesome-icon :icon="['fas', 'file-import']" size="2x" />
+						<div class="ms-3">
+							<div class="fw-bold">
+								{{ $t("settingsImportZone.stravaBulkImportTitle") }}
+							</div>
+							{{ $t("settingsImportZone.stravaBulkImportBody") }}
+						</div>
+					</div>
+					<div class="d-flex align-items-center">
+						<!-- import button -->
+						<a href="#" class="btn btn-primary" role="button" @click="submitStravaBulkImport">{{ $t("settingsImportZone.stravaBulkImportButton") }}</a>
 					</div>
 				</li>
 			</ul>
@@ -80,6 +96,18 @@ async function submitStravaBikesImport() {
 		// If there is an error, show the error alert.
 		push.error(
 			`${t("settingsImportZone.errorMessageUnableToImportBikes")} - ${error}`,
+		);
+	}
+}
+async function submitStravaBulkImport() {
+	try {
+		await activities.stravaBulkImport();
+		// Show the loading alert.
+		push.info(t("settingsImportZone.loadingMessageStravaBulkImport"));
+	} catch (error) {
+		// If there is an error, show the error alert.
+		push.error(
+			`${t("settingsImportZone.errorMessageUnableToBulkImport")} - ${error}`,
 		);
 	}
 }
