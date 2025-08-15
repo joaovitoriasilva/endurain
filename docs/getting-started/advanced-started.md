@@ -130,8 +130,10 @@ The bulk import of Strava activities and media does not also import gear.  Pleas
 The structure of files expected is:
 - an activities.csv file in the data/strava_import folder (required)
 - activities files in the data/strava_import/activities folder (required)
-- a media.csv file in the data/strava_import folder (optional, if you want media imported)
+- a media.csv file in the data/strava_import folder (not used presently, but contains comments for media that may be imported in the future)
 - media files in the data/strava_import/media folder (optional, if you want media imported)
+
+Media are currently imported only for .gpx and .tcx files.
 
 ## Image personalization
 
