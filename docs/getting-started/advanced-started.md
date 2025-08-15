@@ -91,7 +91,7 @@ meters in distance and elevation gain. Some notes:
 - GEOCODES API has a limit of 1 Request/Second on the free plan, so if you have a large number of files, it might not be possible to import all in the same action
 - The bulk import currently only imports data present in the .fit, .tcx or .gpx files - no metadata or other media are imported.
 
-## Importing information from a Strava bulk export (BETA)
+## Importing data from a Strava bulk export (BETA)
 
 Strava allows users to create a bulk export of their historical activity on the site.  This information is stored in a zip file, primarily as .csv files, GPS recording files (e.g., .gpx, .fit), and media files (e.g., .jpg, .png).
 
@@ -125,15 +125,18 @@ To perform an import of activities and media:
 - Click "Bikes Import" next to "Strava bulk activity import".
 - Status messages about the import, including why any activities or media were not imported, can be found in the logs.
 
-The bulk import of Strava activities and media does not also import gear.  Please import, or create, any gear referred to in the activities before importing the activities, ensuring the nickname of the gear matches precisely.
+In addition to the base activity track and statistics, the Strava bulk import feature should also import each activity's title, description, activity type, gear (if it exists already in Endurain), Strava activity ID, and media. 
+
+The bulk import of Strava activities and media does not create gear.  Please import, or create, any gear referred to in the activities before importing the activities. Ensure the nickname of the gear matches precisely.
 
 The structure of files expected is:
 - an activities.csv file in the data/strava_import folder (required)
 - activities files in the data/strava_import/activities folder (required)
-- a media.csv file in the data/strava_import folder (not used presently, but contains comments for media that may be imported in the future)
 - media files in the data/strava_import/media folder (optional, if you want media imported)
 
 Media are currently imported only for .gpx and .tcx files.
+
+Comments associated with media are not imported (Endurain does not currently allow comments on media). FYI: Comments associated with media are stored in Strava's media.csv file.
 
 ## Image personalization
 
