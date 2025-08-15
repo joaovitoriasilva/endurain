@@ -639,7 +639,10 @@ async def create_activity_with_bulk_import(
     background_tasks: BackgroundTasks,
 ):
     try:
-        core_logger.print_to_log_and_console("Bulk import initiated.")
+        # Get time of import initiation to pass to function for recording in import_data
+        import_time = datetime.now().isoformat()
+
+        core_logger.print_to_log_and_console(f"Bulk import initiated at {import_time}.")
 
         # Ensure the 'bulk_import' directory exists
         bulk_import_dir = core_config.FILES_BULK_IMPORT_DIR
@@ -669,6 +672,7 @@ async def create_activity_with_bulk_import(
                     file_path,
                     websocket_manager,
                     db,
+                    import_initiated_time=import_time,
                 )
 
         # Log a success message that explains processing will continue elsewhere.
@@ -755,9 +759,6 @@ async def strava_bulk_import(
                 core_logger.print_to_log_and_console(f"ABORTING IMPORT: Aborting strava bulk import due to improperly parsed CSV.")
                 return {"Strava import ABORTED due to lack of, or improperly parsed, activities.csv file."}
 
-        # Parse media file here
-        # STILL TO DO
-
         # Possibly move gear list parsing to here to save time.
         # STILL TO DO
 
@@ -785,10 +786,8 @@ async def strava_bulk_import(
                     file_path,
                     websocket_manager,
                     db,
-                    False,
-                    None,
-                    strava_activities_dict,
-                    import_time,
+                    strava_activities=strava_activities_dict,
+                    import_initiated_time=import_time,
                 )
                     # TO DO - pass strava media
                     # TO DO - pass import time to save in dictionary

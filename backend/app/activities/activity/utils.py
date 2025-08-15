@@ -430,7 +430,15 @@ async def parse_and_store_activity_from_file(
                     # Strava media to be processed after activity has been created.
 
                     # wrap up the processing of activities.csv for now.
-                    core_logger.print_to_log_and_console(f"Strava activities.csv information saved for activity {file_base_name}. Images will be processed after activity db insertion.")
+                    core_logger.print_to_log_and_console(f"Bulk file import: Strava activities.csv metadata extracted for activity {file_base_name}.")
+            else:
+                # Not doing a Strava bulk import, so add that this is a basic bulk import to import info dict
+                import_dict = {}
+                import_dict["imported"]=True
+                import_dict["import_source"]="Basic bulk import"
+                import_dict["import_ISO_time"]=import_initiated_time
+                if parsed_info is not None: parsed_info["activity"].import_info = import_dict
+
 
             if parsed_info is not None:
                 created_activities = []
@@ -502,22 +510,22 @@ async def parse_and_store_activity_from_file(
                 # Deal with Strava bulk import media, if in Strava bulk import and media are present.
                 if strava_activities:
                     if strava_activities.get(file_base_name):
-                        core_logger.print_to_log_and_console(f"Media import section - Activity {file_base_name} found in strava activities dictionary.") # Testing >
+                        #core_logger.print_to_log_and_console(f"Media import section - Activity {file_base_name} found in strava activities dictionary.") # Testing >
                         if file_extension.lower() in (
                             ".gpx",
                             ".tcx",
                         ):
                             # A single activity was created - media addition is simple.
                             media_string = strava_activities[file_base_name]["Media"].strip()
-                            core_logger.print_to_log_and_console(f"Media import section - media STRING for {file_base_name} is --{media_string}--") # Testing code
+                            #core_logger.print_to_log_and_console(f"Media import section - media STRING for {file_base_name} is --{media_string}--") # Testing code
                             media_list = []
                             if media_string is None or not media_string:
-                                core_logger.print_to_log_and_console(f"Media import section - no media list in activities.csv for {file_base_name}") # Testing code
+                                core_logger.print_to_log_and_console(f"Media import section - no media list in activities.csv for {file_base_name}")
                             else:
                                 media_list = media_string.split('|')
-                                core_logger.print_to_log_and_console(f"Media import section - media list for {file_base_name} is {media_list}") # Testing code
+                                #core_logger.print_to_log_and_console(f"Media import section - media list for {file_base_name} is {media_list}") # Testing code
                                 for media_item in media_list:
-                                    core_logger.print_to_log_and_console(f"Media import section - queuing processing of {media_item} for activity {file_base_name}") # Testing code
+                                    #core_logger.print_to_log_and_console(f"Media import section - queuing processing of {media_item} for activity {file_base_name}") # Testing code
                                     strava_media_dir = core_config.STRAVA_BULK_IMPORT_MEDIA_DIR
                                     _, media_file_base_name = os.path.split(media_item)
                                     media_path = os.path.join(strava_media_dir, media_file_base_name)
