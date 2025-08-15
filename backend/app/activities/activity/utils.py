@@ -427,14 +427,7 @@ async def parse_and_store_activity_from_file(
                     # Add time of import and that this came from a Strava bulk import to dictionary
                     # parsed_info["activity"].import_info = XXXXX
 
-                    # Import media, if present.
-                    # STILL TO DO
-                    # TO DO: Add a function to media/crud to bulk import media from Strava.  Will allow better long term maintenance than doing it here.
-                    # activity_media_crud.NEWFUNCTIONNAME
-                    # strava schema: strava_activities[file_base_name]["Media"] : string that is a "|" separated list of file names
-                    # Core functions in: backend/app/activities/activity_media/crud.py
-                    # See also upload function for file naming procedure in     backend/app/activities/activity_media/router.py
-                    # Key function: create_activity_media(activity_id: int, media_path: str, db: Session):
+                    # Strava media to be processed after activity has been created.
 
                     # wrap up the processing.
                     core_logger.print_to_log_and_console(f"Strava activities.csv information saved for activity {file_base_name}.")
@@ -504,6 +497,36 @@ async def parse_and_store_activity_from_file(
                 # Move the file to the processed directory
                 move_file(processed_dir, new_file_name, file_path)
                 core_logger.print_to_log_and_console(f"Bulk file import: File successfully processed and moved. {file_path} - has become {new_file_name}")
+
+
+                # Deal with Strava bulk import media, if in Strava bulk import and media are present.
+                if strava_activities:
+                    if strava_activities.get(file_base_name):
+                        core_logger.print_to_log_and_console(f"Media import section - Activity {file_base_name} found in strava activities dictionary.") # Testing >
+                        if file_extension.lower() in (
+                            ".gpx",
+                            ".tcx",
+                        ):
+                            # A single activity was created - media addition is simple.
+                            media_string = strava_activities[file_base_name]["Media"].strip()
+                            core_logger.print_to_log_and_console(f"Media import section - media STRING for {file_base_name} is --{media_string}--") # Testing code
+                            media_list = []
+                            if media_string is None or not media_string:
+                                core_logger.print_to_log_and_console(f"Media import section - no media list in activities.csv for {file_base_name}") # Testing code
+                            else:
+                                media_list = media_string.split('|')
+                                core_logger.print_to_log_and_console(f"Media import section - media list for {file_base_name} is {media_list}") # Testing code
+                                for media_item in media_list:
+                                    core_logger.print_to_log_and_console(f"Media import section - queuing processing of {media_item} for activity {file_base_name}") # Testing code
+                                    strava_media_dir = core_config.STRAVA_BULK_IMPORT_MEDIA_DIR
+                                    _, media_file_base_name = os.path.split(media_item)
+                                    media_path = os.path.join(strava_media_dir, media_file_base_name)
+                                    activity_media_crud.create_activity_media_from_strava_bulk_import(created_activity.id, media_path, db)
+                        else:
+                            # .fit files can create multiple activities - it is unclear how Strava links media to these.  Skipping for now.
+                            core_logger.print_to_log_and_console(f"Media import section - Activity {file_base_name} is a .fit; media import not supported yet for .fit files.")
+
+
 
                 # Return the created activity
                 return created_activities
