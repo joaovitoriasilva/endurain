@@ -12,8 +12,10 @@ import core.database as core_database
 import core.dependencies as core_dependencies
 import core.logger as core_logger
 import core.config as core_config
+import gears.gear.crud as gears_crud
 import gears.gear.dependencies as gears_dependencies
 import session.security as session_security
+import users.user.crud as users_crud
 import users.user.dependencies as users_dependencies
 import garmin.activity_utils as garmin_activity_utils
 import strava.activity_utils as strava_activity_utils
@@ -759,8 +761,17 @@ async def strava_bulk_import(
                 core_logger.print_to_log_and_console(f"ABORTING IMPORT: Aborting strava bulk import due to improperly parsed CSV.")
                 return {"Strava import ABORTED due to lack of, or improperly parsed, activities.csv file."}
 
-        # Possibly move gear list parsing to here to save time.
-        # STILL TO DO
+        # Create gear list here, so it does not have to be done separately for every single activity
+        user = users_crud.get_user_by_id(token_user_id, db)
+        user_gear_list = gears_crud.get_gear_user(user.id, db)
+        if user_gear_list is None:
+                #User has no gear.
+                users_existing_gear_nickname_to_id = None
+        else:
+                #User has gear - build dictionary to facilitate gear to ID work during import.
+                users_existing_gear_nickname_to_id = {}
+                for item in user_gear_list:
+                        users_existing_gear_nickname_to_id[item.nickname] = [item.id]
 
         # Grab list of supported file formats
         supported_file_formats = core_config.SUPPORTED_FILE_FORMATS
@@ -788,6 +799,7 @@ async def strava_bulk_import(
                     db,
                     strava_activities=strava_activities_dict,
                     import_initiated_time=import_time,
+                    users_existing_gear_nickname_to_id=users_existing_gear_nickname_to_id,
                 )
                     # TO DO - pass strava media
                     # TO DO - pass import time to save in dictionary

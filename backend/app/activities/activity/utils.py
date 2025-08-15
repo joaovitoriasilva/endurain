@@ -326,6 +326,7 @@ async def parse_and_store_activity_from_file(
     garminconnect_gear: dict = None,
     strava_activities: dict = None,  # dictionary with info for a Strava bulk import - format strava_activities["filename"]["column header from Strava activities spreadsheet"]
     import_initiated_time: str = None,  # String contining the time the Strava bulk import was initiated.
+    users_existing_gear_nickname_to_id: dict = None,  # Dictionary containing gear nickname to ID, needed for Strava bulk import
 ):
     try:
         core_logger.print_to_log_and_console(f"Bulk file import: Beginning processing of {file_path}")
@@ -386,19 +387,6 @@ async def parse_and_store_activity_from_file(
                     #core_logger.print_to_log_and_console(f"parsed_info's description is now: {parsed_info["activity"].description}")  # Testing code
 
                     # Add gear to activity if the gear is already present
-                           # TO DO IN FUTURE - Figure out a way to not build this gear DB for every activity we import.  Maybe do it in router.py and pass it?
-                    # Get existing gear of user
-                    user_gear_list = gears_crud.get_gear_user(user.id, db)
-                    if user_gear_list is None:
-                         #User has no gear.
-                         users_existing_gear_nickname_to_id = None
-                    else:
-                         #User has gear - we will need to check for duplicates.  So build a list of gear nicknames to check against.
-                         users_existing_gear_nickname_to_id = {}
-                         for item in user_gear_list:
-                              users_existing_gear_nickname_to_id[item.nickname] = [item.id]
-                    #core_logger.print_to_log_and_console(f"User's gear list: {user_gear_list}") # Testing code
-                    #core_logger.print_to_log_and_console(f"User's gear nickname to ID dict: {users_existing_gear_nickname_to_id}") # Testing code
 
                     # Pull gear data from Strava file
                     activity_gear = None  # ensure prior loop values do not copy over.
@@ -418,7 +406,6 @@ async def parse_and_store_activity_from_file(
                     parsed_info["activity"].strava_activity_id = int(strava_activities[file_base_name]["Activity ID"])
                     #core_logger.print_to_log_and_console(f"parsed_info's activity ID is now: {parsed_info["activity"].strava_activity_id}")     # Testing code
                     # QUESTION: Will inserting the Strava Activity ID make the strava-syncing portion think this is synced from Strava?
-                    # QUESTION: Do we need a flag for "we have imported this from a bulk import" to differentiate this from Strava sync'ing?
 
                     # ADD IMPORT FLAG TO ACTIVITY - allows us to know an activity derived from a Strava bulk import for rollbacks of an import.
                     import_dict = {}
@@ -506,7 +493,6 @@ async def parse_and_store_activity_from_file(
                 move_file(processed_dir, new_file_name, file_path)
                 core_logger.print_to_log_and_console(f"Bulk file import: File successfully processed and moved. {file_path} - has become {new_file_name}")
 
-
                 # Deal with Strava bulk import media, if in Strava bulk import and media are present.
                 if strava_activities:
                     if strava_activities.get(file_base_name):
@@ -533,8 +519,6 @@ async def parse_and_store_activity_from_file(
                         else:
                             # .fit files can create multiple activities - it is unclear how Strava links media to these.  Skipping for now.
                             core_logger.print_to_log_and_console(f"Media import section - Activity {file_base_name} is a .fit; media import not supported yet for .fit files.")
-
-
 
                 # Return the created activity
                 return created_activities
