@@ -710,10 +710,10 @@ async def strava_bulk_import(
     background_tasks: BackgroundTasks,
 ):
     try:
-        # Get time of import to pass to function for recording in import_data
-        # STILL TO DO
+        # Get time of import initiation to pass to function for recording in import_data
+        import_time = datetime.now().isoformat()
 
-        core_logger.print_to_log_and_console("Strava bulk import initiated.")
+        core_logger.print_to_log_and_console(f"Strava bulk import initiated at {import_time}.")
 
         # Ensure the 'strava_import' directory exists (.csv files will be here)
         strava_import_dir = core_config.STRAVA_BULK_IMPORT_DIR
@@ -788,6 +788,7 @@ async def strava_bulk_import(
                     False,
                     None,
                     strava_activities_dict,
+                    import_time,
                 )
                     # TO DO - pass strava media
                     # TO DO - pass import time to save in dictionary

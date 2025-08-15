@@ -325,7 +325,7 @@ async def parse_and_store_activity_from_file(
     from_garmin: bool = False,
     garminconnect_gear: dict = None,
     strava_activities: dict = None,  # dictionary with info for a Strava bulk import - format strava_activities["filename"]["column header from Strava activities spreadsheet"]
-    strava_media: dict = None,  # dictionary containing information on media for a Strava bulk import
+    import_initiated_time: str = None,  # String contining the time the Strava bulk import was initiated.
 ):
     try:
         core_logger.print_to_log_and_console(f"Bulk file import: Beginning processing of {file_path}")
@@ -335,7 +335,7 @@ async def parse_and_store_activity_from_file(
 
         # Get pathless file name with extension, , as this is the dictionary key for Strava's bulk import activities dictionary.
         _, file_base_name = os.path.split(file_path)      
-        core_logger.print_to_log_and_console(f"File name with extension is (this is the dictionary key): {file_base_name}") #Testing code
+        #core_logger.print_to_log_and_console(f"File name with extension is (this is the dictionary key): {file_base_name}") #Testing code
 
         garmin_connect_activity_id = None
 
@@ -371,11 +371,10 @@ async def parse_and_store_activity_from_file(
 
             # Check if a Strava bulk import is in progress, and if so check to see if any additional information can be added to the activity.
             if strava_activities:
-                #core_logger.print_to_log_and_console(f"Entering Strava activities section for activity: {file_base_name}") # testing code
                 # Check if the file we are parsing has data in the Strava activities dictionary
                 if strava_activities.get(file_base_name):
-                    core_logger.print_to_log_and_console(f"Activity {file_base_name} found in strava activities dictionary.") # Testing code
-                    core_logger.print_to_log_and_console(f"Strava activities values for this: {strava_activities[file_base_name]}") # Testing code
+                    #core_logger.print_to_log_and_console(f"Activity {file_base_name} found in strava activities dictionary.") # Testing code
+                    #core_logger.print_to_log_and_console(f"Strava activities values for this: {strava_activities[file_base_name]}") # Testing code
                     #core_logger.print_to_log_and_console(f"parsed_info is {parsed_info} and its activity is {parsed_info["activity"]}") # Testing code
 
                     # Strava already puts title in the gpx file, which Endurain imports through the file parser. 
@@ -422,15 +421,16 @@ async def parse_and_store_activity_from_file(
                     # QUESTION: Do we need a flag for "we have imported this from a bulk import" to differentiate this from Strava sync'ing?
 
                     # ADD IMPORT FLAG TO ACTIVITY - allows us to know an activity derived from a Strava bulk import for rollbacks of an import.
-                    # import_info expects a dictionary.
-                    # STILL TO DO
-                    # Add time of import and that this came from a Strava bulk import to dictionary
-                    # parsed_info["activity"].import_info = XXXXX
+                    import_dict = {}
+                    import_dict["imported"]=True
+                    import_dict["import_source"]="Strava bulk import"
+                    import_dict["import_ISO_time"]=import_initiated_time
+                    parsed_info["activity"].import_info = import_dict
 
                     # Strava media to be processed after activity has been created.
 
-                    # wrap up the processing.
-                    core_logger.print_to_log_and_console(f"Strava activities.csv information saved for activity {file_base_name}.")
+                    # wrap up the processing of activities.csv for now.
+                    core_logger.print_to_log_and_console(f"Strava activities.csv information saved for activity {file_base_name}. Images will be processed after activity db insertion.")
 
             if parsed_info is not None:
                 created_activities = []
