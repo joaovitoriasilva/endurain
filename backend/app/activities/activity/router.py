@@ -18,6 +18,7 @@ import users.user.dependencies as users_dependencies
 import garmin.activity_utils as garmin_activity_utils
 import strava.activity_utils as strava_activity_utils
 import websocket.schema as websocket_schema
+import csv
 from fastapi import (
     APIRouter,
     BackgroundTasks,
@@ -723,7 +724,29 @@ async def strava_bulk_import(
         strava_media_import_dir = core_config.STRAVA_BULK_IMPORT_MEDIA_DIR
         os.makedirs(strava_media_import_dir, exist_ok=True)
 
-        # Grab and parse activities.csv file
+        # Importing data from Strava activities file.
+        # Using Python's core CSV module here - https://docs.python.org/3/library/csv.html
+        strava_activities_file = os.path.join(strava_import_dir, "activities.csv")
+        core_logger.print_to_log_and_console(f"Strava activities file should be at: {strava_activities_file}")
+        if os.path.isfile(strava_activities_file):
+            core_logger.print_to_log_and_console(f"Strava activities file present. Going to try to parse it.")
+            try:
+                strava_activities_dict = {}
+                with open(strava_activities_file, newline='') as csvfile:
+                    strava_activities_csv = csv.DictReader(csvfile)
+                    #count = 0  # Testing code
+                    # TO DO - Need to check if there is a 'Filename' header and cleanly abort if there is not one.
+                    for row in strava_activities_csv:    # Must process CSV file object while file is still open.
+                        _, strava_act_file_name = os.path.split(row['Filename'])  # strips path, returns filename with extension.
+                        strava_activities_dict[strava_act_file_name] = row  # Store activity information in a dictionary using filename as the key
+                        #core_logger.print_to_log_and_console(f"Whole filename: {row['Filename']} and split filename {strava_act_file_name}") # Testing code
+                        #count += 1  # Testing code
+                        #if count == 5: break # Testing code
+                core_logger.print_to_log_and_console(f"Strava activities csv file parsed, and it is {len(strava_activities_dict)} rows long")
+                #core_logger.print_to_log_and_console(f"Strava activities csv file example row: {strava_activities_dict["14048645234.gpx"]["Activity Description"]}")  # Testing line.
+            except:
+                strava_activities_dict = None
+                core_logger.print_to_log_and_console(f"WARNING: Strava activities CSV parsing failed.")
 
         # Grab list of supported file formats
         supported_file_formats = core_config.SUPPORTED_FILE_FORMATS
