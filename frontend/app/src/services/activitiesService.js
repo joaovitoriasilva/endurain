@@ -124,6 +124,9 @@ export const activities = {
 	bulkImportActivities() {
 		return fetchPostRequest("activities/create/bulkimport");
 	},
+	stravaBulkImport() {
+		return fetchPostRequest("activities/create/stravabulkimport");
+	},
 	editActivity(data) {
 		return fetchPutRequest("activities/edit", data);
 	},

@@ -687,6 +687,77 @@ async def create_activity_with_bulk_import(
         ) from err
 
 
+@router.post(
+    "/create/stravabulkimport",
+)
+async def strava_bulk_import(
+    token_user_id: Annotated[
+        int,
+        Depends(session_security.get_user_id_from_access_token),
+    ],
+    check_scopes: Annotated[
+        Callable, Security(session_security.check_scopes, scopes=["activities:write"])
+    ],
+    db: Annotated[
+        Session,
+        Depends(core_database.get_db),
+    ],
+    websocket_manager: Annotated[
+        websocket_schema.WebSocketManager,
+        Depends(websocket_schema.get_websocket_manager),
+    ],
+    background_tasks: BackgroundTasks,
+):
+    try:
+        core_logger.print_to_log_and_console("Strava bulk import initiated.")
+
+        # Ensure the 'strava_import' directory exists
+        strava_import_dir = core_config.STRAVA_BULK_IMPORT_DIR
+        os.makedirs(strava_import_dir, exist_ok=True)
+
+        # Grab list of supported file formats
+        supported_file_formats = core_config.SUPPORTED_FILE_FORMATS
+
+        # Iterate over each file in the 'strava_import' directory
+        for filename in os.listdir(strava_import_dir):
+            file_path = os.path.join(strava_import_dir, filename)
+
+            # Check if file is one we can process
+            _, file_extension = os.path.splitext(file_path)
+            if file_extension not in supported_file_formats:
+                core_logger.print_to_log_and_console(f"Skipping file {file_path} due to not having a supported file extension. Supported extensions are: {supported_file_formats}.")
+                # Might be good to notify the user, but background tasks cannot raise HTTPExceptions
+                continue
+
+            if os.path.isfile(file_path):
+                # Log the file being processed
+                core_logger.print_to_log_and_console(f"Queuing file for processing: {file_path}")
+                # Parse and store the activity
+                background_tasks.add_task(
+                    activities_utils.parse_and_store_activity_from_file,
+                    token_user_id,
+                    file_path,
+                    websocket_manager,
+                    db,
+                )
+
+        # Log a success message that explains processing will continue elsewhere.
+        core_logger.print_to_log_and_console("Strava bulk import initiated for all files found in the strava_import directory. Processing of files will continue in the background.")
+
+        # Return a success message
+        return {"Strava import initiated for all files found in the strava_import directory. Processing of files will continue in the background."}
+    except Exception as err:
+        # Log the exception
+        core_logger.print_to_log_and_console(
+            f"Error in strava_bulk_import: {err}", "error"
+        )
+        # Raise an HTTPException with a 500 Internal Server Error status code
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal Server Error",
+        ) from err
+
+
 @router.put(
     "/edit",
 )
