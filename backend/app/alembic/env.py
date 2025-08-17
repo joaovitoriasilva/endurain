@@ -13,6 +13,7 @@ import activities.activity_media.models
 import activities.activity_sets.models
 import activities.activity_streams.models
 import activities.activity_workout_steps.models
+import activities.activity_segments.models
 import followers.models
 import gears.gear.models
 import gears.gear_components.models

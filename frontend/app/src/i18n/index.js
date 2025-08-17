@@ -420,10 +420,16 @@ import usActivityBellowMPillsComponent from './us/components/activities/activity
 import usActivityLapsComponent from './us/components/activities/activityLapsComponent.json';
 import usActivityMandAbovePillsComponent from './us/components/activities/activityMandAbovePillsComponent.json';
 import usActivityMapComponent from './us/components/activities/activityMapComponent.json';
+import usActivitySegmentsComponent from './us/components/activities/activitySegmentsComponent.json';
 import usActivitySummaryComponent from './us/components/activities/activitySummaryComponent.json';
 import usActivityWorkoutStepsComponent from './us/components/activities/activityWorkoutStepsComponent.json';
 import usActivitiesTableComponent from './us/components/activities/activitiesTableComponent.json';
 import usUserDistanceStatsComponent from './us/components/activities/userDistanceStatsComponent.json';
+// Segments component
+import usSegmentsTableComponent from './us/components/segments/segmentsTableComponent.json';
+import usSegmentSummaryComponent from './us/components/segments/segmentSummaryComponent.json';
+import usSegmentDetailComponent from './us/components/segments/segmentDetailComponent.json';
+
 // Followers component
 import usFollowersListComponent from './us/components/followers/followersListComponent.json';
 // Gears component
@@ -480,6 +486,8 @@ import usSearchView from './us/searchView.json';
 import usSettingsView from './us/settingsView.json';
 import usUserView from './us/userView.json';
 import usSummaryView from './us/summaryView.json';
+import usSegmentsView from './us/segmentsView.json';
+import usSegmentView from './us/segmentView.json';
 
 // Constructing the messages structure
 const messages = {
@@ -899,10 +907,15 @@ const messages = {
 		activityLapsComponent: usActivityLapsComponent,
 		activityMandAbovePillsComponent: usActivityMandAbovePillsComponent,
 		activityMapComponent: usActivityMapComponent,
+    	activitySegmentsComponent: usActivitySegmentsComponent,
 		activitySummaryComponent: usActivitySummaryComponent,
 		activityWorkoutStepsComponent: usActivityWorkoutStepsComponent,
 		activitiesTableComponent: usActivitiesTableComponent,
 		userDistanceStats: usUserDistanceStatsComponent,
+		// Segments component
+		segmentsTableComponent: usSegmentsTableComponent,
+		segmentSummaryComponent: usSegmentSummaryComponent,
+		segmentDetailComponent: usSegmentDetailComponent,
 		// Followers component
 		followersListComponent: usFollowersListComponent,
 		// Gears component
@@ -959,6 +972,8 @@ const messages = {
 		settingsView: usSettingsView,
 		userView: usUserView,
 		summaryView: usSummaryView,
+		segmentsView: usSegmentsView,
+		segmentView: usSegmentView,
 	},
 };
 
