@@ -224,7 +224,7 @@
 <td>REVERSE_GEO_PROVIDER</td>
 <td>geocode</td>
 <td>Yes</td>
-<td>Defines reverse geo provider. Expects <a href="https://geocode.maps.co/">geocode</a> or photon. photon can be the <a href="https://photon.komoot.io">SaaS by komoot</a> or a self hosted version like a <a href="https://github.com/rtuszik/photon-docker">self hosted version</a></td>
+<td>Defines reverse geo provider. Expects <a href="https://geocode.maps.co/">geocode</a>, photon or nominatim. photon can be the <a href="https://photon.komoot.io">SaaS by komoot</a> or a self hosted version like a <a href="https://github.com/rtuszik/photon-docker">self hosted version</a>. Like photon, Nominatim can be the <a href="https://nominatim.openstreetmap.org/">SaaS</a> or a self hosted version</td>
 </tr>
 <tr>
 <td>PHOTON_API_HOST</td>
@@ -239,6 +239,18 @@
 <td>Protocol used by photon. By default uses HTTPS to be inline with what <a href="https://photon.komoot.io">SaaS by komoot</a> expects</td>
 </tr>
 <tr>
+<td>NOMINATIM_API_HOST</td>
+<td>nominatim.openstreetmap.org</td>
+<td>Yes</td>
+<td>API host for Nominatim. By default it uses the <a href="https://nominatim.openstreetmap.org">SaaS</a></td>
+</tr>
+<tr>
+<td>NOMINATIM_API_USE_HTTPS</td>
+<td>true</td>
+<td>Yes</td>
+<td>Protocol used by Nominatim. By default uses HTTPS to be inline with what <a href="https://nominatim.openstreetmap.org">SaaS</a> expects</td>
+</tr>
+<tr>
 <td>GEOCODES_MAPS_API</td>
 <td>changeme</td>
 <td>Yes</td>
@@ -247,7 +259,7 @@
 <tr>
 <td>GEOCODES_MAPS_RATE_LIMIT</td>
 <td>1</td>
-<td>yes</td>
+<td>Yes</td>
 <td>Change this if you have a paid Geocode maps tier</td>
 </tr>
 <tr>
