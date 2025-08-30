@@ -48,8 +48,12 @@
 						</div>
 					</div>
 					<div class="d-flex align-items-center">
-						<!-- import button -->
+						<!-- import bikes button -->
 						<a href="#" class="btn btn-primary" role="button" @click="submitStravaBulkImport">{{ $t("settingsImportZone.stravaBulkImportButton") }}</a>
+					</div>
+					<div class="d-flex align-items-center">
+						<!-- import shoes button -->
+						<a href="#" class="btn btn-primary" role="button" @click="submitStravaShoesImport">{{ $t("settingsImportZone.stravaImportbuttonShoes") }}</a>
 					</div>
 				</li>
 			</ul>
@@ -108,6 +112,18 @@ async function submitStravaBulkImport() {
 		// If there is an error, show the error alert.
 		push.error(
 			`${t("settingsImportZone.errorMessageUnableToBulkImport")} - ${error}`,
+		);
+	}
+}
+async function submitStravaShoesImport() {
+	try {
+		await gears.stravaShoesImport();
+		// Show the loading alert.
+		push.info(t("settingsImportZone.loadingMessageStravaShoesImport"));
+	} catch (error) {
+		// If there is an error, show the error alert.
+		push.error(
+			`${t("settingsImportZone.errorMessageUnableToImportShoes")} - ${error}`,
 		);
 	}
 }

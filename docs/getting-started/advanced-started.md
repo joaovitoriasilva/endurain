@@ -103,6 +103,8 @@ Recommended procedure
 
 ### Importing gear from a Strava bulk export
 
+#### Bikes import
+
 At the present time, importing bikes from a Strava bulk export is implemented as a beta feature - use with caution.  Components of bikes are not imported - just the bikes themselves. 
 
 To perform an import of bikes: 
@@ -113,7 +115,17 @@ To perform an import of bikes:
 
 Ensure the file is named "bikes.csv" and has a header row with at least the fields 'Bike Name', 'Bike Brand', and 'Bike Model'.
 
-Please report any problems observed with bike imports on GitHub.
+#### Shoe import
+
+At the present time, importing shoes from a Strava bulk export is implemented as a beta feature - use with caution.  Components of shooes are not imported - just the shoes themselves. 
+
+To perform an import of shoes: 
+- Place the shoes.csv file from a Strava bulk export into the data/strava_import folder. Create the folder if needed.
+- In the "Settings" menu select "Import".
+- Click "Shoes import" next to "Strava import".
+- Status messages about the import, including why any gear was not imported, can be found in the logs.
+
+Ensure the file is named "shoes.csv" and has a header row with at least the fields 'Shoe Name', 'Shoe Brand', and 'Shoe Model'.
 
 ### Importing activities and media from a Strava bulk export
 
