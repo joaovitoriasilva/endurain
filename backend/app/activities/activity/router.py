@@ -747,8 +747,12 @@ async def strava_bulk_import(
                 with open(strava_activities_file, newline='') as csvfile:
                     strava_activities_csv = csv.DictReader(csvfile)
                     #count = 0  # Testing code
-                    # TO DO - Need to check if there is a 'Filename' header and cleanly abort if there is not one.
+                    # Process CSV file
                     for row in strava_activities_csv:    # Must process CSV file object while file is still open.
+                        # Check to see if file has headers that will be used during parsing of the file.
+                        if ('Filename' not in row) or ('Activity Description' not in row) or ('Activity Gear' not in row) or ('Activity ID' not in row) or ('Media' not in row): 
+                            core_logger.print_to_log_and_console(f"Aborting Strava bulk activities import: Proper headers not found in {strava_activities_file}.  File should have 'Filename', 'Activity Description', 'Activity Gear', 'Activity ID', and 'Media'.")
+                            return None
                         _, strava_act_file_name = os.path.split(row['Filename'])  # strips path, returns filename with extension.
                         strava_activities_dict[strava_act_file_name] = row  # Store activity information in a dictionary using filename as the key
                         #core_logger.print_to_log_and_console(f"Whole filename: {row['Filename']} and split filename {strava_act_file_name}") # Testing code
@@ -756,12 +760,12 @@ async def strava_bulk_import(
                         #if count == 5: break # Testing code
                 core_logger.print_to_log_and_console(f"Strava activities csv file parsed, and it is {len(strava_activities_dict)} rows long")
                 #core_logger.print_to_log_and_console(f"Strava activities csv file example row: {strava_activities_dict["14048645234.gpx"]["Activity Description"]}")  # Testing line.
-            except:
+            except Exception as err:
                 strava_activities_dict = None
-                core_logger.print_to_log_and_console("WARNING: Strava activities CSV parsing failed.")
+                core_logger.print_to_log_and_console(f"Strava activities CSV parsing failed with error: {err}.", "error")
 
         if strava_activities_dict == None:  # Potentially add other test conditions that should trigger an import abort
-                core_logger.print_to_log_and_console("ABORTING IMPORT: Aborting strava bulk import due to improperly parsed CSV.")
+                core_logger.print_to_log_and_console("ABORTING IMPORT: Aborting strava bulk import due to improperly parsed CSV.", "error")
                 return {"Strava import ABORTED due to lack of, or improperly parsed, activities.csv file."}
 
         # Create gear list here, so it does not have to be done separately for every single activity
