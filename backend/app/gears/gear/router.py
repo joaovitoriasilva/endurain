@@ -293,29 +293,29 @@ async def import_bikes_from_Strava_CSV(
 
         # CSV file location
         bulk_import_dir = core_config.STRAVA_BULK_IMPORT_DIR
-        bikesfilename = "bikes.csv" # Hard coding filename for now (this is the filename Strava uses)
+        bikesfilename = core_config.STRAVA_BULK_IMPORT_BIKES_FILE
         bikes_file_path = os.path.join(bulk_import_dir, bikesfilename)
 
         # Get file and parse it
         bikes_dict = {}  # format: "Bike Name" from the Strava CSV is used as the key, which then holds a dictionary that is based on the Strava bike gear CSV file's data
         try:
             if os.path.isfile(bikes_file_path):
-                  core_logger.print_to_log_and_console(f"bikes.csv file exists in the {bulk_import_dir} directory. Starting to process file.")
+                  core_logger.print_to_log_and_console(f"{bikesfilename} file exists in the {bulk_import_dir} directory. Starting to process file.")
                   with open(bikes_file_path, "r") as bike_file:
                       bikes_csv = csv.DictReader(bike_file)
                       for row in bikes_csv:    # Must process CSV file object while file is still open.
                           # Example row: {'Bike Name': 'Ox', 'Bike Brand': 'Bianchi', 'Bike Model': 'Advantage', 'Bike Default Sport Types': 'Ride'}
                           if ('Bike Name' not in row) or ('Bike Brand' not in row) or ('Bike Model' not in row): 
-                              core_logger.print_to_log_and_console("Aborting bikes import: Proper headers not found in bikes.csv.  File should have 'Bike Name', 'Bike Brand', and 'Bike Model'.")
+                              core_logger.print_to_log_and_console(f"Aborting bikes import: Proper headers not found in {bikesfilename}.  File should have 'Bike Name', 'Bike Brand', and 'Bike Model'.")
                               return None
                           bikes_dict[row["Bike Name"]] = row
                   core_logger.print_to_log_and_console(f"Strava bike gear csv file parsed and gear dictionary created. File was {len(bikes_dict)} rows long, ignoring header row.")
             else:
-                  core_logger.print_to_log_and_console(f"No bikes.csv file located in the {bulk_import_dir} directory.")
+                  core_logger.print_to_log_and_console(f"No {bikesfilename} file located in the {bulk_import_dir} directory.")
                   return None # Nothing to return - no file.
         except:
             # TO DO: RAISE ERROR OR ADD NOTIFICATON HERE?
-            core_logger.print_to_log_and_console(f"Error attempting to open bikes.csv file.")
+            core_logger.print_to_log_and_console(f"Error attempting to open {bikesfilename} file.")
             return None # Nothing to return - error parsing file.
 
         # Get user's existing gear 
@@ -389,29 +389,29 @@ async def import_shoes_from_Strava_CSV(
 
         # CSV file location
         bulk_import_dir = core_config.STRAVA_BULK_IMPORT_DIR
-        shoesfilename = "shoes.csv" # Hard coding filename for now (this is the filename Strava uses)
+        shoesfilename = core_config.STRAVA_BULK_IMPORT_SHOES_FILE
         shoes_file_path = os.path.join(bulk_import_dir, shoesfilename)
 
         # Get file and parse it
         shoes_dict = {}  # format: "Shoe Name" from the Strava CSV is used as the key, which then holds a dictionary that is based on the Strava shoe gear CSV file's data
         try:
             if os.path.isfile(shoes_file_path):
-                  core_logger.print_to_log_and_console(f"shoes.csv file exists in the {bulk_import_dir} directory. Starting to process file.")
+                  core_logger.print_to_log_and_console(f"{shoesfilename} file exists in the {bulk_import_dir} directory. Starting to process file.")
                   with open(shoes_file_path, "r") as shoe_file:
                       shoes_csv = csv.DictReader(shoe_file)
                       for row in shoes_csv:    # Must process CSV file object while file is still open.
                           # Example row: {'Shoe Name': 'New forest runners', 'Shoe Brand': 'Saucony', 'Shoe Model': 'Trail runner 2200', 'Shoe Default Sport Types': ''}
                           if ('Shoe Name' not in row) or ('Shoe Brand' not in row) or ('Shoe Model' not in row): 
-                              core_logger.print_to_log_and_console("Aborting shoes import: Proper headers not found in shoes.csv.  File should have 'Shoe Name', 'Shoe Brand', and 'Shoe Model'.")
+                              core_logger.print_to_log_and_console(f"Aborting shoes import: Proper headers not found in {shoesfilename}.  File should have 'Shoe Name', 'Shoe Brand', and 'Shoe Model'.")
                               return None
                           shoes_dict[row["Shoe Name"]] = row
                   core_logger.print_to_log_and_console(f"Strava shoe gear csv file parsed and gear dictionary created. File was {len(shoes_dict)} rows long, ignoring header row.")
             else:
-                  core_logger.print_to_log_and_console(f"No shoes.csv file located in the {bulk_import_dir} directory.")
+                  core_logger.print_to_log_and_console(f"No {shoesfilename} file located in the {bulk_import_dir} directory.")
                   return None # Nothing to return - no file.
         except:
             # TO DO: RAISE ERROR OR ADD NOTIFICATON HERE?
-            core_logger.print_to_log_and_console(f"Error attempting to open shoes.csv file.")
+            core_logger.print_to_log_and_console(f"Error attempting to open {shoesfilename} file.")
             return None # Nothing to return - error parsing file.
 
         # Get user's existing gear 
