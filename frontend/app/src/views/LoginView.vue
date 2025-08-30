@@ -25,6 +25,11 @@
 					</div>
 					<br>
 					<button class="w-100 btn btn-lg btn-primary" type="submit">{{ $t("loginView.signInButton") }}</button>
+					<div class="mt-3 text-center">
+						<a href="#" @click.prevent="showForgotPasswordModal" class="text-decoration-none">
+							{{ $t("loginView.forgotPassword") }}
+						</a>
+					</div>
 					<!--<div>
 						<hr>
 						<button class="w-100 btn btn-lg btn-warning disabled" type="submit">{{ $t("loginView.signUpButton") }}</button>
@@ -33,11 +38,24 @@
 			</div>
 		</div>
 	</div>
+
+	<!-- Forgot Password Modal -->
+	<ModalComponentEmailInput
+		ref="forgotPasswordModalRef"
+		modal-id="forgotPasswordModal"
+		:title="$t('forgotPassword.title')"
+		:email-field-label="$t('forgotPassword.emailLabel')"
+		:email-help-text="$t('forgotPassword.emailHelp')"
+		action-button-type="primary"
+		:action-button-text="$t('forgotPassword.submitButton')"
+		:is-loading="forgotPasswordLoading"
+		@email-to-emit-action="handleForgotPasswordSubmit"
+	/>
 </template>
 
 <script setup>
 // Importing the vue composition API
-import { ref, onMounted } from "vue";
+import { ref, onMounted, nextTick, watch } from "vue";
 // Importing the router
 import { useRoute, useRouter } from "vue-router";
 // Importing the i18n
@@ -50,6 +68,9 @@ import { useServerSettingsStore } from "@/stores/serverSettingsStore";
 // Importing the services for the login
 import { session } from "@/services/sessionService";
 import { profile } from "@/services/profileService";
+import { Modal } from "bootstrap";
+// Importing modal component
+import ModalComponentEmailInput from "@/components/Modals/ModalComponentEmailInput.vue";
 
 // Variables
 const route = useRoute();
@@ -63,6 +84,18 @@ const showPassword = ref(false);
 const loginPhotoUrl = serverSettingsStore.serverSettings.login_photo_set
 	? `${window.env.ENDURAIN_HOST}/server_images/login.png`
 	: null;
+
+// Forgot password variables
+const forgotPasswordLoading = ref(false);
+const forgotPasswordModalRef = ref(null);
+let forgotPasswordModalInstance = null;
+
+// Function to show forgot password modal
+const showForgotPasswordModal = () => {
+	if (forgotPasswordModalInstance) {
+		forgotPasswordModalInstance.show();
+	}
+};
 
 // Toggle password visibility
 const togglePasswordVisibility = () => {
@@ -103,7 +136,46 @@ const submitForm = async () => {
 	}
 };
 
-onMounted(() => {
+// Forgot password form submission
+const handleForgotPasswordSubmit = async (email) => {
+	if (!email) {
+		push.error(t("forgotPassword.emailRequired"));
+		return;
+	}
+
+	forgotPasswordLoading.value = true;
+
+	try {
+		await session.requestPasswordReset({
+			email: email
+		});
+
+		push.success(t("forgotPassword.requestSuccess"));
+		
+		// Close modal
+		if (forgotPasswordModalInstance) {
+			forgotPasswordModalInstance.hide();
+		}
+	} catch (error) {
+		if (error.toString().includes("503")) {
+			push.error(t("forgotPassword.emailNotConfigured"));
+		} else {
+			push.error(`${t("forgotPassword.requestError")} - ${error}`);
+		}
+	} finally {
+		forgotPasswordLoading.value = false;
+	}
+};
+
+onMounted(async () => {
+	// Initialize the modal
+	await nextTick();
+	if (forgotPasswordModalRef.value) {
+		// Access the modal element from the component
+		const modalElement = forgotPasswordModalRef.value.$el;
+		forgotPasswordModalInstance = new Modal(modalElement);
+	}
+
 	// Check if the session expired
 	if (route.query.sessionExpired === "true") {
 		push.warning(t("loginView.sessionExpired"));
@@ -119,6 +191,10 @@ onMounted(() => {
 	// Check if the public shareable links are disabled
 	if (route.query.errorpublic_shareable_links === "true") {
 		push.error(t("loginView.errorpublic_shareable_links"));
+	}
+	// Check for password reset success
+	if (route.query.passwordResetSuccess === "true") {
+		push.success(t("loginView.passwordResetSuccess"));
 	}
 });
 </script>
