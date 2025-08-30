@@ -16,7 +16,7 @@
 						</div>
 					</div>
 					<div class="d-flex align-items-center">
-						<!-- import button -->
+						<!-- base bulk import button -->
 						<a href="#" class="btn btn-primary" role="button" @click="submitBulkImport">{{ $t("settingsImportZone.buttonBulkImport") }}</a>
 					</div>
 				</li>
@@ -32,8 +32,12 @@
 						</div>
 					</div>
 					<div class="d-flex align-items-center">
-						<!-- import button -->
+						<!-- import bikes button -->
 						<a href="#" class="btn btn-primary" role="button" @click="submitStravaBikesImport">{{ $t("settingsImportZone.stravaBikesImportButton") }}</a>
+					</div>
+					<div class="d-flex align-items-center">
+						<!-- import shoes button -->
+						<a href="#" class="btn btn-primary" role="button" @click="submitStravaShoesImport">{{ $t("settingsImportZone.stravaImportbuttonShoes") }}</a>
 					</div>
 				</li>
 				<!-- Strava activity and media bulk-export import zone -->
@@ -48,12 +52,8 @@
 						</div>
 					</div>
 					<div class="d-flex align-items-center">
-						<!-- import bikes button -->
+						<!-- bulk importbutton -->
 						<a href="#" class="btn btn-primary" role="button" @click="submitStravaBulkImport">{{ $t("settingsImportZone.stravaBulkImportButton") }}</a>
-					</div>
-					<div class="d-flex align-items-center">
-						<!-- import shoes button -->
-						<a href="#" class="btn btn-primary" role="button" @click="submitStravaShoesImport">{{ $t("settingsImportZone.stravaImportbuttonShoes") }}</a>
 					</div>
 				</li>
 			</ul>
