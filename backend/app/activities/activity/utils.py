@@ -10,7 +10,7 @@ import time
 from geopy.distance import geodesic
 from zoneinfo import ZoneInfo
 
-from fastapi import HTTPException, status, UploadFile
+from fastapi import HTTPException, status, UploadFile, BackgroundTasks
 
 from datetime import datetime
 from urllib.parse import urlencode
@@ -402,17 +402,18 @@ async def parse_and_store_activity_from_file(
                         else:
                              core_logger.print_to_log_and_console(f"Gear for activity {file_base_name}, which activities.csv shows as {activity_gear}, was not found in the user's existing gear. Not adding gear to activity.") # Testing code
 
-                    # Get Strava activity id 
-                    #core_logger.print_to_log_and_console(f"parsed_info's activity ID was: {parsed_info["activity"].strava_activity_id}")     # Testing code
-                    parsed_info["activity"].strava_activity_id = int(strava_activities[file_base_name]["Activity ID"])
-                    #core_logger.print_to_log_and_console(f"parsed_info's activity ID is now: {parsed_info["activity"].strava_activity_id}")     # Testing code
-                    # QUESTION: Will inserting the Strava Activity ID make the strava-syncing portion think this is synced from Strava?
+                    # Importing Strava activity id to the activity's "strava_activity_id" field results in Endurain thinking the activity is linked to Strava via the Strava active linking mechanism.
+                    # Thus we are not importing the Strava activty ID to its activity field, and instead are putting it in the imprt_dict for future use, if needed. 
+                    # parsed_info["activity"].strava_activity_id = int(strava_activities[file_base_name]["Activity ID"])  # Testing code / old code - remove if desired.
 
                     # ADD IMPORT FLAG TO ACTIVITY - allows us to know an activity derived from a Strava bulk import for rollbacks of an import.
                     import_dict = {}
                     import_dict["imported"]=True
                     import_dict["import_source"]="Strava bulk import"
+                    import_dict["strava_activity_id"]=int(strava_activities[file_base_name]["Activity ID"])
                     import_dict["import_ISO_time"]=import_initiated_time
+                    #core_logger.print_to_log_and_console(f"Import dictionary: {import_dict}") # Testing Code
+                    #core_logger.print_to_log_and_console(f"Import dictionary's Strava ID field: {import_dict["strava_activity_id"]}") # Testing Code
                     parsed_info["activity"].import_info = import_dict
 
                     # Strava media to be processed after activity has been created.
@@ -530,7 +531,7 @@ async def parse_and_store_activity_from_file(
         #raise http_err
     except Exception as err:
         # Log the exception
-        core_logger.print_to_log(
+        core_logger.print_to_log_and_console(
             f"Bulk file import: Error while parsing {file_path} in parse_and_store_activity_from_file - {str(err)}",
             "error",
             exc=err,
@@ -693,7 +694,7 @@ def move_file(new_dir: str, new_filename: str, file_path: str):
             detail=f"Internal Server Error: {str(err)}",
         ) from err
 
-
+# Testing adding async here to facilitate Strava bulk import
 def parse_file(
     token_user_id: int,
     user_privacy_settings: users_privacy_settings_schema.UsersPrivacySettings,
