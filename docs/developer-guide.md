@@ -311,6 +311,7 @@ When items are imported either through a bulk import or Strava bulk import, the 
 The import_info dictionary should include at least the following fields:
 * imported (boolean)
 * import_source (str) - e.g., "Strava bulk import" or "Basic bulk import"
+* strava_activity_id (int) - holds Strava's internal activity ID for Strava activities when imported from a bulk Strava import
 * import_ISO_time (str)
 
 If this dictionary exists the file was imported with one of those two functions.  Checking the "imported" field double-checks this.
