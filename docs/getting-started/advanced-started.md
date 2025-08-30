@@ -129,15 +129,18 @@ Ensure the file is named "shoes.csv" and has a header row with at least the fiel
 
 ### Importing activities and media from a Strava bulk export
 
-At the present time, importing activities and media from a Strava bulk export is implemented as a beta feature - use with caution. There is currently no mechanism to undo or revert an import.
+At the present time, importing activities and media from a Strava bulk export is implemented as a beta feature - use with caution. 
+
+**We advise backing up your database, or using a test install, before importing data: There is currently no mechanism to undo or revert an import.**
 
 To perform an import of activities and media: 
 - Place the extracted contents of the Strava bulk export .zip file in the data/strava_import folder. Create the folder if needed. 
+- If you want imported activities to be linked to gear (bikes or shoes), ensure any bikes or shoes referred to in activities are already present in Endurain. 
 - In the "Settings" menu select "Import".
-- Click "Bikes Import" next to "Strava bulk activity import".
+- Click "Strava bulk import" next to "Strava bulk activity import".
 - Status messages about the import, including why any activities or media were not imported, can be found in the logs.
 
-In addition to the base activity track and statistics, the Strava bulk import feature should also import each activity's title, description, activity type, gear (if it exists already in Endurain), Strava activity ID, and media. 
+In addition to the base activity track and statistics, the Strava bulk import feature should also import each activity's title, description, activity type, gear (if it exists already in Endurain), Strava activity ID (into a database field), and media. 
 
 The bulk import of Strava activities and media does not create gear.  Please import, or create, any gear referred to in the activities before importing the activities. Ensure the nickname of the gear matches precisely.
 
@@ -145,6 +148,8 @@ The structure of files expected is:
 - an activities.csv file in the data/strava_import folder (required)
 - activities files in the data/strava_import/activities folder (required)
 - media files in the data/strava_import/media folder (optional, if you want media imported)
+
+The activities.csv file requires a header row with at least the following fields: 'Filename', 'Activity Description', 'Activity Gear', 'Activity ID', and 'Media'.
 
 Media are currently imported only for .gpx and .tcx files.
 
