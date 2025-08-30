@@ -733,12 +733,15 @@ async def strava_bulk_import(
         strava_media_import_dir = core_config.STRAVA_BULK_IMPORT_MEDIA_DIR
         os.makedirs(strava_media_import_dir, exist_ok=True)
 
+        # Build activities file path
+        strava_activities_file_name = core_config.STRAVA_BULK_IMPORT_ACTIVITIES_FILE
+        strava_activities_file = os.path.join(strava_import_dir, strava_activities_file_name)
+
         # Importing data from Strava activities file.
         # Using Python's core CSV module here - https://docs.python.org/3/library/csv.html
-        strava_activities_file = os.path.join(strava_import_dir, "activities.csv")
         core_logger.print_to_log_and_console(f"Strava activities file should be at: {strava_activities_file}")
         if os.path.isfile(strava_activities_file):
-            core_logger.print_to_log_and_console(f"Strava activities file present. Going to try to parse it.")
+            core_logger.print_to_log_and_console("Strava activities file present. Going to try to parse it.")
             try:
                 strava_activities_dict = {}
                 with open(strava_activities_file, newline='') as csvfile:
@@ -755,10 +758,10 @@ async def strava_bulk_import(
                 #core_logger.print_to_log_and_console(f"Strava activities csv file example row: {strava_activities_dict["14048645234.gpx"]["Activity Description"]}")  # Testing line.
             except:
                 strava_activities_dict = None
-                core_logger.print_to_log_and_console(f"WARNING: Strava activities CSV parsing failed.")
+                core_logger.print_to_log_and_console("WARNING: Strava activities CSV parsing failed.")
 
         if strava_activities_dict == None:  # Potentially add other test conditions that should trigger an import abort
-                core_logger.print_to_log_and_console(f"ABORTING IMPORT: Aborting strava bulk import due to improperly parsed CSV.")
+                core_logger.print_to_log_and_console("ABORTING IMPORT: Aborting strava bulk import due to improperly parsed CSV.")
                 return {"Strava import ABORTED due to lack of, or improperly parsed, activities.csv file."}
 
         # Create gear list here, so it does not have to be done separately for every single activity
