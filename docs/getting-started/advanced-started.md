@@ -98,10 +98,13 @@ Strava allows users to create a bulk export of their historical activity on the 
 Strava bulk import work occurs in the data/strava_import folder. Create the folder if needed.
 
 Recommended procedure
-1. Import, or manually create, any gear that was present in Strava.
-2. Import the activities and media.
+1. Read the instructions below, including notes on limitations and known issues.
+2. Import, or manually create, any gear that was present in Strava.
+3. Import the activities and media.
 
 ### Importing gear from a Strava bulk export
+
+Importing of bikes and shoes is currently possible. Bike and shoe imports are screened for duplicates via nickname, so pre-existing gear with the same nickname will prevent import of that item of gear.
 
 #### Bikes import
 
@@ -129,7 +132,7 @@ Ensure the file is named "shoes.csv" and has a header row with at least the fiel
 
 ### Importing activities and media from a Strava bulk export
 
-At the present time, importing activities and media from a Strava bulk export is implemented as a beta feature - use with caution. 
+At the present time, importing activities and media from a Strava bulk export is implemented as an alpha feature - use with extreme caution. 
 
 **We advise backing up your database, or using a test install, before importing data: There is currently no mechanism to undo or revert an import.**
 
@@ -150,6 +153,16 @@ The structure of files expected is:
 - media files in the data/strava_import/media folder (optional, if you want media imported)
 
 The activities.csv file requires a header row with at least the following fields: 'Filename', 'Activity Description', 'Activity Gear', 'Activity ID', and 'Media'.
+
+You may import as many or as few activities as you want by placing only the activity files you want imported into the data/strava_import/activities. The importer looks for importable (i.e., .gpx, .fit, etc.) files in the activities folder and only then looks to see if each file has importable metadata and/or media present in the activities.csv file.
+
+#### Strava bulk import limitations 
+
+**We advise backing up your database, or using a test install, before importing data: There is currently no mechanism to undo or revert an import, and the website may be unresponsive as the import proceeds.**
+
+**The Endurain website will likely be unresponsive while the import proceeds** (fields on pages requiring database calls will not load). Logs (and the console) are updated as each file is processed; watching the logs will let you see how quickly files are being processed. 
+
+.fit files that contain multiple activities per file will likely not be imported properly (a single activity's metadata will likely be applied to all activities in the file). 
 
 Media are currently imported only for .gpx and .tcx files.
 
