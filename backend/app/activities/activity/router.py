@@ -759,11 +759,11 @@ async def strava_bulk_import(
                 strava_activities_dict = None
                 core_logger.print_to_log_and_console(f"Strava activities CSV parsing failed with error: {err}.", "error")
 
-        if strava_activities_dict == None:  # Potentially add other test conditions that should trigger an import abort
+        if strava_activities_dict is None:  # Potentially add other test conditions that should trigger an import abort
                 core_logger.print_to_log_and_console("ABORTING IMPORT: Aborting strava bulk import due to improperly parsed CSV.", "error")
                 return {"Strava import ABORTED due to lack of, or improperly parsed, activities.csv file."}
 
-        # Create gear list here, so it does not have to be done separately for every single activity
+        # Create gear list here, so it does not have to be done separately for every single activity that is imported
         user = users_crud.get_user_by_id(token_user_id, db)
         user_gear_list = gears_crud.get_gear_user(user.id, db)
         if user_gear_list is None:
@@ -778,17 +778,17 @@ async def strava_bulk_import(
         # Grab list of supported file formats
         supported_file_formats = core_config.SUPPORTED_FILE_FORMATS
 
-        # Get file list
+        # Get file list of all files in the 'strava_import/activities' directory
         filelist = os.listdir(strava_activities_import_dir)
 
-        # Setup structure to allow at least mediocre import progress tracking
+        # Setup structure to allow basic import progress tracking
         totalfilecount=len(filelist)
         core_logger.print_to_log_and_console(f"Found {totalfilecount} files in the {strava_activities_import_dir}.")
         filenumber=0
         skippedprocessingcount=0
         queuedforprocessingcount=0
 
-        # Iterate over each file in the 'strava_import/activities' directory
+        # Iterate over each file
         for filename in filelist:
             filenumber+=1
             file_path = os.path.join(strava_activities_import_dir, filename)
