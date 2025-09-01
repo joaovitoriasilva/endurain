@@ -718,7 +718,6 @@ async def strava_bulk_import(
     try:
         # Get time of import initiation to pass to function for recording in import_data
         import_time = datetime.now().isoformat()
-
         core_logger.print_to_log_and_console(f"Strava bulk import initiated at {import_time}.")
 
         # Ensure the 'strava_import' directory exists (.csv files will be here)
@@ -746,7 +745,6 @@ async def strava_bulk_import(
                 strava_activities_dict = {}
                 with open(strava_activities_file, newline='') as csvfile:
                     strava_activities_csv = csv.DictReader(csvfile)
-                    #count = 0  # Testing code
                     # Process CSV file
                     for row in strava_activities_csv:    # Must process CSV file object while file is still open.
                         # Check to see if file has headers that will be used during parsing of the file.
@@ -755,9 +753,6 @@ async def strava_bulk_import(
                             return None
                         _, strava_act_file_name = os.path.split(row['Filename'])  # strips path, returns filename with extension.
                         strava_activities_dict[strava_act_file_name] = row  # Store activity information in a dictionary using filename as the key
-                        #core_logger.print_to_log_and_console(f"Whole filename: {row['Filename']} and split filename {strava_act_file_name}") # Testing code
-                        #count += 1  # Testing code
-                        #if count == 5: break # Testing code
                 core_logger.print_to_log_and_console(f"Strava activities csv file parsed, and it is {len(strava_activities_dict)} rows long")
                 #core_logger.print_to_log_and_console(f"Strava activities csv file example row: {strava_activities_dict["14048645234.gpx"]["Activity Description"]}")  # Testing line.
             except Exception as err:
@@ -783,20 +778,34 @@ async def strava_bulk_import(
         # Grab list of supported file formats
         supported_file_formats = core_config.SUPPORTED_FILE_FORMATS
 
+        # Get file list
+        filelist = os.listdir(strava_activities_import_dir)
+
+        # Setup structure to allow at least mediocre import progress tracking
+        totalfilecount=len(filelist)
+        core_logger.print_to_log_and_console(f"Found {totalfilecount} files in the {strava_activities_import_dir}.")
+        filenumber=0
+        skippedprocessingcount=0
+        queuedforprocessingcount=0
+
         # Iterate over each file in the 'strava_import/activities' directory
-        for filename in os.listdir(strava_activities_import_dir):
+        for filename in filelist:
+            filenumber+=1
             file_path = os.path.join(strava_activities_import_dir, filename)
 
             # Check if file is one we can process
             _, file_extension = os.path.splitext(file_path)
             if file_extension not in supported_file_formats:
-                core_logger.print_to_log_and_console(f"Skipping file {file_path} due to not having a supported file extension. Supported extensions are: {supported_file_formats}.")
+                core_logger.print_to_log_and_console(f"Skipping file number {filenumber} -  {file_path} - due to not having a supported file extension. Supported extensions are: {supported_file_formats}.")
+                skippedprocessingcount+=1
                 # Might be good to notify the user, but background tasks cannot raise HTTPExceptions
                 continue
 
             if os.path.isfile(file_path):
                 # Log the file being processed
-                core_logger.print_to_log_and_console(f"Queuing file for processing: {file_path}")
+                core_logger.print_to_log_and_console(f"Queuing file number {filenumber} for processing: {file_path}")
+                # Build dictionary for import progress status reporting in logs
+                file_progress_dict = {'filenumber': filenumber, 'skippedprocessingcount': skippedprocessingcount, 'totalfilecount': totalfilecount }
                 # Parse and store the activity
                 background_tasks.add_task(
                     activities_utils.parse_and_store_activity_from_file,
@@ -807,12 +816,12 @@ async def strava_bulk_import(
                     strava_activities=strava_activities_dict,
                     import_initiated_time=import_time,
                     users_existing_gear_nickname_to_id=users_existing_gear_nickname_to_id,
+                    file_progress_dict=file_progress_dict,
                 )
-                    # TO DO - pass strava media
-                    # TO DO - pass import time to save in dictionary
+                queuedforprocessingcount+=1
 
         # Log a success message that explains processing will continue elsewhere.
-        core_logger.print_to_log_and_console("Strava bulk import initiated for all files found in the strava_import directory. Processing of files will continue in the background.")
+        core_logger.print_to_log_and_console(f"Strava bulk import initiated for {queuedforprocessingcount} of the {totalfilecount} files found in the strava_import directory.  Processing of files will continue in the background.")
 
         # Return a success message
         return {"Strava import initiated for all files found in the strava_import directory. Processing of files will continue in the background."}

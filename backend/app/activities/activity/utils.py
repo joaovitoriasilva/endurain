@@ -327,15 +327,21 @@ async def parse_and_store_activity_from_file(
     strava_activities: dict = None,  # dictionary with info for a Strava bulk import - format strava_activities["filename"]["column header from Strava activities spreadsheet"]
     import_initiated_time: str = None,  # String contining the time the Strava bulk import was initiated.
     users_existing_gear_nickname_to_id: dict = None,  # Dictionary containing gear nickname to ID, needed for Strava bulk import
+    file_progress_dict: dict = None,  # Dictionary containing information on file processing count, to allow logs to show at least mediocre import progress (primarily for Strava bulk import).  Dictionary structure - {'filenumber': filenumber, 'skippedprocessingcount': skippedprocessingcount, 'totalfilecount': totalfilecount }
 ):
     try:
-        core_logger.print_to_log_and_console(f"Bulk file import: Beginning processing of {file_path}")
+        core_logger.print_to_log_and_console(f"Bulk file import: Beginning processing of {file_path}.")
 
         # Get file extension
         _, file_extension = os.path.splitext(file_path)
 
         # Get pathless file name with extension, , as this is the dictionary key for Strava's bulk import activities dictionary.
         _, file_base_name = os.path.split(file_path)      
+
+        # Print import progress information to log
+        if file_progress_dict is not None:
+            core_logger.print_to_log_and_console(f"Bulk file import: File {file_base_name} is file number {file_progress_dict['filenumber']} of {file_progress_dict['totalfilecount']} total files in the Strava import directory, of which {file_progress_dict['skippedprocessingcount']} had been skipped as of the time this file was queued.")
+
         #core_logger.print_to_log_and_console(f"File name with extension is (this is the dictionary key): {file_base_name}") #Testing code
 
         garmin_connect_activity_id = None
