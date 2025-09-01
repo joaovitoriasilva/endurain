@@ -89,7 +89,7 @@ meters in distance and elevation gain. Some notes:
 
 - After the files are processed, the files are moved to the processed folder
 - GEOCODES API has a limit of 1 Request/Second on the free plan, so if you have a large number of files, it might not be possible to import all in the same action
-- The bulk import currently only imports data present in the .fit, .tcx or .gpx files - no metadata or other media are imported.
+- The generic bulk import currently only imports data present in the .fit, .tcx or .gpx files - no metadata or other media are imported.
 
 ## Importing data from a Strava bulk export (BETA)
 
@@ -132,9 +132,9 @@ Ensure the file is named "shoes.csv" and has a header row with at least the fiel
 
 ### Importing activities and media from a Strava bulk export
 
-At the present time, importing activities and media from a Strava bulk export is implemented as an alpha feature - use with extreme caution. 
+At the present time, importing activities and media from a Strava bulk export is implemented as a very early beta feature - use with extreme caution. 
 
-**We advise backing up your database, or using a test install, before importing data: There is currently no mechanism to undo or revert an import.**
+**We advise backing up your database, or using a test install, before importing data.  There is currently no mechanism to undo or revert an import.**
 
 To perform an import of activities and media: 
 - Place the extracted contents of the Strava bulk export .zip file in the data/strava_import folder. Create the folder if needed. 
@@ -158,13 +158,13 @@ You may import as many or as few activities as you want by placing only the acti
 
 #### Strava bulk import limitations 
 
-**We advise backing up your database, or using a test install, before importing data: There is currently no mechanism to undo or revert an import, and the website may be unresponsive as the import proceeds.**
+**We advise backing up your database, or using a test install, before importing data: There is currently no mechanism to undo or revert an import.**
 
 **The Endurain website will likely be unresponsive while the import proceeds** (fields on pages requiring database calls will not load). Logs (and the console) are updated as each file is processed; watching the logs will let you see how quickly files are being processed. 
 
-.fit files that contain multiple activities per file will likely not be imported properly (a single activity's metadata will likely be applied to all activities in the file). 
+.fit files that contain multiple activities per file will not have metadata or images imported. 
 
-Media are currently imported only for .gpx and .tcx files.
+Media are currently imported only for .gpx and .tcx files, as well as .fit files that contain only a single activity per .fit file.
 
 Comments associated with media are not imported (Endurain does not currently allow comments on media). FYI: Comments associated with media are stored in Strava's media.csv file.
 
