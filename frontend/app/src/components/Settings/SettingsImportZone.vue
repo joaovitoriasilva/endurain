@@ -2,6 +2,13 @@
     <div class="col">
 		<div class="bg-body-tertiary rounded p-3 shadow-sm">
 			<!-- list zone -->
+                        <!-- Page header -->
+                        <div>
+                                <h4 class="mt-4">{{ $t('settingsImportZone.settingsimportpageTitle') }}
+                                </h4>
+                                <span>{{ $t('settingsImportZone.settingsimportpageDescription') }}</span>
+                        </div>
+                        <hr />
 			<ul class="list-group list-group-flush">
 				<!-- import zone -->
 				<!-- bulk import zone -->
@@ -26,7 +33,7 @@
 						<font-awesome-icon :icon="['fas', 'file-import']" size="2x" />
 						<div class="ms-3">
 							<div class="fw-bold">
-								{{ $t("settingsImportZone.stravaGearImportTitle") }}
+								{{ $t("settingsImportZone.stravaGearImportTitle") }}{{ $t('generalItems.betaTag') }}
 							</div>
 							{{ $t("settingsImportZone.stravaGearImportBody") }}
 						</div>
@@ -46,7 +53,7 @@
 						<font-awesome-icon :icon="['fas', 'file-import']" size="2x" />
 						<div class="ms-3">
 							<div class="fw-bold">
-								{{ $t("settingsImportZone.stravaBulkImportTitle") }}
+								{{ $t("settingsImportZone.stravaBulkImportTitle") }}{{ $t('generalItems.betaTag') }}
 							</div>
 							{{ $t("settingsImportZone.stravaBulkImportBody") }}
 						</div>
