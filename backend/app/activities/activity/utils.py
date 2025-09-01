@@ -376,64 +376,52 @@ async def parse_and_store_activity_from_file(
                 db,
             )
 
+            strava_activity_info = None  # Store Strava info in a dictionary, to be added to activities later
+            generic_activity_info = None  # Store generic bulk import info in a dictionary, to be added to activities later
             # Check if a Strava bulk import is in progress, and if so check to see if any additional information can be added to the activity.
             if strava_activities:
                 # Check if the file we are parsing has data in the Strava activities dictionary
-                if strava_activities.get(file_base_name):
-                    #core_logger.print_to_log_and_console(f"Activity {file_base_name} found in strava activities dictionary.") # Testing code
-                    #core_logger.print_to_log_and_console(f"Strava activities values for this: {strava_activities[file_base_name]}") # Testing code
-                    #core_logger.print_to_log_and_console(f"parsed_info is {parsed_info} and its activity is {parsed_info["activity"]}") # Testing code
+                if strava_activities.get(file_base_name):  # We have information on the activity
+                    # Strava bulk import notes:
+                    #     Strava already puts title in the gpx file, which Endurain imports through the file parser. 
+                    #     Activity type is already pulled from the GPX file and dealt with in the parsing routine.
+                    #     Importing Strava activity id to the activity's "strava_activity_id" field results in Endurain thinking the activity is linked to Strava via the Strava active linking mechanism.
+                    #     Strava media to be processed after activity has been created.
+                    strava_activity_info = {}
 
-                    # Strava already puts title in the gpx file, which Endurain imports through the file parser. 
-                    # Activity type is already pulled from the GPX file and dealt with in the parsing routine.
+                    strava_activity_info["description"]=strava_activities[file_base_name]["Activity Description"]
 
-                    # Get description
-                    #core_logger.print_to_log_and_console(f"parsed_info's description was: {parsed_info["activity"].description}")     # Testing code
-                    parsed_info["activity"].description = strava_activities[file_base_name]["Activity Description"]
-                    #core_logger.print_to_log_and_console(f"parsed_info's description is now: {parsed_info["activity"].description}")  # Testing code
-
-                    # Add gear to activity if the gear is already present
-
-                    # Pull gear data from Strava file
+                    # Gear work
                     activity_gear = None  # ensure prior loop values do not copy over.
                     activity_gear = strava_activities[file_base_name]["Activity Gear"]
-                    #core_logger.print_to_log_and_console(f"Gear for this activity is: {activity_gear}") # Testing code
-
-                    # Add gear to activity, if it is already present.
                     if activity_gear and activity_gear is not None: 
                         if activity_gear in users_existing_gear_nickname_to_id:
-                             #core_logger.print_to_log_and_console(f"Gear for this activity found in user's gear list") # Testing code
-                             #core_logger.print_to_log_and_console(f"Gear name is {activity_gear}, and gear ID is {users_existing_gear_nickname_to_id[activity_gear][0]}") # Testing code
-                             parsed_info["activity"].gear_id = users_existing_gear_nickname_to_id[activity_gear][0]
+                             strava_activity_info["gear_id"]=users_existing_gear_nickname_to_id[activity_gear][0]
                         else:
-                             core_logger.print_to_log_and_console(f"Gear for activity {file_base_name}, which activities.csv shows as {activity_gear}, was not found in the user's existing gear. Not adding gear to activity.") # Testing code
+                             strava_activity_info["gear_id"]=None
+                             core_logger.print_to_log_and_console(f"Gear for activity {file_base_name}, which activities.csv shows as {activity_gear}, was not found in the user's existing gear. Not adding gear to activity.")
+                    else:
+                         strava_activity_info["gear_id"]=None
 
-                    # Importing Strava activity id to the activity's "strava_activity_id" field results in Endurain thinking the activity is linked to Strava via the Strava active linking mechanism.
-                    # Thus we are not importing the Strava activty ID to its activity field, and instead are putting it in the imprt_dict for future use, if needed. 
-                    # parsed_info["activity"].strava_activity_id = int(strava_activities[file_base_name]["Activity ID"])  # Testing code / old code - remove if desired.
-
-                    # ADD IMPORT FLAG TO ACTIVITY - allows us to know an activity derived from a Strava bulk import for rollbacks of an import.
+                    # Build import dictionary - allows us to track if something was imported and hold data about the import.
                     import_dict = {}
                     import_dict["imported"]=True
                     import_dict["import_source"]="Strava bulk import"
                     import_dict["strava_activity_id"]=int(strava_activities[file_base_name]["Activity ID"])
                     import_dict["import_ISO_time"]=import_initiated_time
-                    #core_logger.print_to_log_and_console(f"Import dictionary: {import_dict}") # Testing Code
-                    #core_logger.print_to_log_and_console(f"Import dictionary's Strava ID field: {import_dict["strava_activity_id"]}") # Testing Code
-                    parsed_info["activity"].import_info = import_dict
-
-                    # Strava media to be processed after activity has been created.
+                    strava_activity_info["import_dict"]=import_dict
 
                     # wrap up the processing of activities.csv for now.
                     core_logger.print_to_log_and_console(f"Bulk file import: Strava activities.csv metadata extracted for activity {file_base_name}.")
             else:
                 # Not doing a Strava bulk import, so add that this is a basic bulk import to import info dict
+                generic_activity_info = {}
                 import_dict = {}
                 import_dict["imported"]=True
                 import_dict["import_source"]="Basic bulk import"
                 import_dict["import_ISO_time"]=import_initiated_time
-                if parsed_info is not None: parsed_info["activity"].import_info = import_dict
-
+                #core_logger.print_to_log_and_console(f"Parsed_info is: {parsed_info}.")  # Testing code
+                generic_activity_info["import_dict"]=import_dict
 
             if parsed_info is not None:
                 created_activities = []
@@ -442,6 +430,14 @@ async def parse_and_store_activity_from_file(
                     ".gpx",
                     ".tcx",
                 ):
+                    #Add Strava metadata to .gpx and .tcs files
+                    if strava_activities and strava_activity_info is not None:
+                        parsed_info["activity"].description = strava_activity_info["description"]
+                        parsed_info["activity"].gear_id = strava_activity_info["gear_id"]
+                        parsed_info["activity"].import_info = strava_activity_info["import_dict"]
+                    if generic_activity_info is not None:
+                        parsed_info["activity"].import_info = generic_activity_info["import_dict"]
+
                     # Store the activity in the database
                     created_activity = await store_activity(
                         parsed_info, websocket_manager, db
@@ -474,7 +470,22 @@ async def parse_and_store_activity_from_file(
                             db,
                         )
 
+                    # Check number of activities in fit file, to allow metadata importing of single-activity-containing fit files
+                    numberoffitactivities=len(created_activities_objects)
+
                     for activity in created_activities_objects:
+                        # If there is only one activity in the .fit file, add Strava metadata (current import logic does not deal with multiple activities in a single file)
+                        if numberoffitactivities == 1:
+                            if strava_activities and strava_activity_info is not None:
+                                activity["activity"].description = strava_activity_info["description"]
+                                activity["activity"].gear_id = strava_activity_info["gear_id"]
+                                activity["activity"].import_info = strava_activity_info["import_dict"]
+                            if generic_activity_info is not None:
+                                activity["activity"].import_info = generic_activity_info["import_dict"]
+                        else:
+                            if generic_activity_info is not None:
+                                activity["activity"].import_info = generic_activity_info["import_dict"]
+
                         # Store the activity in the database
                         created_activity = await store_activity(
                             activity, websocket_manager, db
@@ -491,6 +502,7 @@ async def parse_and_store_activity_from_file(
                 else:
                      # Should no longer get here due to screening of extensions in router.py, but why not.
                     core_logger.print_to_log_and_console(f"File extension not supported: {file_extension}", "error")
+
                 # Define the directory where the processed files will be stored
                 processed_dir = core_config.FILES_PROCESSED_DIR
 
@@ -505,10 +517,7 @@ async def parse_and_store_activity_from_file(
                 if strava_activities:
                     if strava_activities.get(file_base_name):
                         #core_logger.print_to_log_and_console(f"Media import section - Activity {file_base_name} found in strava activities dictionary.") # Testing >
-                        if file_extension.lower() in (
-                            ".gpx",
-                            ".tcx",
-                        ):
+                        if file_extension.lower() in (".gpx", ".tcx") or numberoffitactivities == 1:
                             # A single activity was created - media addition is simple.
                             media_string = strava_activities[file_base_name]["Media"].strip()
                             #core_logger.print_to_log_and_console(f"Media import section - media STRING for {file_base_name} is --{media_string}--") # Testing code
@@ -526,7 +535,7 @@ async def parse_and_store_activity_from_file(
                                     activity_media_crud.create_activity_media_from_strava_bulk_import(created_activity.id, media_file_base_name, media_path, db)
                         else:
                             # .fit files can create multiple activities - it is unclear how Strava links media to these.  Skipping for now.
-                            core_logger.print_to_log_and_console(f"Media import section - Activity {file_base_name} is a .fit; media import not supported yet for .fit files.")
+                            core_logger.print_to_log_and_console(f"Media import section - Activity {file_base_name} is a .fit with more than one activity in the same file; media import not supported yet for this type of .fit file.")
 
                 # Return the created activity
                 return created_activities
