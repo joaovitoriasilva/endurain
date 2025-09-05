@@ -222,7 +222,7 @@
 </tr>
 <tr>
 <td>REVERSE_GEO_PROVIDER</td>
-<td>geocode</td>
+<td>nominatim</td>
 <td>Yes</td>
 <td>Defines reverse geo provider. Expects <a href="https://geocode.maps.co/">geocode</a>, photon or nominatim. photon can be the <a href="https://photon.komoot.io">SaaS by komoot</a> or a self hosted version like a <a href="https://github.com/rtuszik/photon-docker">self hosted version</a>. Like photon, Nominatim can be the <a href="https://nominatim.openstreetmap.org/">SaaS</a> or a self hosted version</td>
 </tr>
@@ -257,10 +257,10 @@
 <td><a href="https://geocode.maps.co/">Geocode maps</a> offers a free plan consisting of 1 Request/Second. Registration necessary.</td>
 </tr>
 <tr>
-<td>GEOCODES_MAPS_RATE_LIMIT</td>
+<td>REVERSE_GEO_RATE_LIMIT</td>
 <td>1</td>
 <td>Yes</td>
-<td>Change this if you have a paid Geocode maps tier</td>
+<td>Change this if you have a paid Geocode maps tier. Other providers also use this variable. Keep it as is if you use photon or Nominatim to keep 1 request per second</td>
 </tr>
 <tr>
 <td>DB_TYPE</td>
@@ -363,6 +363,42 @@
 <td>production</td>
 <td>Yes</td>
 <td>"production" and "development" allowed. "development" allows connections from localhost:8080 and localhost:5173 at the CORS level</td>
+</tr>
+<tr>
+<td>SMTP_HOST</td>
+<td>No default set</td>
+<td>Yes</td>
+<td>The SMTP host of your email provider. Example <code>smtp.protonmail.ch</code></td>
+</tr>
+<tr>
+<td>SMTP_PORT</td>
+<td>587</td>
+<td>Yes</td>
+<td>The SMTP port of your email provider. Default is 587</td>
+</tr>
+<tr>
+<td>SMTP_USERNAME</td>
+<td>No default set</td>
+<td>Yes</td>
+<td>The username of your SMTP email provider, probably your email address</td>
+</tr>
+<tr>
+<td>SMTP_PASSWORD</td>
+<td>No default set</td>
+<td>Yes</td>
+<td>The password of your SMTP email provider. Some providers allow the use of your account password, others require the creation of an app password. Please refer to your provider documentation</td>
+</tr>
+<tr>
+<td>SMTP_SECURE</td>
+<td>true</td>
+<td>Yes</td>
+<td>By default it uses secure communications. Accepted values are <code>true</code> and <code>false</code></td>
+</tr>
+<tr>
+<td>SMTP_SECURE_TYPE</td>
+<td>starttls</td>
+<td>Yes</td>
+<td>If SMTP_SECURE is set you can set the communication type. Accepted values are <code>starttls</code> and <code>ssl</code></td>
 </tr>
 </tbody>
 </table>
