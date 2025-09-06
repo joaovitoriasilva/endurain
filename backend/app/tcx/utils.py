@@ -7,6 +7,7 @@ import activities.activity.schema as activities_schema
 import activities.activity.utils as activities_utils
 
 import users.user_default_gear.utils as user_default_gear_utils
+import users.user.crud as users_crud
 
 import core.logger as core_logger
 import core.config as core_config
@@ -238,6 +239,40 @@ def parse_tcx_file(file, user_id, user_privacy_settings, db):
         # Calculate normalised power
         np = activities_utils.calculate_np(power_waypoints)
 
+    # Calculate TSS for the activity
+    tss_value = 0
+    try:
+        # Get user to access threshold values
+        user = users_crud.get_user_by_id(user_id, db)
+        if user:
+            # Create a temporary activity object with the data needed for TSS calculation
+            temp_activity = activities_schema.Activity(
+                user_id=user_id,
+                name="",  # Not needed for TSS calculation
+                distance=0,  # Not needed for TSS calculation
+                activity_type=activity_type,
+                total_timer_time=(tcx_file.end_time - tcx_file.start_time).total_seconds(),
+                normalized_power=round(np) if np else None,
+                average_hr=round(tcx_file.hr_avg) if tcx_file.hr_avg else None,
+                max_hr=round(tcx_file.hr_max) if tcx_file.hr_max else None,
+                pace=pace,
+            )
+            
+            # Calculate TSS
+            tss_value = activities_utils.calculate_activity_tss(
+                temp_activity,
+                user_ftp=user.ftp,
+                user_lthr=user.lthr,
+                user_run_threshold_pace=user.run_threshold_pace,
+                user_swim_threshold_pace=user.swim_threshold_pace
+            )
+    except Exception as e:
+        core_logger.print_to_log_and_console(
+            f"Error calculating TSS for TCX activity: {e}",
+            "warning",
+            exc=e,
+        )
+
     activity = activities_schema.Activity(
         user_id=user_id,
         name=activity_name,
@@ -262,6 +297,7 @@ def parse_tcx_file(file, user_id, user_privacy_settings, db):
         average_cad=round(tcx_file.cadence_avg) if tcx_file.cadence_avg else None,
         max_cad=round(tcx_file.cadence_max) if tcx_file.cadence_max else None,
         calories=tcx_file.calories if tcx_file.calories else None,
+        tss=tss_value if tss_value > 0 else None,
         visibility=(
             user_privacy_settings.default_activity_visibility
             if user_privacy_settings.default_activity_visibility is not None

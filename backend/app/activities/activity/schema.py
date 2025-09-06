@@ -36,6 +36,7 @@ class Activity(BaseModel):
     workout_feeling: int | None = None
     workout_rpe: int | None = None
     calories: int | None = None
+    tss: int | None = None
     visibility: int | None = None
     gear_id: int | None = None
     strava_gear_id: str | None = None

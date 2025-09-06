@@ -10,6 +10,7 @@ import activities.activity.utils as activities_utils
 import activities.activity.schema as activities_schema
 
 import users.user_default_gear.utils as user_default_gear_utils
+import users.user.crud as users_crud
 
 import users.user_privacy_settings.schema as users_privacy_settings_schema
 
@@ -292,6 +293,40 @@ def parse_gpx_file(
                     lng=lat_lon_waypoints[0]["lon"],
                 )
 
+        # Calculate TSS for the activity
+        tss_value = 0
+        try:
+            # Get user to access threshold values
+            user = users_crud.get_user_by_id(user_id, db)
+            if user:
+                # Create a temporary activity object with the data needed for TSS calculation
+                temp_activity = activities_schema.Activity(
+                    user_id=user_id,
+                    name="",  # Not needed for TSS calculation
+                    distance=0,  # Not needed for TSS calculation
+                    activity_type=activity_type,
+                    total_timer_time=elapsed_time.total_seconds(),
+                    normalized_power=round(np) if np else None,
+                    average_hr=round(avg_hr) if avg_hr else None,
+                    max_hr=round(max_hr) if max_hr else None,
+                    pace=pace,
+                )
+                
+                # Calculate TSS
+                tss_value = activities_utils.calculate_activity_tss(
+                    temp_activity,
+                    user_ftp=user.ftp,
+                    user_lthr=user.lthr,
+                    user_run_threshold_pace=user.run_threshold_pace,
+                    user_swim_threshold_pace=user.swim_threshold_pace
+                )
+        except Exception as e:
+            core_logger.print_to_log_and_console(
+                f"Error calculating TSS for GPX activity: {e}",
+                "warning",
+                exc=e,
+            )
+
         # Create an Activity object with parsed data
         activity = activities_schema.Activity(
             user_id=user_id,
@@ -320,6 +355,7 @@ def parse_gpx_file(
             average_cad=round(avg_cadence) if avg_cadence else None,
             max_cad=round(max_cadence) if max_cadence else None,
             calories=calories,
+            tss=tss_value if tss_value > 0 else None,
             visibility=(
                 user_privacy_settings.default_activity_visibility
                 if user_privacy_settings.default_activity_visibility is not None

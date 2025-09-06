@@ -242,6 +242,7 @@ def transform_schema_activity_to_model_activity(
         workout_feeling=activity.workout_feeling,
         workout_rpe=activity.workout_rpe,
         calories=activity.calories,
+        tss=activity.tss,
         visibility=activity.visibility,
         gear_id=activity.gear_id,
         strava_gear_id=activity.strava_gear_id,
@@ -1075,6 +1076,117 @@ def calculate_np(data):
     normalized_power = avg_fourth_power ** (1 / 4)
 
     return normalized_power
+
+
+def calculate_intensity_factor(normalized_power, ftp):
+    """
+    Calculate Intensity Factor (IF) = Normalized Power / FTP
+    """
+    if ftp is None or ftp <= 0:
+        return 0
+    return normalized_power / ftp
+
+
+def calculate_power_tss(normalized_power, intensity_factor, duration_hours):
+    """
+    Calculate TSS for power-based activities using the original formula:
+    TSS = (duration_hours * NP * IF) / (FTP) * 100
+    Simplified to: TSS = (duration_hours * IF^2) * 100
+    """
+    if normalized_power is None or normalized_power <= 0 or intensity_factor <= 0:
+        return 0
+    
+    return round((duration_hours * (intensity_factor ** 2)) * 100)
+
+
+def calculate_hr_tss(avg_hr, max_hr, duration_hours, lthr=None):
+    """
+    Calculate hrTSS (Heart Rate Training Stress Score)
+    hrTSS = duration_hours * (HR_ratio^2) * 100
+    HR_ratio = (avg_hr - resting_hr) / (lthr - resting_hr)
+    For simplicity, we'll use avg_hr/lthr as approximation if lthr provided,
+    otherwise use avg_hr/max_hr * 0.85 as estimate
+    """
+    if avg_hr is None or avg_hr <= 0 or duration_hours <= 0:
+        return 0
+    
+    # Use LTHR if provided, otherwise estimate as 85% of max HR
+    threshold_hr = lthr if lthr and lthr > 0 else (max_hr * 0.85 if max_hr else avg_hr * 1.05)
+    
+    if threshold_hr <= 0:
+        return 0
+    
+    hr_ratio = avg_hr / threshold_hr
+    return round((duration_hours * (hr_ratio ** 2)) * 100)
+
+
+def calculate_running_tss(pace, threshold_pace, duration_hours):
+    """
+    Calculate rTSS (Running Training Stress Score) based on pace
+    rTSS = duration_hours * (pace_factor^2) * 100
+    pace_factor = threshold_pace / pace (faster pace = higher factor)
+    """
+    if pace is None or pace <= 0 or threshold_pace is None or threshold_pace <= 0:
+        return 0
+    
+    pace_factor = threshold_pace / pace
+    return round((duration_hours * (pace_factor ** 2)) * 100)
+
+
+def calculate_swimming_tss(pace, threshold_pace, duration_hours):
+    """
+    Calculate sTSS (Swimming Training Stress Score) based on pace
+    Similar to rTSS but for swimming activities
+    """
+    return calculate_running_tss(pace, threshold_pace, duration_hours)
+
+
+def calculate_activity_tss(activity_data, user_ftp=None, user_lthr=None, user_run_threshold_pace=None, user_swim_threshold_pace=None):
+    """
+    Calculate TSS for any activity type based on available data
+    
+    Args:
+        activity_data: Activity object with relevant metrics
+        user_ftp: User's Functional Threshold Power (watts)
+        user_lthr: User's Lactate Threshold Heart Rate (bpm)  
+        user_run_threshold_pace: User's running threshold pace (s/m)
+        user_swim_threshold_pace: User's swimming threshold pace (s/m)
+    
+    Returns:
+        TSS value as integer, or 0 if cannot be calculated
+    """
+    duration_hours = float(activity_data.total_timer_time) / 3600.0 if activity_data.total_timer_time else 0
+    
+    if duration_hours <= 0:
+        return 0
+    
+    activity_type = activity_data.activity_type
+    
+    # Power-based activities (cycling, indoor cycling, etc.)
+    if activity_type in [4, 5, 6, 7, 27, 28, 29] and activity_data.normalized_power and user_ftp:
+        intensity_factor = calculate_intensity_factor(activity_data.normalized_power, user_ftp)
+        return calculate_power_tss(activity_data.normalized_power, intensity_factor, duration_hours)
+    
+    # Running activities - prefer pace-based if available, fallback to HR
+    elif activity_type in [1, 2, 3, 34]:
+        if activity_data.pace and user_run_threshold_pace:
+            return calculate_running_tss(activity_data.pace, user_run_threshold_pace, duration_hours)
+        elif activity_data.average_hr:
+            return calculate_hr_tss(activity_data.average_hr, activity_data.max_hr, duration_hours, user_lthr)
+    
+    # Swimming activities - prefer pace-based if available, fallback to HR  
+    elif activity_type in [8, 9]:
+        if activity_data.pace and user_swim_threshold_pace:
+            return calculate_swimming_tss(activity_data.pace, user_swim_threshold_pace, duration_hours)
+        elif activity_data.average_hr:
+            return calculate_hr_tss(activity_data.average_hr, activity_data.max_hr, duration_hours, user_lthr)
+    
+    # All other activities - use HR if available
+    elif activity_data.average_hr:
+        return calculate_hr_tss(activity_data.average_hr, activity_data.max_hr, duration_hours, user_lthr)
+    
+    # If no suitable data available, return 0
+    return 0
 
 
 def define_activity_type(activity_type_name: str) -> int:
