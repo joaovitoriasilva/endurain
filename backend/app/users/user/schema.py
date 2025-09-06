@@ -30,6 +30,9 @@ class User(BaseModel):
     currency: int
     mfa_enabled: bool = False
     mfa_secret: str | None = None
+    email_verified: bool = False
+    email_verification_token: str | None = None
+    pending_admin_approval: bool = False
 
     model_config = {"from_attributes": True}
 
@@ -61,6 +64,25 @@ class UserMe(User):
 
 
 class UserEditPassword(BaseModel):
+    password: str
+
+    @field_validator("password")
+    def validate_password_field(cls, value):
+        return validate_password(value)
+
+
+class UserSignup(BaseModel):
+    name: str
+    username: str
+    email: EmailStr
+    city: str | None = None
+    birthdate: str | None = None
+    preferred_language: str = "en"
+    gender: int = 1  # Default to male
+    units: int = 1   # Default to metric
+    height: int | None = None
+    first_day_of_week: int = 1
+    currency: int = 1  # Default to euro
     password: str
 
     @field_validator("password")
