@@ -3,7 +3,8 @@ from sqlalchemy import (
     Integer,
     String,
     Date,
-    Boolean
+    Boolean,
+    DECIMAL,
 )
 from sqlalchemy.orm import relationship
 from core.database import Base
@@ -87,6 +88,26 @@ class User(Base):
         String(length=512),
         nullable=True,
         comment="User MFA secret for TOTP generation (encrypted at rest)",
+    )
+    ftp = Column(
+        Integer,
+        nullable=True,
+        comment="Functional Threshold Power (FTP) in watts for TSS calculation",
+    )
+    lthr = Column(
+        Integer,
+        nullable=True,
+        comment="Lactate Threshold Heart Rate (LTHR) in bpm for hrTSS calculation",
+    )
+    run_threshold_pace = Column(
+        DECIMAL(precision=20, scale=10),
+        nullable=True,
+        comment="Running threshold pace in seconds per meter for rTSS calculation",
+    )
+    swim_threshold_pace = Column(
+        DECIMAL(precision=20, scale=10),
+        nullable=True,
+        comment="Swimming threshold pace in seconds per meter for sTSS calculation",
     )
 
     # Define a relationship to UsersSessions model

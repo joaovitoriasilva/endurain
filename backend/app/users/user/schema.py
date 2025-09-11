@@ -30,6 +30,10 @@ class User(BaseModel):
     currency: int
     mfa_enabled: bool = False
     mfa_secret: str | None = None
+    ftp: int | None = None
+    lthr: int | None = None
+    run_threshold_pace: float | None = None
+    swim_threshold_pace: float | None = None
 
     model_config = {"from_attributes": True}
 

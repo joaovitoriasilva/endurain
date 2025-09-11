@@ -112,6 +112,11 @@ class Activity(Base):
         nullable=True,
         comment="The number of kilocalories consumed during this activity",
     )
+    tss = Column(
+        Integer,
+        nullable=True,
+        comment="Training Stress Score (TSS) for the activity",
+    )
     visibility = Column(
         Integer,
         nullable=False,
