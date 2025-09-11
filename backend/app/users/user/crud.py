@@ -12,9 +12,12 @@ import users.user.models as users_models
 
 import health_data.utils as health_data_utils
 
-import server_settings.crud as server_settings_crud
+import sign_up_tokens.utils as sign_up_tokens_utils
+
+import server_settings.utils as server_settings_utils
 
 import core.logger as core_logger
+import core.apprise as core_apprise
 
 
 def authenticate_user(username: str, db: Session):
@@ -85,7 +88,6 @@ def get_users_with_pagination(db: Session, page_number: int = 1, num_records: in
 
         # Return the users
         return users
-
     except Exception as err:
         # Log the exception
         core_logger.print_to_log(
@@ -218,12 +220,11 @@ def get_user_by_id(user_id: int, db: Session):
 def get_user_by_id_if_is_public(user_id: int, db: Session):
     try:
         # Check if public sharable links are enabled in server settings
-        server_settings = server_settings_crud.get_server_settings(db)
+        server_settings = server_settings_utils.get_server_settings(db)
 
         # Return None if public sharable links are disabled
         if (
-            not server_settings
-            or not server_settings.public_shareable_links
+            not server_settings.public_shareable_links
             or not server_settings.public_shareable_links_user_info
         ):
             return None
@@ -247,6 +248,32 @@ def get_user_by_id_if_is_public(user_id: int, db: Session):
         core_logger.print_to_log(
             f"Error in get_user_by_id_if_is_public: {err}", "error", exc=err
         )
+        # Raise an HTTPException with a 500 Internal Server Error status code
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal Server Error",
+        ) from err
+
+
+def get_users_admin(db: Session):
+    try:
+        # Get the users from the database and format the birthdate
+        users = [
+            users_utils.format_user_birthdate(user)
+            for user in db.query(users_models.User)
+            .filter(users_models.User.access_type == 2)
+            .all()
+        ]
+
+        # If the users were not found, return None
+        if not users:
+            return None
+
+        # Return the users
+        return users
+    except Exception as err:
+        # Log the exception
+        core_logger.print_to_log(f"Error in get_users_admin: {err}", "error", exc=err)
         # Raise an HTTPException with a 500 Internal Server Error status code
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -346,6 +373,61 @@ def edit_user(user_id: int, user: users_schema.User, db: Session):
 
         # Log the exception
         core_logger.print_to_log(f"Error in edit_user: {err}", "error", exc=err)
+
+        # Raise an HTTPException with a 500 Internal Server Error status code
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal Server Error",
+        ) from err
+
+
+async def approve_user(
+    user_id: int, email_service: core_apprise.AppriseService, db: Session
+):
+    try:
+        # Get the user from the database
+        db_user = (
+            db.query(users_models.User).filter(users_models.User.id == user_id).first()
+        )
+
+        if db_user is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+
+        # Get the server settings from the database
+        server_settings = server_settings_utils.get_server_settings(db)
+
+        user_can_login = False
+        require_email_verification = False
+        email_sent_success = False
+
+        db_user.pending_admin_approval = False
+        if server_settings.signup_require_email_verification:
+            require_email_verification = True
+            # Send the sign-up email
+            email_sent_success = await sign_up_tokens_utils.send_sign_up_email(
+                db_user, email_service, db
+            )
+        else:
+            db_user.active = True
+            db_user.email_verified = True
+            user_can_login = True
+
+        # Commit the transaction
+        db.commit()
+
+        return user_can_login, require_email_verification, email_sent_success
+    except HTTPException as http_err:
+        raise http_err
+    except Exception as err:
+        # Rollback the transaction
+        db.rollback()
+
+        # Log the exception
+        core_logger.print_to_log(f"Error in approve_user: {err}", "error", exc=err)
 
         # Raise an HTTPException with a 500 Internal Server Error status code
         raise HTTPException(
@@ -548,7 +630,7 @@ def disable_user_mfa(user_id: int, db: Session):
     Returns:
         None
     Raises:
-        HTTPException: 
+        HTTPException:
             - 404 Not Found if the user does not exist.
             - 500 Internal Server Error for any other failure; in this case the
               transaction is rolled back and the error is logged.
@@ -568,7 +650,7 @@ def disable_user_mfa(user_id: int, db: Session):
                 detail="User not found",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-        
+
         db_user.mfa_enabled = False
         db_user.mfa_secret = None
         db.commit()
@@ -580,3 +662,141 @@ def disable_user_mfa(user_id: int, db: Session):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal Server Error",
         ) from err
+
+
+def create_signup_user(
+    user: users_schema.UserSignup,
+    server_settings,
+    db: Session,
+):
+    """
+    Creates a new user during the signup process, handling email verification and admin approval requirements.
+
+    Args:
+        user (users_schema.UserSignup): The user signup data containing user details.
+        server_settings: Server configuration settings that determine signup requirements.
+        db (Session): SQLAlchemy database session.
+
+    Returns:
+        users_models.User: The newly created user object.
+
+    Raises:
+        HTTPException:
+            - 409 Conflict if the email or username is not unique.
+            - 500 Internal Server Error for any other exceptions.
+    """
+    try:
+        # Determine user status based on server settings
+        active = True
+        email_verified = False
+        pending_admin_approval = False
+
+        if server_settings.signup_require_email_verification:
+            email_verified = False
+            active = False  # Inactive until email verified
+
+        if server_settings.signup_require_admin_approval:
+            pending_admin_approval = True
+            active = False  # Inactive until approved
+
+        # If both email verification and admin approval are disabled, user is immediately active
+        if (
+            not server_settings.signup_require_email_verification
+            and not server_settings.signup_require_admin_approval
+        ):
+            active = True
+            email_verified = True
+
+        # Create a new user
+        db_user = users_models.User(
+            name=user.name,
+            username=user.username,
+            email=user.email,
+            city=user.city,
+            birthdate=user.birthdate,
+            preferred_language=user.preferred_language,
+            gender=user.gender,
+            units=user.units,
+            height=user.height,
+            access_type=users_schema.UserAccessType.REGULAR,
+            active=active,
+            first_day_of_week=user.first_day_of_week,
+            currency=user.currency,
+            email_verified=email_verified,
+            pending_admin_approval=pending_admin_approval,
+            password=session_security.hash_password(user.password),
+        )
+
+        # Add the user to the database
+        db.add(db_user)
+        db.commit()
+        db.refresh(db_user)
+
+        # Return user
+        return db_user
+    except IntegrityError as integrity_error:
+        # Rollback the transaction
+        db.rollback()
+
+        # Raise an HTTPException with a 409 Conflict status code
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Duplicate entry error. Check if email and username are unique",
+        ) from integrity_error
+    except Exception as err:
+        # Rollback the transaction
+        db.rollback()
+
+        # Log the exception
+        core_logger.print_to_log(
+            f"Error in create_signup_user: {err}", "error", exc=err
+        )
+
+        # Raise an HTTPException with a 500 Internal Server Error status code
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal Server Error",
+        ) from err
+
+
+""" def verify_user_email(token: str, db: Session):
+    try:
+        # Find user by verification token
+        db_user = (
+            db.query(users_models.User)
+            .filter(users_models.User.email_verification_token == token)
+            .first()
+        )
+
+        if db_user is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Invalid or expired verification token",
+            )
+
+        # Mark email as verified and remove token
+        db_user.email_verified = True
+        db_user.email_verification_token = None
+
+        # If not pending admin approval, activate the user
+        if not db_user.pending_admin_approval:
+            db_user.active = True
+
+        db.commit()
+        db.refresh(db_user)
+
+        return db_user
+    except HTTPException as http_err:
+        raise http_err
+    except Exception as err:
+        # Rollback the transaction
+        db.rollback()
+
+        # Log the exception
+        core_logger.print_to_log(f"Error in verify_user_email: {err}", "error", exc=err)
+
+        # Raise an HTTPException with a 500 Internal Server Error status code
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal Server Error",
+        ) from err """
