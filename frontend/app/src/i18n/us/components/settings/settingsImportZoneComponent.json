@@ -14,7 +14,7 @@
     "errorMessageUnableToImportBikes": "An error occurred while importing Strava bikes",
     "stravaImportbuttonShoes": "Shoes import",
     "loadingMessageStravaShoesImport": "Importing shoes",
-    "errorMessageUnableToImportShoes": "An error occurred while importing Strava shoees",
+    "errorMessageUnableToImportShoes": "An error occurred while importing Strava shoes",
     "stravaBulkImportTitle": "Strava bulk import",
     "stravaBulkImportBody": "Import activities and their media from a Strava bulk export (in data/strava_import)",
     "stravaBulkImportButton": "Strava bulk import",

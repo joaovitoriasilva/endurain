@@ -85,6 +85,7 @@ ACTIVITY_ID_TO_NAME = {
     31: "Indoor walking",
     32: "Stand up paddling",
     33: "Surf",
+    34: "Track run",
     # Add other mappings as needed based on the full list in define_activity_type comments if required
     # "AlpineSki",
     # "BackcountrySki",
@@ -146,6 +147,7 @@ ACTIVITY_NAME_TO_ID.update(
         "running": 1,
         "trail running": 2,
         "trailrun": 2,
+        "trail": 2,
         "virtualrun": 3,
         "cycling": 4,
         "biking": 4,
@@ -192,6 +194,9 @@ ACTIVITY_NAME_TO_ID.update(
         "stand_up_paddleboarding": 32,
         "StandUpPaddling": 32,
         "Surfing": 33,
+        "track running": 34,
+        "trackrun": 34,
+        "track": 34,
     }
 )
 
@@ -277,15 +282,33 @@ def serialize_activity(activity: activities_schema.Activity):
             dt = dt.replace(tzinfo=ZoneInfo("UTC"))
         return dt.astimezone(timezone).strftime("%Y-%m-%dT%H:%M:%S")
 
+    def convert_to_datetime_if_string(dt):
+        if isinstance(dt, str):
+            return datetime.fromisoformat(dt)
+        return dt
+
     timezone = (
         ZoneInfo(activity.timezone)
         if activity.timezone
         else ZoneInfo(os.environ.get("TZ", "UTC"))
     )
 
-    activity.start_time = make_aware_and_format(activity.start_time, timezone)
-    activity.end_time = make_aware_and_format(activity.end_time, timezone)
-    activity.created_at = make_aware_and_format(activity.created_at, timezone)
+    activity.start_time_tz_applied = make_aware_and_format(
+        activity.start_time, timezone
+    )
+    activity.end_time_tz_applied = make_aware_and_format(activity.end_time, timezone)
+    activity.created_at_tz_applied = make_aware_and_format(
+        activity.created_at, timezone
+    )
+
+    # Convert to datetime objects if they are strings before calling astimezone
+    start_time_dt = convert_to_datetime_if_string(activity.start_time)
+    end_time_dt = convert_to_datetime_if_string(activity.end_time)
+    created_at_dt = convert_to_datetime_if_string(activity.created_at)
+
+    activity.start_time = start_time_dt.astimezone(None).strftime("%Y-%m-%dT%H:%M:%S")
+    activity.end_time = end_time_dt.astimezone(None).strftime("%Y-%m-%dT%H:%M:%S")
+    activity.created_at = created_at_dt.astimezone(None).strftime("%Y-%m-%dT%H:%M:%S")
 
     return activity
 
@@ -502,7 +525,6 @@ async def parse_and_store_activity_from_file(
                 else:
                      # Should no longer get here due to screening of extensions in router.py, but why not.
                     core_logger.print_to_log_and_console(f"File extension not supported: {file_extension}", "error")
-
                 # Define the directory where the processed files will be stored
                 processed_dir = core_config.FILES_PROCESSED_DIR
 
@@ -511,7 +533,9 @@ async def parse_and_store_activity_from_file(
 
                 # Move the file to the processed directory
                 move_file(processed_dir, new_file_name, file_path)
-                core_logger.print_to_log_and_console(f"Bulk file import: File successfully processed and moved. {file_path} - has become {new_file_name}")
+                core_logger.print_to_log_and_console(
+                    f"Bulk file import: File successfully processed and moved. {file_path} - has become {new_file_name}"
+                )
 
                 # Deal with Strava bulk import media, if in Strava bulk import and media are present.
                 if strava_activities:
@@ -541,9 +565,9 @@ async def parse_and_store_activity_from_file(
                 return created_activities
             else:
                 return None
-    #except HTTPException as http_err:
-        # This is causing a crash on the back end when the try fails.  Looks like we cannot raise an http exception in a background task.
-        #raise http_err
+    # except HTTPException as http_err:
+    # This is causing a crash on the back end when the try fails.  Looks like we cannot raise an http exception in a background task.
+    # raise http_err
     except Exception as err:
         # Log the exception
         core_logger.print_to_log_and_console(
@@ -863,7 +887,7 @@ def calculate_activity_distances(activities: list[activities_schema.Activity]):
     if activities is not None:
         # Calculate the distances
         for activity in activities:
-            if activity.activity_type in [1, 2, 3]:
+            if activity.activity_type in [1, 2, 3, 34]:
                 run += activity.distance
             elif activity.activity_type in [4, 5, 6, 7, 27, 28, 29]:
                 bike += activity.distance
@@ -910,7 +934,28 @@ def location_based_on_coordinates(latitude, longitude) -> dict | None:
         }
 
     # Create a dictionary with the parameters for the request
-    if core_config.REVERSE_GEO_PROVIDER == "geocode":
+    if core_config.REVERSE_GEO_PROVIDER == "nominatim":
+        # Create the URL for the request
+        url_params = {
+            "format": "jsonv2",
+            "lat": latitude,
+            "lon": longitude,
+        }
+        protocol = "https"
+        if not core_config.NOMINATIM_API_USE_HTTPS:
+            protocol = "http"
+        url = f"{protocol}://{core_config.NOMINATIM_API_HOST}/reverse?{urlencode(url_params)}"
+    elif core_config.REVERSE_GEO_PROVIDER == "photon":
+        # Create the URL for the request
+        url_params = {
+            "lat": latitude,
+            "lon": longitude,
+        }
+        protocol = "https"
+        if not core_config.PHOTON_API_USE_HTTPS:
+            protocol = "http"
+        url = f"{protocol}://{core_config.PHOTON_API_HOST}/reverse?{urlencode(url_params)}"
+    elif core_config.REVERSE_GEO_PROVIDER == "geocode":
         # Check if the API key is set
         if core_config.GEOCODES_MAPS_API == "changeme":
             return {
@@ -925,16 +970,6 @@ def location_based_on_coordinates(latitude, longitude) -> dict | None:
             "api_key": core_config.GEOCODES_MAPS_API,
         }
         url = f"https://geocode.maps.co/reverse?{urlencode(url_params)}"
-    elif core_config.REVERSE_GEO_PROVIDER == "photon":
-        # Create the URL for the request
-        url_params = {
-            "lat": latitude,
-            "lon": longitude,
-        }
-        protocol = "https"
-        if not core_config.PHOTON_API_USE_HTTPS:
-            protocol = "http"
-        url = f"{protocol}://{core_config.PHOTON_API_HOST}/reverse?{urlencode(url_params)}"
     else:
         # If no provider is set, return None
         return {
@@ -944,23 +979,24 @@ def location_based_on_coordinates(latitude, longitude) -> dict | None:
         }
 
     # Throttle requests according to configured rate limit
-    if core_config.GEOCODES_MIN_INTERVAL > 0:
-        with core_config.GEOCODES_LOCK:
+    if core_config.REVERSE_GEO_MIN_INTERVAL > 0:
+        with core_config.REVERSE_GEO_LOCK:
             now = time.monotonic()
-            interval = core_config.GEOCODES_MIN_INTERVAL - (
-                now - core_config.GEOCODES_LAST_CALL
+            interval = core_config.REVERSE_GEO_MIN_INTERVAL - (
+                now - core_config.REVERSE_GEO_LAST_CALL
             )
             if interval > 0:
                 time.sleep(interval)
-            core_config.GEOCODES_LAST_CALL = time.monotonic()
+            core_config.REVERSE_GEO_LAST_CALL = time.monotonic()
 
     # Make the request and get the response
     try:
+        headers = {"User-Agent": "Endurain"}
         # Make the request and get the response
-        response = requests.get(url, timeout=10)
+        response = requests.get(url, headers=headers, timeout=10)
         response.raise_for_status()
 
-        if core_config.REVERSE_GEO_PROVIDER == "geocode":
+        if core_config.REVERSE_GEO_PROVIDER in ("geocode", "nominatim"):
             # Get the data from the response
             data = response.json().get("address", {})
             # Return the location based on the coordinates

@@ -20,11 +20,13 @@ Table below shows supported environment variables. Variables marked with optiona
 | GID | 1000 | Yes | Group ID for mounted volumes. Default is 1000 |
 | TZ | UTC | Yes | Timezone definition. Useful for TZ calculation for activities that do not have coordinates associated, like indoor swim or weight training. If not specified UTC will be used. List of available time zones [here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). Format `Europe/Lisbon` expected |
 | ENDURAIN_HOST | No default set | `No` | Required for internal communication and Strava. For Strava https must be used. Host or local ip (example: http://192.168.1.10:8080 or https://endurain.com) |
-| REVERSE_GEO_PROVIDER | geocode | Yes | Defines reverse geo provider. Expects <a href="https://geocode.maps.co/">geocode</a> or photon. photon can be the <a href="https://photon.komoot.io">SaaS by komoot</a> or a self hosted version like a <a href="https://github.com/rtuszik/photon-docker">self hosted version</a> |
+| REVERSE_GEO_PROVIDER | nominatim | Yes | Defines reverse geo provider. Expects <a href="https://geocode.maps.co/">geocode</a>, photon or nominatim. photon can be the <a href="https://photon.komoot.io">SaaS by komoot</a> or a self hosted version like a <a href="https://github.com/rtuszik/photon-docker">self hosted version</a>. Like photon, Nominatim can be the <a href="https://nominatim.openstreetmap.org/">SaaS</a> or a self hosted version |
 | PHOTON_API_HOST | photon.komoot.io | Yes | API host for photon. By default it uses the <a href="https://photon.komoot.io">SaaS by komoot</a> |
 | PHOTON_API_USE_HTTPS | true | Yes | Protocol used by photon. By default uses HTTPS to be inline with what <a href="https://photon.komoot.io">SaaS by komoot</a> expects |
+| NOMINATIM_API_HOST | nominatim.openstreetmap.org | Yes | API host for Nominatim. By default it uses the <a href="https://nominatim.openstreetmap.org">SaaS</a> |
+| NOMINATIM_API_USE_HTTPS | true | Yes | Protocol used by Nominatim. By default uses HTTPS to be inline with what <a href="https://nominatim.openstreetmap.org">SaaS</a> expects |
 | GEOCODES_MAPS_API | changeme | Yes | <a href="https://geocode.maps.co/">Geocode maps</a> offers a free plan consisting of 1 Request/Second. Registration necessary. |
-| GEOCODES_MAPS_RATE_LIMIT | 1 | yes | Change this if you have a paid Geocode maps tier | 
+| REVERSE_GEO_RATE_LIMIT | 1 | Yes | Change this if you have a paid Geocode maps tier. Other providers also use this variable. Keep it as is if you use photon or Nominatim to keep 1 request per second | 
 | DB_TYPE | postgres | Yes | mariadb or postgres |
 | DB_HOST | postgres | Yes | mariadb or postgres |
 | DB_PORT | 5432 | Yes | 3306 or 5432 |
@@ -42,6 +44,12 @@ Table below shows supported environment variables. Variables marked with optiona
 | JAEGER_PORT | 4317 | Yes | N/A |
 | BEHIND_PROXY | false | Yes | Change to true if behind reverse proxy |
 | ENVIRONMENT | production | Yes | "production" and "development" allowed. "development" allows connections from localhost:8080 and localhost:5173 at the CORS level |
+| SMTP_HOST | No default set | Yes | The SMTP host of your email provider. Example `smtp.protonmail.ch` |
+| SMTP_PORT | 587 | Yes | The SMTP port of your email provider. Default is 587 |
+| SMTP_USERNAME | No default set | Yes | The username of your SMTP email provider, probably your email address |
+| SMTP_PASSWORD | No default set | Yes | The password of your SMTP email provider. Some providers allow the use of your account password, others require the creation of an app password. Please refer to your provider documentation |
+| SMTP_SECURE | true | Yes | By default it uses secure communications. Accepted values are `true` and `false` |
+| SMTP_SECURE_TYPE | starttls | Yes | If SMTP_SECURE is set you can set the communication type. Accepted values are `starttls` and `ssl` |
 
 Table below shows the obligatory environment variables for mariadb container. You should set them based on what was also set for the Endurain container.
 
@@ -167,6 +175,60 @@ You may import as many or as few activities as you want by placing only the acti
 Media are currently imported only for .gpx and .tcx files, as well as .fit files that contain only a single activity per .fit file.
 
 Comments associated with media are not imported (Endurain does not currently allow comments on media). FYI: Comments associated with media are stored in Strava's media.csv file.
+
+## Importing information from a Strava bulk export (BETA)
+
+Strava allows users to create a bulk export of their historical activity on the site. This information is stored in a zip file, primarily as .csv files, GPS recording files (e.g., .gpx, .fit), and media files (e.g., .jpg, .png).
+
+### Importing gear from a Strava bulk import
+
+### Importing gear from a Strava bulk export
+
+#### Bike import
+
+At the present time, importing bikes from a Strava bulk export is implemented as a beta feature - use with caution.  Components of bikes are not imported - just the bikes themselves. 
+
+To perform an import of bikes: 
+- Place the bikes.csv file from a Strava bulk export into the data/activity_files/bulk_import folder. Create the folder if needed.
+- In the "Settings" menu select "Import".
+- Click "Bikes Import" next to "Strava gear import".
+- Status messages about the import, including why any gear was not imported, can be found in the logs.
+
+Ensure the file is named "bikes.csv" and has a header row with at least the fields 'Bike Name', 'Bike Brand', and 'Bike Model'.
+
+Note that Endurain does not allow the "+" character in gear field names, and thus all +'s will be replaced with spaces.
+
+#### Shoe import
+
+At the present time, importing shoes from a Strava bulk export is implemented as a beta feature - use with caution.  Components of shooes are not imported - just the shoes themselves. 
+
+To perform an import of shoes: 
+- Place the shoes.csv file from a Strava bulk export into the data/activity_files/bulk_import folder. Create the folder if needed.
+- In the "Settings" menu select "Import".
+- Click "Shoes import" next to "Strava gear import".
+- Status messages about the import, including why any gear was not imported, can be found in the logs.
+
+Ensure the file is named "shoes.csv" and has a header row with at least the fields 'Shoe Name', 'Shoe Brand', and 'Shoe Model'.
+
+Note that Strava allows blank shoe names, but Endurain does not.  Shoes with a blank name will thus be given a default name of "Unnamed Shoe #" on import. 
+
+#### Notes on importing gear
+
+NOTE: There is currently no mechanism to undo a gear import.
+
+All gear will be imported as active, as Strava does not export the active/inactive status of the gear.
+
+Note that Endurain does not allow the "+" character in gear field names, and thus all +'s will be replaced with spaces on import.
+
+Endurain does not allow duplicate gear nicknames, regardless of case (e.g., "Ilves" and "ilves" would not be allowed). Gear with duplicate nicknames will not be imported (i.e., only the first item with a given nickname will be imported).
+
+The import routine checks for duplicate items, and should not import duplicates. Thus it should be safe to re-import the same file mulitple times. However, due to the renaming of un-named shoes, repeated imports of the same shoe file will create duplicate entries of any unnamed shoes present. 
+
+Gear that is already present in Endurain due to having an active link with Strava will not be imported via the manual import process.
+
+### Importing other items from a Strava bulk import
+
+Importing activity metadata and media is under development in September 2025.
 
 ## Image personalization
 

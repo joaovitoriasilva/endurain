@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 import session.security as session_security
 
 import gears.gear.schema as gears_schema
+import gears.gear.utils as gears_utils
 import gears.gear.crud as gears_crud
 import gears.gear.dependencies as gears_dependencies
 
@@ -315,45 +316,54 @@ async def import_bikes_from_Strava_CSV(
                   return None # Nothing to return - no file.
         except:
             # TO DO: RAISE ERROR OR ADD NOTIFICATON HERE?
-            core_logger.print_to_log_and_console(f"Error attempting to open {bikesfilename} file.")
+            core_logger.print_to_log_and_console(f"Error attempting to open {bikes_file_path} file.")
             return None # Nothing to return - error parsing file.
 
         # Get user's existing gear 
         user_gear_list = gears_crud.get_gear_user(token_user_id, db)
-        if user_gear_list is None:
-             #User has no gear - we can just add our own straight up.
-             users_existing_gear_nicknames = None
-        else:
-             #User has gear - we will need to check for duplicates.  So build a list of gear nicknames to check against.
-             users_existing_gear_nicknames = []
-             for item in user_gear_list:
-                  users_existing_gear_nicknames.append(item.nickname)
+            # Saving DB calls by doing this once for the entire gear import
+            #   But one issue with pulling the DB before the import loop below: if a user's import has duplicate gear nicknames in it, this will not be caught by this check.
+            #   But calling the get_gear_user function during the for loop below results in an error, and also would be tons of db calls for large gear imports.
+            #   So, adding a duplicate-nickname check within a single import run to handle this case.
+
+        # Create list of nicknames added during this import, to check for overlapping nicknames during this import (which causes an error)
+        nicknames_added = []
+
+        # Get gear type id of bikes
+        bike_gear_type = gears_utils.GEAR_NAME_TO_ID["bike"]
 
         # Go through bikes and add them to the database if they are not duplicates.
         for bike in bikes_dict:  # bike here is the nickname of the bike from Strava (the index of our bikes_dict)
-             #core_logger.print_to_log_and_console(f"In bikes_dict iterator.  Current bike is - {bike}") # Testing code.
-             if bike in users_existing_gear_nicknames:
-                   core_logger.print_to_log_and_console(f"Bike - {bike} - found in existing user gear (nicknames matched).  Skipping import.")
+             gear_item_dict = {"name": bike, "brand": bikes_dict[bike]["Bike Brand"], "model": bikes_dict[bike]["Bike Model"], "gear_type": bike_gear_type}
+             name_duplicated, gear_duplicated, duplicate_item = gears_utils.is_gear_duplicate(gear_item_dict, user_gear_list)
+             if bike.replace("+", " ").lower() in nicknames_added: name_duplicated = True
+             if name_duplicated:
+                   # At least the nickname is duplicated, so do not import.  The following logic explains various cases to the user.
+                   if gear_duplicated:
+                       if duplicate_item.strava_gear_id is None:
+                           core_logger.print_to_log_and_console(f"Bike - {bike} - found in existing user gear.  Skipping import.")
+                       else:
+                           core_logger.print_to_log_and_console(f"Bike - {bike} - was found in existing user gear, linked to Strava.  Skipping import of bike, but be aware that the bike will be removed if Strava is unlinked.")
+                   else:
+                       core_logger.print_to_log_and_console(f"Bike - {bike} - nickname of bike was found in existing user gear.  Skipping import, as nicknames cannot overlap (and capitalization does not matter).")
              else:
                    core_logger.print_to_log_and_console(f"Bike - {bike} - not found in existing user gear. Importing.")
                    # Notes on the import:
-                   # Hard-coding gear type of bike to be gear_type of 1 here
-                   #    There seems to be no single-point list of gear type in the code.
-                   #    Best list appears to be at /frontend/app/src/components/Gears/GearsListComponent.vue
-                   # Strava does not export its internal gear ID, so we do not have that information.
-                   # Strava does not export the active / inactive state of the bike, so importing all as active (as we need a status).
+                   #     Strava does not export its internal gear ID, so we do not have that information.
+                   #     Strava does not export the active / inactive state of the bike, so importing all as active (as we need a status).
                    new_gear = gears_schema.Gear(
                          user_id = token_user_id,
                          brand = bikes_dict[bike]["Bike Brand"],
                          model = bikes_dict[bike]["Bike Model"],
                          nickname = bike,
-                         gear_type = 1,
+                         gear_type = bike_gear_type,
                          created_at = import_time_iso,
                          is_active = True,
                          strava_gear_id = None
                         )
-                   gears_crud.create_gear(new_gear, token_user_id, db)
-                   core_logger.print_to_log_and_console(f"Bike - {bike} - has been imported.")
+                   added_gear = gears_crud.create_gear(new_gear, token_user_id, db)
+                   core_logger.print_to_log_and_console(f"Bike - {bike} - has been imported as {added_gear.nickname}.")
+                   nicknames_added.append(added_gear.nickname.lower()) # for checking of duplicated names during a single import, case-insenitively
         # Return a success message
         core_logger.print_to_log_and_console("Bike import complete.")
         return {"Gear import successful."}
@@ -367,7 +377,6 @@ async def import_bikes_from_Strava_CSV(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal Server Error",
         ) from err
-
 
 @router.post(
     "/stravashoesimport",
@@ -393,62 +402,99 @@ async def import_shoes_from_Strava_CSV(
         shoes_file_path = os.path.join(bulk_import_dir, shoesfilename)
 
         # Get file and parse it
-        shoes_dict = {}  # format: "Shoe Name" from the Strava CSV is used as the key, which then holds a dictionary that is based on the Strava shoe gear CSV file's data
+        shoes_list = [] # Using a list for shoes, as there is no unique value to use as a dictionary key like with bikes
         try:
             if os.path.isfile(shoes_file_path):
-                  core_logger.print_to_log_and_console(f"{shoesfilename} file exists in the {bulk_import_dir} directory. Starting to process file.")
+                  core_logger.print_to_log_and_console(f"{shoesfilename} exists in the {bulk_import_dir} directory. Starting to process file.")
                   with open(shoes_file_path, "r") as shoe_file:
                       shoes_csv = csv.DictReader(shoe_file)
                       for row in shoes_csv:    # Must process CSV file object while file is still open.
                           # Example row: {'Shoe Name': 'New forest runners', 'Shoe Brand': 'Saucony', 'Shoe Model': 'Trail runner 2200', 'Shoe Default Sport Types': ''}
                           if ('Shoe Name' not in row) or ('Shoe Brand' not in row) or ('Shoe Model' not in row): 
-                              core_logger.print_to_log_and_console(f"Aborting shoes import: Proper headers not found in {shoesfilename}.  File should have 'Shoe Name', 'Shoe Brand', and 'Shoe Model'.")
+                              core_logger.print_to_log_and_console("Aborting shoes import: Proper headers not found in {shoesfilename}. File should have 'Shoe Name', 'Shoe Brand', and 'Shoe Model'.")
                               return None
-                          shoes_dict[row["Shoe Name"]] = row
-                  core_logger.print_to_log_and_console(f"Strava shoe gear csv file parsed and gear dictionary created. File was {len(shoes_dict)} rows long, ignoring header row.")
+                          shoes_list.append(row)
+                  core_logger.print_to_log_and_console(f"Strava {shoesfilename} file parsed and gear dictionary created. File was {len(shoes_list)} rows long, ignoring header row.")
             else:
                   core_logger.print_to_log_and_console(f"No {shoesfilename} file located in the {bulk_import_dir} directory.")
                   return None # Nothing to return - no file.
         except:
             # TO DO: RAISE ERROR OR ADD NOTIFICATON HERE?
-            core_logger.print_to_log_and_console(f"Error attempting to open {shoesfilename} file.")
+            core_logger.print_to_log_and_console(f"Error attempting to open {shoes_file_path} file.")
             return None # Nothing to return - error parsing file.
 
         # Get user's existing gear 
         user_gear_list = gears_crud.get_gear_user(token_user_id, db)
-        if user_gear_list is None:
-             #User has no gear - we can just add our own straight up.
-             users_existing_gear_nicknames = None
-        else:
-             #User has gear - we will need to check for duplicates.  So build a list of gear nicknames to check against.
-             users_existing_gear_nicknames = []
-             for item in user_gear_list:
-                  users_existing_gear_nicknames.append(item.nickname)
+        # Saving DB calls by doing this once for the entire gear import
+        #   But one issue with pulling the DB before the import loop below: if a user's import has duplicate gear nicknames in it, this will not be caught by this check.
+        #   But calling the get_gear_user function during the for loop below results in an error, and also would be tons of db calls for large gear imports.
+        #   So, adding a duplicate-nickname check within a single import run to handle this case.
 
-        # Go through bikes and add them to the database if they are not duplicates.
-        for shoe in shoes_dict:  # shoe here is the nickname of the shoe from Strava (the index of our shoes_dict)
-             #core_logger.print_to_log_and_console(f"In shoes_dict iterator.  Current shoe is - {shoe}") # Testing code.
-             if shoe in users_existing_gear_nicknames:
-                   core_logger.print_to_log_and_console(f"Shoe - {shoe} - found in existing user gear (nicknames matched).  Skipping import.")
+        # Create list of nicknames, to build new names for un-named shoes and to check for overlapping nicknames during this import
+        user_gear_nicknames = []
+        if user_gear_list is not None:
+             for item in user_gear_list:
+                   user_gear_nicknames.append(item.nickname.lower())
+
+        # Get gear type id of shoes
+        shoe_gear_type = gears_utils.GEAR_NAME_TO_ID["shoes"]
+
+        # Go through shoes and add them to the database if they are not duplicates.
+        for shoerow in shoes_list:  
+             # Strava allows nameless shoes, but Endurain does not.  Check for nameless shoes and add a novel name.
+             blank_name = False
+             if shoerow["Shoe Name"] == None or shoerow["Shoe Name"] == "" or shoerow["Shoe Name"].replace("+", " ").strip() == "":
+                   blank_name = True
+                   duplicate_name = True
+                   newnumber=1
+                   while duplicate_name:
+                         proposed_name = core_config.STRAVA_BULK_IMPORT_SHOES_UNNAMED_SHOE + str(newnumber)
+                         if proposed_name.lower() in user_gear_nicknames:
+                               newnumber+=1
+                         else:
+                               duplicate_name = False
+
+             # Use new name, if we have one.
+             if blank_name:
+                   shoe_name = proposed_name
+                   core_logger.print_to_log_and_console(f"Shoe name was blank, it has been updated to: {proposed_name}")
              else:
-                   core_logger.print_to_log_and_console(f"Shoe - {shoe} - not found in existing user gear. Importing.")
+                   shoe_name = shoerow["Shoe Name"]
+
+             # Check for duplicate gear already present, and abort import of this item if name overlaps
+             #   Note - shoes that have a blank name in Strava and that have already been imported once will NOT be detected as duplicates, as the name will have been changed from the (blank) Strava name.
+             shoerowalreadypresent = False
+             gear_item_dict = {"name": shoe_name, "brand": shoerow["Shoe Brand"], "model": shoerow["Shoe Model"], "gear_type": shoe_gear_type}
+             name_duplicated, gear_duplicated, duplicate_item = gears_utils.is_gear_duplicate(gear_item_dict, user_gear_list)     # checks for duplicate existing in database before this import round
+             if shoe_name.replace("+", " ").lower() in user_gear_nicknames: name_duplicated = True                                # checks for duplicate during this import round
+             if name_duplicated:
+                   # At least the nickname is duplicated, so do not import.  The following logic explains various cases to the user.
+                   if gear_duplicated:
+                         if duplicate_item.strava_gear_id is None:
+                               core_logger.print_to_log_and_console(f"Shoe - {shoe_name} - found in existing user gear.  Skipping import.")
+                         else:
+                               core_logger.print_to_log_and_console(f"Shoe - {shoe_name} - was found in existing user gear, linked to Strava.  Skipping import, but be aware that the shoe will be removed if Strava is unlinked.")
+                   else:
+                         core_logger.print_to_log_and_console(f"Shoe - {shoe_name} - nickname of shoe was found in existing user gear.  Skipping import, as nicknames cannot overlap (capitalization does not matter).")
+             else:
+                   core_logger.print_to_log_and_console(f"Shoe - {shoe_name} - not found in existing user gear. Importing. Strava data on the shoe is: {shoerow}")
                    # Notes on the import:
-                   # Hard-coding gear type of shoe to be gear_type of 2 here
-                   #    Once gear type dictionary is incorporated, recode here. 
                    # Strava does not export its internal gear ID, so we do not have that information.
                    # Strava does not export the active / inactive state of the shoe, so importing all as active (as we need a status).
                    new_gear = gears_schema.Gear(
                          user_id = token_user_id,
-                         brand = shoes_dict[shoe]["Shoe Brand"],
-                         model = shoes_dict[shoe]["Shoe Model"],
-                         nickname = shoe,
-                         gear_type = 2,
+                         brand = shoerow["Shoe Brand"],
+                         model = shoerow["Shoe Model"],
+                         nickname = shoe_name,
+                         gear_type = shoe_gear_type,
                          created_at = import_time_iso,
                          is_active = True,
                          strava_gear_id = None
-                        )
-                   gears_crud.create_gear(new_gear, token_user_id, db)
-                   core_logger.print_to_log_and_console(f"Shoe - {shoe} - has been imported.")
+                         )
+                   added_gear = gears_crud.create_gear(new_gear, token_user_id, db)
+                   core_logger.print_to_log_and_console(f"Shoe - {shoe_name} - has been imported.")
+                   user_gear_nicknames.append(added_gear.nickname.lower()) # for checking of duplicated names during a single import, case-insenitively
+
         # Return a success message
         core_logger.print_to_log_and_console("Shoe import complete.")
         return {"Shoe import successful."}
