@@ -344,18 +344,6 @@ async function submitRetrieveStravaGear() {
 }
 
 async function buttonStravaUnlink() {
-<<<<<<< HEAD
-	const notification = push.promise(t("settingsIntegrationsZone.processingMessageUnlinkStrava"));
-	try {
-		await strava.unlinkStrava();
-		const user = authStore.user;
-		user.is_strava_linked = 0;
-		authStore.setUser(user, locale);
-		notification.resolve(t("settingsIntegrationsZone.successMessageStravaUnlinked"));
-	} catch (error) {
-		notification.reject(`${t("settingsIntegrationsZone.errorMessageUnableToUnlinkStrava")} - ${error}`);
-	}
-=======
   const notification = push.promise(t('settingsIntegrationsZone.processingMessageUnlinkStrava'))
   try {
     await strava.unlinkStrava()
@@ -368,7 +356,6 @@ async function buttonStravaUnlink() {
       `${t('settingsIntegrationsZone.errorMessageUnableToUnlinkStrava')} - ${error}`
     )
   }
->>>>>>> 261b-strava-shoe-import-v13
 }
 
 async function submitRetrieveGarminConnectActivitiesDays(days) {

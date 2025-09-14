@@ -49,7 +49,7 @@
               href="#" 
               class="btn btn-primary" 
               role="button" 
-              @click="submitStravaBikesImport">{{ $t("settingsImportZone.stravaGearImportbuttonBikes") }}
+              @click="submitStravaBikesImport">{{ $t("settingsImportZone.stravaGearImportButtonBikes") }}
             </a>
           </div>
           <div class="d-flex align-items-center">
@@ -58,7 +58,7 @@
               href="#" 
               class="btn btn-primary" 
               role="button" 
-              @click="submitStravaShoesImport">{{ $t("settingsImportZone.stravaImportbuttonShoes") }}
+              @click="submitStravaShoesImport">{{ $t("settingsImportZone.stravaGearImportButtonShoes") }}
             </a>
           </div>
         </li>
