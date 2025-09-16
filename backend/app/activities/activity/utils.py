@@ -502,17 +502,18 @@ async def parse_and_store_activity_from_file(
                     numberoffitactivities=len(created_activities_objects)
 
                     for activity in created_activities_objects:
-                        # If there is only one activity in the .fit file, add Strava metadata (current import logic does not deal with multiple activities in a single file)
+                        # If there is only one activity in the .fit file, things are simple: add Strava metadata (current import logic does not deal with multiple activities in a single file)
                         if numberoffitactivities == 1:
                             if strava_activities and strava_activity_info is not None:
+                                activity["activity"].name = strava_activity_info["name"]  #Oddly the name does not seem to be being imported from the .fit files, like it is for.gpx
                                 activity["activity"].description = strava_activity_info["description"]
                                 activity["activity"].gear_id = strava_activity_info["gear_id"]
                                 activity["activity"].import_info = strava_activity_info["import_dict"]
                             if generic_activity_info is not None:
                                 activity["activity"].import_info = generic_activity_info["import_dict"]
                         else:
-                            if generic_activity_info is not None:
-                                activity["activity"].import_info = generic_activity_info["import_dict"]
+                            # there is more than one activity in the file - life is complicated. 
+
                             #core_logger.print_to_log_and_console(f"Within the fit file parsing module.  Activity is: {activity}.")  # Testing code
                             #core_logger.print_to_log_and_console(f"Within the fit file parsing module - START OF ACTIVITY.")  # Testing code
                             #core_logger.print_to_log_and_console(f"Activity name: {activity["activity"].name}")  # Testing code
@@ -525,26 +526,50 @@ async def parse_and_store_activity_from_file(
                             #core_logger.print_to_log_and_console(f"Activity average speed: {activity["activity"].average_speed}")  # Testing code
                             #core_logger.print_to_log_and_console(f"Within the fit file parsing module - END OF ACTIVITY.")  # Testing code
 
-                            # TO DO - add filter to check if we are in a strava import, and if so, if this activity matches the strava info for this file.  If so, import.  If not, abort.
                             if strava_activities and strava_activity_info is not None:
-                                core_logger.print_to_log_and_console(f"START - Within strava activities section of multi-file fit file parsing module.")  # Testing code
-                                core_logger.print_to_log_and_console(f"Activity name - from Endurain activity parser: {activity["activity"].name}")  # Testing code
-                                core_logger.print_to_log_and_console(f"Activity name - from strava activities.csv: {strava_activity_info["name"]}")  # Testing code
-                                core_logger.print_to_log_and_console(f"Activity start time - from Endurain activity parser: {activity["activity"].start_time}")  # THIS MAY BE THE KEY TO FINDING DUPLICATES # Testing code
-                                core_logger.print_to_log_and_console(f"Activity start time - from Strava activities.csv: {strava_activity_info["activity date"]}")  # THIS MAY BE THE KEY TO FINDING DUPLICATES # Testing code
-                                core_logger.print_to_log_and_console(f"Activity type - from Endurain activity parser: {activity["activity"].activity_type}")  # Testing code
-                                core_logger.print_to_log_and_console(f"Activity type - from strava activities.csv: {strava_activity_info["activity type"]}")  # Testing code
-                                core_logger.print_to_log_and_console(f"END - Within strava activities section of multi-file fit file parsing module.")  # Testing code
+                                # We have a multi-activity .fit file being imported from a Strava bulk export.
+                                # Strava includes each multi-activity .fit file once for each activity inside the fit file.  Thus, run without filtering a 5-activity fit file is imported 5 times for 25 activities imported.
+                                # So, to find out which activity goes with which file, we check if start time of activity aligns with start time of the activity's strava activities.csv file data.  If it does import.
+                                endurain_parsed_file_start_date = datetime.fromisoformat(activity["activity"].start_time)   
+                                strava_csv_start_date = datetime.strptime(strava_activity_info["activity date"], "%b %d, %Y, %-I:%-M:%-S %p")
+                                if endurain_parsed_file_start_date == strava_csv_start_date:
+                                    # We have the activity that aligns with the Strava info for the .fit file - set up for the import.
+                                    core_logger.print_to_log_and_console(f"Bulk activity import of multi-activity .fit file: start time of activity aligns with start time of data in activities.csv file, so importing the activity.")  # 
+                                    activity["activity"].name = strava_activity_info["name"]  #Oddly the name does not seem to be being imported from the .fit files
+                                    activity["activity"].description = strava_activity_info["description"]
+                                    activity["activity"].gear_id = strava_activity_info["gear_id"]
+                                    activity["activity"].import_info = strava_activity_info["import_dict"]
+                                else:
+                                    # This is not the activity that aligns with the Strava info - skip import.
+                                    core_logger.print_to_log_and_console(f"Bulk activity import of multi-activity .fit file: skipping likely duplicate import. Start time does not align with start time in the Strava activities.csv file.")  # 
+                                    continue
+
+                                #core_logger.print_to_log_and_console(f"START - Within strava activities section of multi-file fit file parsing module.")  # Testing code
+                                #core_logger.print_to_log_and_console(f"Activity name - from Endurain activity parser: {activity["activity"].name}")  # Testing code
+                                #core_logger.print_to_log_and_console(f"Activity name - from strava activities.csv: {strava_activity_info["name"]}")  # Testing code
+                                #core_logger.print_to_log_and_console(f"Activity start time - from Endurain activity parser: {activity["activity"].start_time}")  # THIS MAY BE THE KEY TO FINDING DUPLICATES # Testing code
+                                #endu_start_date = datetime.fromisoformat(activity["activity"].start_time)   
+                                #core_logger.print_to_log_and_console(f"Activity start time - from Endurain - converted to python time: {endu_start_date}")  # THIS MAY BE THE KEY TO FINDING DUPLICATES # Testing code
+                                #endu_start_date_reformatted = edu_start_date.strftime("%b %d, %Y, %-I:%-M:%-S %p")
+                                #core_logger.print_to_log_and_console(f"Activity start time - from Endurain - reformatted to a string: {endu_start_date_reformatted}")  # THIS MAY BE THE KEY TO FINDING DUPLICATES # Testing code
+                                #core_logger.print_to_log_and_console(f"Activity start time - from Strava activities.csv: {strava_activity_info["activity date"]}")  # THIS MAY BE THE KEY TO FINDING DUPLICATES # Testing code
+                                #strava_start_date = datetime.strptime(strava_activity_info["activity date"], "%b %d, %Y, %-I:%-M:%-S %p")
+                                #core_logger.print_to_log_and_console(f"Activity start time - from Strava converted to datetime: {strava_start_date}")  # THIS MAY BE THE KEY TO FINDING DUPLICATES # Testing code
+                                #if endu_start_date_reformatted == strava_activity_info["activity date"]:
+                                #    core_logger.print_to_log_and_console(f"WE HAVE A MATCH - STRING OF START TIME MATCHES!")  # THIS MAY BE THE KEY TO FINDING DUPLICATES # Testing code
+                                #if endu_start_date == strava_start_date:
+                                #    core_logger.print_to_log_and_console(f"WE HAVE A MATCH - PYTHON DT FORMAT OF START TIME MATCHES!")  # THIS MAY BE THE KEY TO FINDING DUPLICATES # Testing code
+                                #core_logger.print_to_log_and_console(f"Activity type - from Endurain activity parser: {activity["activity"].activity_type}")  # Testing code
+                                #core_logger.print_to_log_and_console(f"Activity type - from strava activities.csv: {strava_activity_info["activity type"]}")  # Testing code
+                                #core_logger.print_to_log_and_console(f"END - Within strava activities section of multi-file fit file parsing module.")  # Testing code
 
                                 # Notes - name and activity type do not match up.  BUT, time does.  Though needs to be reformatted.
                                     #Activity start time - from Endurain activity parser: 2023-10-21T07:41:47
                                     #Activity start time - from Strava activities.csv: Oct 21, 2023, 8:13:28 AM
-
-                                #if activities.csv line matches data in parsed activity - go on to import
-                                       # ADD DATA TO PARSED FILE - name is not being imported for .fit files! But activity type is, so don't change that.
-                                       # Add name
-                                       # Add other bits we add to the GPX.
-                                #else - continue (i.e., skip import)
+                            else:
+                                # It is a multi-activity .fit file that is not being imported from Strava.  Just add generic import metadata, if present..
+                                if generic_activity_info is not None:
+                                    activity["activity"].import_info = generic_activity_info["import_dict"]
 
                         # Store the activity in the database
                         created_activity = await store_activity(
@@ -575,28 +600,24 @@ async def parse_and_store_activity_from_file(
                 )
 
                 # Deal with Strava bulk import media, if in Strava bulk import and media are present.
+                # Note - even multi-activity .fit files are good with this code, as there should only be a single imported activity per file.
                 if strava_activities:
                     if strava_activities.get(file_base_name):
                         #core_logger.print_to_log_and_console(f"Media import section - Activity {file_base_name} found in strava activities dictionary.") # Testing >
-                        if file_extension.lower() in (".gpx", ".tcx") or numberoffitactivities == 1:
-                            # A single activity was created - media addition is simple.
-                            media_string = strava_activities[file_base_name]["Media"].strip()
-                            #core_logger.print_to_log_and_console(f"Media import section - media STRING for {file_base_name} is --{media_string}--") # Testing code
-                            media_list = []
-                            if media_string is None or not media_string:
-                                core_logger.print_to_log_and_console(f"Media import section - no media list in activities.csv for {file_base_name}")
-                            else:
-                                media_list = media_string.split('|')
-                                #core_logger.print_to_log_and_console(f"Media import section - media list for {file_base_name} is {media_list}") # Testing code
-                                for media_item in media_list:
-                                    #core_logger.print_to_log_and_console(f"Media import section - queuing processing of {media_item} for activity {file_base_name}") # Testing code
-                                    strava_media_dir = core_config.STRAVA_BULK_IMPORT_MEDIA_DIR
-                                    _, media_file_base_name = os.path.split(media_item)
-                                    media_path = os.path.join(strava_media_dir, media_file_base_name)
-                                    activity_media_crud.create_activity_media_from_strava_bulk_import(created_activity.id, media_file_base_name, media_path, db)
+                        media_string = strava_activities[file_base_name]["Media"].strip()
+                        #core_logger.print_to_log_and_console(f"Media import section - media STRING for {file_base_name} is --{media_string}--") # Testing code
+                        media_list = []
+                        if media_string is None or not media_string:
+                            core_logger.print_to_log_and_console(f"Media import section - no media list in activities.csv for {file_base_name}")
                         else:
-                            # .fit files can create multiple activities - it is unclear how Strava links media to these.  Skipping for now.
-                            core_logger.print_to_log_and_console(f"Media import section - Activity {file_base_name} is a .fit with more than one activity in the same file; media import not supported yet for this type of .fit file.")
+                            media_list = media_string.split('|')
+                            #core_logger.print_to_log_and_console(f"Media import section - media list for {file_base_name} is {media_list}") # Testing code
+                            for media_item in media_list:
+                                #core_logger.print_to_log_and_console(f"Media import section - queuing processing of {media_item} for activity {file_base_name}") # Testing code
+                                strava_media_dir = core_config.STRAVA_BULK_IMPORT_MEDIA_DIR
+                                _, media_file_base_name = os.path.split(media_item)
+                                media_path = os.path.join(strava_media_dir, media_file_base_name)
+                                activity_media_crud.create_activity_media_from_strava_bulk_import(created_activity.id, media_file_base_name, media_path, db)
 
                 # Return the created activity
                 return created_activities
