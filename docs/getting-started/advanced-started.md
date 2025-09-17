@@ -85,7 +85,13 @@ Docker image uses a non-root user, so ensure target folders are not owned by roo
 | `<local_path>/endurain/backend/logs:/app/backend/logs` | Log files for the backend |
 | `<local_path>/endurain/backend/data:/app/backend/data` | Necessary for image and activity files persistence on docker image update |
 
-## Bulk import and file upload
+## Image personalization
+
+It is possible (v0.10.0 or higher) to personalize the login image in the login page. To do that, map the data/server_images directory for image persistence on container updates and:
+ - Set the image in the server settings zone of the settings page
+ - A square image is expected. Default one uses 1000px vs 1000px
+
+## Generic bulk import and file upload
 
 To perform a bulk import:
 - Place .fit, .tcx, .gz and/or .gpx files into the data/activity_files/bulk_import folder. Create the folder if needed.
@@ -103,16 +109,17 @@ meters in distance and elevation gain. Some notes:
 
 Strava allows users to create a bulk export of their historical activity on the site.  This information is stored in a zip file, primarily as .csv files, GPS recording files (e.g., .gpx, .fit), and media files (e.g., .jpg, .png).
 
-Strava bulk import work occurs in the data/strava_import folder. Create the folder if needed.
+All Strava bulk import functions expect files in the data/strava_import folder. Create the folder if needed.
 
 Recommended procedure
 1. Read the instructions below, including notes on limitations and known issues.
-2. Import, or manually create, any gear that was present in Strava.
-3. Import the activities and media.
+2. Backup your database and other core files.  There is currently no mechanism to roll-back or undo a bulk import.
+3. Import, or manually create, any gear that was present in Strava.
+4. Import activities and media that were in Strava.
 
 ### Importing gear from a Strava bulk export
 
-Importing of bikes and shoes is currently possible. Bike and shoe imports are screened for duplicates via nickname, so pre-existing gear with the same nickname will prevent import of that item of gear.
+Importing of bikes and shoes is currently possible. Bike and shoe imports are screened for duplicates via nickname, so pre-existing gear with the same nickname will prevent import of that item of gear (case-insensitively).
 
 #### Bikes import
 
@@ -126,6 +133,8 @@ To perform an import of bikes:
 
 Ensure the file is named "bikes.csv" and has a header row with at least the fields 'Bike Name', 'Bike Brand', and 'Bike Model'.
 
+Note that Endurain does not allow the "+" character in gear field names, and thus all +'s will be replaced with spaces.
+
 #### Shoe import
 
 At the present time, importing shoes from a Strava bulk export is implemented as a beta feature - use with caution.  Components of shooes are not imported - just the shoes themselves. 
@@ -138,79 +147,7 @@ To perform an import of shoes:
 
 Ensure the file is named "shoes.csv" and has a header row with at least the fields 'Shoe Name', 'Shoe Brand', and 'Shoe Model'.
 
-### Importing activities and media from a Strava bulk export
-
-At the present time, importing activities and media from a Strava bulk export is implemented as a very early beta feature - use with extreme caution. 
-
-**We advise backing up your database, or using a test install, before importing data.  There is currently no mechanism to undo or revert an import.**
-
-To perform an import of activities and media: 
-- Place the extracted contents of the Strava bulk export .zip file in the data/strava_import folder. Create the folder if needed. 
-- If you want imported activities to be linked to gear (bikes or shoes), ensure any bikes or shoes referred to in activities are already present in Endurain. 
-- In the "Settings" menu select "Import".
-- Click "Strava bulk import" next to "Strava bulk activity import".
-- Status messages about the import, including why any activities or media were not imported, can be found in the logs.
-
-In addition to the base activity track and statistics, the Strava bulk import feature should also import each activity's title, description, activity type, gear (if it exists already in Endurain), Strava activity ID (into a database field), and media. 
-
-The bulk import of Strava activities and media does not create gear.  Please import, or create, any gear referred to in the activities before importing the activities. Ensure the nickname of the gear matches precisely.
-
-The structure of files expected is:
-- an activities.csv file in the data/strava_import folder (required)
-- activities files in the data/strava_import/activities folder (required)
-- media files in the data/strava_import/media folder (optional, if you want media imported)
-
-The activities.csv file requires a header row with at least the following fields: 'Filename', 'Activity Description', 'Activity Gear', 'Activity ID', and 'Media'.
-
-You may import as many or as few activities as you want by placing only the activity files you want imported into the data/strava_import/activities. The importer looks for importable (i.e., .gpx, .fit, etc.) files in the activities folder and only then looks to see if each file has importable metadata and/or media present in the activities.csv file.
-
-#### Strava bulk import limitations 
-
-**We advise backing up your database, or using a test install, before importing data: There is currently no mechanism to undo or revert an import.**
-
-**The Endurain website will likely be unresponsive while the import proceeds** (fields on pages requiring database calls will not load). Logs (and the console) are updated as each file is processed; watching the logs will let you see how quickly files are being processed. 
-
-.fit files that contain multiple activities per file will not have metadata or images imported. 
-
-Media are currently imported only for .gpx and .tcx files, as well as .fit files that contain only a single activity per .fit file.
-
-Comments associated with media are not imported (Endurain does not currently allow comments on media). FYI: Comments associated with media are stored in Strava's media.csv file.
-
-## Importing information from a Strava bulk export (BETA)
-
-Strava allows users to create a bulk export of their historical activity on the site. This information is stored in a zip file, primarily as .csv files, GPS recording files (e.g., .gpx, .fit), and media files (e.g., .jpg, .png).
-
-### Importing gear from a Strava bulk import
-
-### Importing gear from a Strava bulk export
-
-#### Bike import
-
-At the present time, importing bikes from a Strava bulk export is implemented as a beta feature - use with caution.  Components of bikes are not imported - just the bikes themselves. 
-
-To perform an import of bikes: 
-- Place the bikes.csv file from a Strava bulk export into the data/activity_files/bulk_import folder. Create the folder if needed.
-- In the "Settings" menu select "Import".
-- Click "Bikes Import" next to "Strava gear import".
-- Status messages about the import, including why any gear was not imported, can be found in the logs.
-
-Ensure the file is named "bikes.csv" and has a header row with at least the fields 'Bike Name', 'Bike Brand', and 'Bike Model'.
-
 Note that Endurain does not allow the "+" character in gear field names, and thus all +'s will be replaced with spaces.
-
-#### Shoe import
-
-At the present time, importing shoes from a Strava bulk export is implemented as a beta feature - use with caution.  Components of shooes are not imported - just the shoes themselves. 
-
-To perform an import of shoes: 
-- Place the shoes.csv file from a Strava bulk export into the data/activity_files/bulk_import folder. Create the folder if needed.
-- In the "Settings" menu select "Import".
-- Click "Shoes import" next to "Strava gear import".
-- Status messages about the import, including why any gear was not imported, can be found in the logs.
-
-Ensure the file is named "shoes.csv" and has a header row with at least the fields 'Shoe Name', 'Shoe Brand', and 'Shoe Model'.
-
-Note that Strava allows blank shoe names, but Endurain does not.  Shoes with a blank name will thus be given a default name of "Unnamed Shoe #" on import. 
 
 #### Notes on importing gear
 
@@ -226,12 +163,44 @@ The import routine checks for duplicate items, and should not import duplicates.
 
 Gear that is already present in Endurain due to having an active link with Strava will not be imported via the manual import process.
 
-### Importing other items from a Strava bulk import
+### Importing activities and media from a Strava bulk export
 
-Importing activity metadata and media is under development in September 2025.
+At the present time, importing activities and media from a Strava bulk export is implemented as a very early beta feature - use with extreme caution. 
 
-## Image personalization
+**We advise backing up your database, or using a test install, before importing data.  There is currently no mechanism to undo or revert an import.**
 
-It is possible (v0.10.0 or higher) to personalize the login image in the login page. To do that, map the data/server_images directory for image persistence on container updates and:
- - Set the image in the server settings zone of the settings page
- - A square image is expected. Default one uses 1000px vs 1000px
+To perform an import of activities and media: 
+- Place the extracted contents of a Strava bulk export .zip file in the data/strava_import folder. Create the folder if needed. 
+- Consider performing a test import before attempting to import a large set of files; see notes below on how to do this.
+- If you want imported activities to be linked to gear (bikes or shoes), ensure that any bikes or shoes referred to in activities are already present in Endurain. 
+- In the "Settings" menu select "Import".
+- Click "Strava bulk import" next to "Strava bulk activity import".
+- Status messages about the import, including progress messages and why any activities or media were not imported, can be found in the logs.
+
+In addition to the base activity track and statistics, the Strava bulk import feature should also import each activity's title, description, activity type, gear (if it exists already in Endurain), Strava activity ID (into a database field), and media. 
+
+The structure of files expected is:
+- an activities.csv file in the data/strava_import folder (required)
+- activities files in the data/strava_import/activities folder (required)
+- media files in the data/strava_import/media folder (optional, if you want media imported)
+
+The activities.csv file requires a header row with at least the following fields: 'Filename', 'Activity Description', 'Activity Gear', 'Activity ID', and 'Media'.
+
+You may import as many or as few activities as you want by placing only the activity files you want imported into the data/strava_import/activities. The importer looks for importable (i.e., .gpx, .fit, etc.) files in the activities folder and only then looks to see if each file has importable metadata and/or media present in the activities.csv file.
+
+Thus, to perform a test import:
+- Place only a few activity files into the data/strava_import/activities folder.
+- Place the full activities.csv, bikes.csv, shoes.csv, and media folder contents into their respective locations. 
+- Perform an import as directed, above.
+- Check the logs to watch the import progress and understand the results.  
+
+#### Strava bulk import limitations 
+
+**The Endurain website will likely be unresponsive while the import proceeds** (fields on pages requiring database calls will not load). Logs (and the console) are updated as each file is processed; watching the logs will let you see how quickly files are being processed. 
+
+**We advise backing up your database, or using a test Endurain install, before importing data: There is currently no mechanism to undo or revert an import.**
+
+The bulk import of Strava activities and media does not create gear.  Please import, or create, any gear referred to in the activities before importing the activities. Ensure the nickname and other details of the gear matche precisely.
+
+Comments associated with media are not imported (Endurain does not currently allow comments on media). FYI: Comments associated with media are stored in Strava's media.csv file.
+
