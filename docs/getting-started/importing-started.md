@@ -69,7 +69,7 @@ Note that Endurain does not allow the "+" character in gear field names, and thu
 
 Endurain does not allow duplicate gear nicknames, regardless of case (e.g., "Ilves" and "ilves" would not be allowed). Gear with duplicate nicknames will not be imported (i.e., only the first item with a given nickname will be imported).
 
-The import routine checks for duplicate items, and should not import duplicates. Thus it should be safe to re-import the same file mulitple times. However, due to the renaming of un-named shoes, repeated imports of the same shoe file will create duplicate entries of any unnamed shoes present. 
+The import routine checks for duplicate items, and should not import duplicates. Thus it should be safe to re-import the same file multiple times. However, due to the renaming of un-named shoes, repeated imports of the same shoe file will create duplicate entries of any unnamed shoes present. 
 
 Gear that is already present in Endurain due to having an active link with Strava will not be imported via the manual import process.
 
@@ -110,8 +110,8 @@ Thus, to perform a test import:
 
 **We advise backing up your database, or using a test Endurain install, before importing data: There is currently no mechanism to undo or revert an import.**
 
-The bulk import of Strava activities and media does not create gear.  Please import, or create, any gear referred to in the activities before importing the activities. Ensure the nickname and other details of the gear matche precisely.
+The bulk import of Strava activities and media does not create gear.  Please import, or create, any gear referred to in the activities before importing the activities. Ensure the nickname and other details of the gear matches precisely.
 
-If you had unnamed shoes in Strava, note that they will be renamed on import and thus will not be matched with activities during a bulk activity import.  The best fix for this at the present time is, unfortunately, to edit the activities.csv file manually and add the new shoe name (Strava formats shoe gear in the activities.csv file as: "{brand} {model} {name}")
+If you had unnamed shoes in Strava, note that they will be renamed by the shoe gear import routine, and thus will not be matched with activities during a bulk activity import.  The best fix for this at the present time is, unfortunately, to edit the activities.csv file manually and add the new shoe name (Strava formats shoe gear in the activities.csv file as: "{brand} {model} {name}").
 
 Comments associated with media are not imported (Endurain does not currently allow comments on media). FYI: Comments associated with media are stored in Strava's media.csv file.
