@@ -96,6 +96,8 @@ The structure of files expected is:
 
 The activities.csv file requires a header row with at least the following fields: 'Filename', 'Activity Date', 'Activity Description', 'Activity Gear', 'Activity ID', 'Activity Name', 'Activity Type', and 'Media'.
 
+Files that resulted in an error during import should be moved to the data/strava_import/activities/import_errors folder
+
 You may import as many or as few activities as you want during any given import by placing only the activity files you want imported into the data/strava_import/activities directory. The importer looks for importable (i.e., .gpx, .fit, etc.) files in the activities folder and only then looks to see if each file has importable metadata and/or media present in the activities.csv file.
 
 Thus, to perform a test import:
