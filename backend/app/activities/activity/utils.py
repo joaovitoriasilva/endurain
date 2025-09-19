@@ -423,6 +423,7 @@ async def parse_and_store_activity_from_file(
                     activity_gear = None  # ensure prior loop values do not copy over.
                     activity_gear = strava_activities[file_base_name]["Activity Gear"]
                     if activity_gear and activity_gear is not None: 
+                        # TO DO - filter gear names for import changes - replace + with space ###TO DO###
                         if activity_gear in users_existing_gear_nickname_to_id:
                              strava_activity_info["gear_id"]=users_existing_gear_nickname_to_id[activity_gear][0]
                         else:
