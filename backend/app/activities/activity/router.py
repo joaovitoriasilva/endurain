@@ -773,7 +773,11 @@ async def strava_bulk_import(
                 #User has gear - build dictionary to facilitate gear to ID work during import.
                 users_existing_gear_nickname_to_id = {}
                 for item in user_gear_list:
-                        users_existing_gear_nickname_to_id[item.nickname] = [item.id]
+                    users_existing_gear_nickname_to_id[item.nickname] = [item.id]
+                    # Strava apparently exports shoe names as a smoosh of "{brand} {model} {name}", so adding that as a second key for each gear item
+                    strava_name_smoosh = item.brand + " " + item.model + " " + item.nickname
+                    if strava_name_smoosh not in users_existing_gear_nickname_to_id:
+                          users_existing_gear_nickname_to_id[strava_name_smoosh] = [item.id]
 
         # Grab list of supported file formats
         supported_file_formats = core_config.SUPPORTED_FILE_FORMATS
