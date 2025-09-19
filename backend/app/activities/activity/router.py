@@ -748,8 +748,8 @@ async def strava_bulk_import(
                     # Process CSV file
                     for row in strava_activities_csv:    # Must process CSV file object while file is still open.
                         # Check to see if file has headers that will be used during parsing of the file.
-                        if ('Filename' not in row) or ('Activity Description' not in row) or ('Activity Gear' not in row) or ('Activity ID' not in row) or ('Media' not in row): 
-                            core_logger.print_to_log_and_console(f"Aborting Strava bulk activities import: Proper headers not found in {strava_activities_file}.  File should have 'Filename', 'Activity Description', 'Activity Gear', 'Activity ID', and 'Media'.")
+                        if ('Filename' not in row) or ('Activity Description' not in row) or ('Activity Gear' not in row) or ('Activity ID' not in row) or ('Media' not in row) or ('Activity Date' not in row) or ('Activity Name' not in row) or ('Activity Type' not in row):
+                            core_logger.print_to_log_and_console(f"Aborting Strava bulk activities import: Proper headers not found in {strava_activities_file}.  File should have 'Filename', 'Activity Date', 'Activity Description', 'Activity Gear', 'Activity ID', 'Activity Name', 'Activity Type', and 'Media'.")
                             return None
                         _, strava_act_file_name = os.path.split(row['Filename'])  # strips path, returns filename with extension.
                         strava_activities_dict[strava_act_file_name] = row  # Store activity information in a dictionary using filename as the key
