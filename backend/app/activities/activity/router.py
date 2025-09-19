@@ -738,9 +738,8 @@ async def strava_bulk_import(
 
         # Importing data from Strava activities file.
         # Using Python's core CSV module here - https://docs.python.org/3/library/csv.html
-        core_logger.print_to_log_and_console(f"Strava activities file should be at: {strava_activities_file}")
         if os.path.isfile(strava_activities_file):
-            core_logger.print_to_log_and_console("Strava activities file present. Going to try to parse it.")
+            core_logger.print_to_log_and_console(f"Strava {strava_activities_file_name} file present. Going to try to parse it.")
             try:
                 strava_activities_dict = {}
                 with open(strava_activities_file, newline='') as csvfile:
@@ -754,14 +753,17 @@ async def strava_bulk_import(
                         _, strava_act_file_name = os.path.split(row['Filename'])  # strips path, returns filename with extension.
                         strava_activities_dict[strava_act_file_name] = row  # Store activity information in a dictionary using filename as the key
                 core_logger.print_to_log_and_console(f"Strava activities csv file parsed, and it is {len(strava_activities_dict)} rows long")
-                #core_logger.print_to_log_and_console(f"Strava activities csv file example row: {strava_activities_dict["14048645234.gpx"]["Activity Description"]}")  # Testing line.
             except Exception as err:
                 strava_activities_dict = None
                 core_logger.print_to_log_and_console(f"Strava activities CSV parsing failed with error: {err}.", "error")
+                return None
+        else:
+            core_logger.print_to_log_and_console(f"Strava activities file not found. File should be at: {strava_activities_file}")
+            return None
 
         if strava_activities_dict is None:  # Potentially add other test conditions that should trigger an import abort
-                core_logger.print_to_log_and_console("ABORTING IMPORT: Aborting strava bulk import due to improperly parsed CSV.", "error")
-                return {"Strava import ABORTED due to lack of, or improperly parsed, activities.csv file."}
+            core_logger.print_to_log_and_console("ABORTING IMPORT: Aborting strava bulk import due to improperly parsed CSV.", "error")
+            return {"Strava import ABORTED due to lack of, or improperly parsed, activities.csv file."}
 
         # Create gear list here, so it does not have to be done separately for every single activity that is imported
         user = users_crud.get_user_by_id(token_user_id, db)
@@ -792,7 +794,7 @@ async def strava_bulk_import(
         skippedprocessingcount=0
         queuedforprocessingcount=0
 
-        # Iterate over each file
+        # Iterate over each file and queue import
         for filename in filelist:
             filenumber+=1
             file_path = os.path.join(strava_activities_import_dir, filename)
@@ -802,11 +804,9 @@ async def strava_bulk_import(
             if file_extension not in supported_file_formats:
                 core_logger.print_to_log_and_console(f"Skipping file number {filenumber} -  {file_path} - due to not having a supported file extension. Supported extensions are: {supported_file_formats}.")
                 skippedprocessingcount+=1
-                # Might be good to notify the user, but background tasks cannot raise HTTPExceptions
                 continue
 
             if os.path.isfile(file_path):
-                # Log the file being processed
                 core_logger.print_to_log_and_console(f"Queuing file number {filenumber} for processing: {file_path}")
                 # Build dictionary for import progress status reporting in logs
                 file_progress_dict = {'filenumber': filenumber, 'skippedprocessingcount': skippedprocessingcount, 'totalfilecount': totalfilecount }
