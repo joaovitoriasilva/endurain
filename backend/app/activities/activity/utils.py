@@ -359,7 +359,7 @@ async def parse_and_store_activity_from_file(
         _, file_extension = os.path.splitext(file_path)
 
         # Get pathless file name with extension, , as this is the dictionary key for Strava's bulk import activities dictionary.
-        _, file_base_name = os.path.split(file_path)      
+        _, file_base_name = os.path.split(file_path)
 
         # Print import progress information to log
         if file_progress_dict is not None:
@@ -423,8 +423,8 @@ async def parse_and_store_activity_from_file(
                     activity_gear = None  # ensure prior loop values do not copy over.
                     activity_gear = strava_activities[file_base_name]["Activity Gear"]
                     if activity_gear and activity_gear is not None: 
-                        # TO DO - filter gear names for import changes - replace + with space ###TO DO###
-                        if activity_gear in users_existing_gear_nickname_to_id:
+                        if activity_gear.replace("+", " ") in users_existing_gear_nickname_to_id:
+                             # Gear names in Endurain have all +'s swapped to spaces, thus need to do this here as well.
                              strava_activity_info["gear_id"]=users_existing_gear_nickname_to_id[activity_gear][0]
                         else:
                              strava_activity_info["gear_id"]=None
@@ -432,7 +432,7 @@ async def parse_and_store_activity_from_file(
                     else:
                          strava_activity_info["gear_id"]=None
 
-                    # Build import dictionary - allows us to track if something was imported and hold data about the import.
+                    # Build import dictionary - allows us to track if an activity was imported and hold data about the import.
                     import_dict = {}
                     import_dict["imported"]=True
                     import_dict["import_source"]="Strava bulk import"
@@ -459,11 +459,12 @@ async def parse_and_store_activity_from_file(
                     ".gpx",
                     ".tcx",
                 ):
-                    #Add Strava metadata to .gpx and .tcs files
+                    #Add Strava metadata to .gpx and .tcx files
                     if strava_activities and strava_activity_info is not None:
                         parsed_info["activity"].description = strava_activity_info["description"]
                         parsed_info["activity"].gear_id = strava_activity_info["gear_id"]
                         parsed_info["activity"].import_info = strava_activity_info["import_dict"]
+                        # Strava seems to store activity name and type in GPX files, so not adding that info.
                     if generic_activity_info is not None:
                         parsed_info["activity"].import_info = generic_activity_info["import_dict"]
 
