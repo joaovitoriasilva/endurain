@@ -25,7 +25,6 @@
               v-if="authStore.user.is_strava_linked == 0"
               >{{ $t('settingsIntegrationsZone.buttonConnect') }}</a
             >
-
             <!-- retrieve activities and other buttons -->
             <div class="dropdown" v-else>
               <button
@@ -86,24 +85,6 @@
             </div>
           </div>
         </li>
-        <!-- bulk import zone -->
-        <li class="list-group-item d-flex justify-content-between bg-body-tertiary px-0">
-          <div class="d-flex align-items-center">
-            <font-awesome-icon :icon="['fas', 'file-import']" size="2x" />
-            <div class="ms-3">
-              <div class="fw-bold">
-                {{ $t('settingsIntegrationsZone.bulkImportIntegrationTitle') }}
-              </div>
-              {{ $t('settingsIntegrationsZone.bulkImportIntegrationBody') }}
-            </div>
-          </div>
-          <div class="d-flex align-items-center">
-            <!-- import button -->
-            <a href="#" class="btn btn-primary" role="button" @click="submitBulkImport">{{
-              $t('settingsIntegrationsZone.buttonBulkImport')
-            }}</a>
-          </div>
-        </li>
         <!-- Garmin Connect zone -->
         <li class="list-group-item d-flex justify-content-between bg-body-tertiary px-0 pb-0">
           <div class="d-flex align-items-center">
@@ -130,7 +111,6 @@
               data-bs-target="#garminConnectAuthModal"
               >{{ $t('settingsIntegrationsZone.buttonConnect') }}</a
             >
-
             <!-- retrieve activities and other buttons -->
             <div class="dropdown" v-else>
               <button
@@ -375,15 +355,6 @@ async function buttonStravaUnlink() {
     notification.reject(
       `${t('settingsIntegrationsZone.errorMessageUnableToUnlinkStrava')} - ${error}`
     )
-  }
-}
-
-async function submitBulkImport() {
-  try {
-    await activities.bulkImportActivities()
-    push.info(t('settingsIntegrationsZone.loadingMessageBulkImport'))
-  } catch (error) {
-    push.error(`${t('settingsIntegrationsZone.errorMessageUnableToImportActivities')} - ${error}`)
   }
 }
 
