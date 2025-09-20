@@ -11,7 +11,10 @@ meters in distance and elevation gain. Some notes:
 - After the files are processed, the files are moved to the processed folder
 - GEOCODES API has a limit of 1 Request/Second on the free plan, so if you have a large number of files, it might not be possible to import all in the same action
 - The generic bulk import currently only imports data present in the .fit, .tcx or .gpx files - no metadata or other media are imported.
+- Activity files that were successfully imported will be renamed and moved to the data/activity_files/processed directory.
 - Files that resulted in an error during import should be moved to the data/activity_files/bulk_import/import_errors folder
+- While each file present in the import directory will only be imported once (and then moved to a storage directory), the bulk import does not check for duplicates while importing. Thus, activities that are already present in Endurain will be imported again.
+
 
 ## Importing data from a Strava bulk export (BETA)
 
@@ -96,7 +99,9 @@ The structure of files expected is:
 
 The activities.csv file requires a header row with at least the following fields: 'Filename', 'Activity Date', 'Activity Description', 'Activity Gear', 'Activity ID', 'Activity Name', 'Activity Type', and 'Media'.
 
-Files that resulted in an error during import should be moved to the data/strava_import/activities/import_errors folder
+Activity files that were successfully imported will be renamed and moved to the data/activity_files/processed directory, and media files moved to the data/activity_media folder. 
+
+Activity files that resulted in an error during import should be moved to the data/strava_import/activities/import_errors folder
 
 You may import as many or as few activities as you want during any given import by placing only the activity files you want imported into the data/strava_import/activities directory. The importer looks for importable (i.e., .gpx, .fit, etc.) files in the activities folder and only then looks to see if each file has importable metadata and/or media present in the activities.csv file.
 
@@ -104,13 +109,16 @@ Thus, to perform a test import:
 - Place only a few activity files into the data/strava_import/activities folder.
 - Place the full activities.csv, bikes.csv, shoes.csv, and media folder contents into their respective locations. 
 - Perform an import as directed, above.
-- Check the logs to watch the import progress and understand the results.
+- Check the logs to watch the import progress and understand the results. 
+- To watch the logs in Docker, you can run the command "docker logs -f --tail 20 container_name"
 
 #### Strava bulk import limitations 
 
 **The Endurain website will likely be unresponsive while the import proceeds** (fields on pages requiring database calls will not load). Logs (and the console) are updated as each file is processed; watching the logs will let you see how quickly files are being processed. 
 
 **We advise backing up your database, or using a test Endurain install, before importing data: There is currently no mechanism to undo or revert an import.**
+
+While each file present in the import directory will only be imported once (and then moved to a storage directory), the bulk import of Strava activities does not check for duplicates while importing. Thus, activities that are already present in Endurain will be imported again.
 
 The bulk import of Strava activities and media does not create gear.  Please import, or create, any gear referred to in the activities before importing the activities. Ensure the nickname and other details of the gear matches precisely.
 
