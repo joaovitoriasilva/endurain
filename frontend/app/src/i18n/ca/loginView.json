@@ -31,7 +31,7 @@
   "forgotPasswordModalEmailNotConfigured": "Servei de correu no configurat. Contacta amb l'adminstrador",
   "forgotPasswordModalUnableToSendEmail": "No s'ha pogut enviar correu. Prova de nou o contacta amb l'administrador",
   "signUpLink": "No tens compte? Registre",
-  "emailVerificationSent": "Please check your email for verification instructions",
-  "adminApprovalRequired": "Your account is pending admin approval",
-  "verifyEmailInvalidLink": "Invalid email verification link"
+  "emailVerificationSent": "Reviseu el correu electrònic per obtenir instruccions de verificació",
+  "adminApprovalRequired": "Compte pendent d'aprovació d''administració",
+  "verifyEmailInvalidLink": "Enllaç de verificació d'email invàlid"
 }
