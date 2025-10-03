@@ -1,0 +1,20 @@
+{
+    "addSegmentDirections": "Select points to create gates. Gates need to be created in the sequence of travel through the segment.",
+    "buttonAddSegment": "Add Segment",
+    "buttonDeleteSegment": "Delete",
+    "buttonCancelSegment": "Cancel",
+    "buttonSubmitSegment": "Create Segment",
+    "inputSegmentName": "Segment Name",
+    "inputSegmentTown": "Town",
+    "inputSegmentCity": "City",
+    "inputSegmentCountry": "Country",
+    "errorSubmitSegment": "Error creating segment",
+    "labelSegmentName": "Segment",
+    "labelStartTime": "Start time",
+    "labelInterval": "Interval",
+    "labelTimeElapsed": "Time elapsed",
+    "labelTimeInterval": "Interval time",
+    "labelSpeedPace": "Speed/Pace",
+    "labelLap": "Lap",
+    "labelFinish": "Finish"
+}

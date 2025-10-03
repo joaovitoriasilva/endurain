@@ -52,6 +52,13 @@
         {{ $t('activityMandAbovePillsComponent.labelPillWorkoutSets') }}
       </button>
     </li>
+		<li class="nav-item" role="presentation" v-if="activityStreamLatLng">
+			<button class="nav-link link-body-emphasis" id="pills-segments-tab" data-bs-toggle="pill"
+				data-bs-target="#pills-segments" type="button" role="tab" aria-controls="pills-segments"
+				aria-selected="false">
+				{{ $t("activityMandAbovePillsComponent.labelPillSegments") }}
+			</button>
+		</li>
   </ul>
 
   <div class="tab-content" id="pills-tabContent">
@@ -165,6 +172,15 @@
       />
     </div>
   </div>
+        <div class="tab-pane fade" :class="{ 'show active': !graphItems || graphItems.length === 0 || !activityActivityLaps || activityActivityLaps.length == 0 }" 
+			id="pills-segments" role="tabpanel" aria-labelledby="pills-segments-tab" tabindex="2" 
+			v-if="activityStreamLatLng">
+			<ActivitySegmentsComponent :activity="activity" />
+        </div>
+
+		<div class="tab-pane fade" id="pills-workout-steps" role="tabpanel" aria-labelledby="pills-workout-steps-tab" tabindex="3" v-if="activityActivityWorkoutSteps && activityActivityWorkoutSteps.length > 0">
+			<ActivityWorkoutStepsComponent :activity="activity" :activityActivityWorkoutSteps="activityActivityWorkoutSteps" :units="units" :activityActivityExerciseTitles="activityActivityExerciseTitles" :activityActivitySets="activityActivitySets" />
+		</div>
 </template>
 
 <script setup>
@@ -173,6 +189,7 @@ import { useI18n } from 'vue-i18n'
 // Importing the components
 import ActivityLapsComponent from '@/components/Activities/ActivityLapsComponent.vue'
 import ActivityStreamsLineChartComponent from '@/components/Activities/ActivityStreamsLineChartComponent.vue'
+import ActivitySegmentsComponent from "@/components/Activities/ActivitySegmentsComponent.vue";
 import ActivityWorkoutStepsComponent from '@/components/Activities/ActivityWorkoutStepsComponent.vue'
 import BarChartComponent from '@/components/GeneralComponents/BarChartComponent.vue'
 import {
@@ -180,12 +197,17 @@ import {
   activityTypeNotCycling,
   activityTypeIsSwimming
 } from '@/utils/activityUtils'
+import { activityStreams } from '@/services/activityStreams';
 // Import Notivue push
 import { push } from 'notivue'
 // Import the utils
 import { getHrBarChartData } from '@/utils/chartUtils'
+// Importing the stores
+import { useAuthStore } from "@/stores/authStore";
 
 // Props
+const authStore = useAuthStore();
+const activityStreamLatLng = ref(null);
 const props = defineProps({
   activity: {
     type: Object,
@@ -238,6 +260,17 @@ function selectGraph(type) {
 
 // Lifecycle
 onMounted(async () => {
+
+	try {
+		if (authStore.isAuthenticated) {
+			activityStreamLatLng.value = await activityStreams.getActivitySteamByStreamTypeByActivityId(props.activity.id, 7);
+		} else {
+			activityStreamLatLng.value = await activityStreams.getPublicActivitySteamByStreamTypeByActivityId(props.activity.id, 7);
+		}
+	} catch (error) {
+		console.error("Failed to fetch activity details:", error);
+	}
+
   try {
     if (props.activityActivityStreams && props.activityActivityStreams.length > 0) {
       // Check if the activity has the streams
