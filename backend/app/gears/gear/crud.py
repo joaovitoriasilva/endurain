@@ -153,13 +153,13 @@ def get_gear_user_by_nickname(
 ) -> gears_schema.Gear | None:
     try:
         # Unquote the nickname and change "+" to whitespace
-        parsed_nickname = unquote(nickname).replace("+", " ").lower().strip()
+        parsed_nickname = unquote(nickname).replace("+", " ").strip()
 
         # Get the gear by user ID and nickname from the database
         gear = (
             db.query(gears_models.Gear)
             .filter(
-                func.lower(gears_models.Gear.nickname) == parsed_nickname,
+                gears_models.Gear.nickname == parsed_nickname,
                 gears_models.Gear.user_id == user_id,
             )
             .first()
