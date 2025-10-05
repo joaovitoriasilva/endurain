@@ -16,6 +16,7 @@ import activities.activity_exercise_titles.crud as activity_exercise_titles_crud
 import activities.activity_workout_steps.schema as activity_workout_steps_schema
 
 import users.user_default_gear.utils as user_default_gear_utils
+import users.user.crud as users_crud
 
 import garmin.utils as garmin_utils
 
@@ -122,6 +123,40 @@ def create_activity_objects(
                         session_record["power_waypoints"]
                     )
 
+            # Calculate TSS for the activity
+            tss_value = 0
+            try:
+                # Get user to access threshold values
+                user = users_crud.get_user_by_id(user_id, db)
+                if user:
+                    # Create a temporary activity object with the data needed for TSS calculation
+                    temp_activity = activities_schema.Activity(
+                        user_id=user_id,
+                        name="",  # Not needed for TSS calculation
+                        distance=0,  # Not needed for TSS calculation
+                        activity_type=activity_type,
+                        total_timer_time=total_timer_time,
+                        normalized_power=round(np_power) if np_power else None,
+                        average_hr=session_record["session"]["avg_hr"],
+                        max_hr=session_record["session"]["max_hr"],
+                        pace=pace,
+                    )
+                    
+                    # Calculate TSS
+                    tss_value = activities_utils.calculate_activity_tss(
+                        temp_activity,
+                        user_ftp=user.ftp,
+                        user_lthr=user.lthr,
+                        user_run_threshold_pace=user.run_threshold_pace,
+                        user_swim_threshold_pace=user.swim_threshold_pace
+                    )
+            except Exception as e:
+                core_logger.print_to_log_and_console(
+                    f"Error calculating TSS for activity: {e}",
+                    "warning",
+                    exc=e,
+                )
+
             parsed_activity = {
                 # Create an Activity object with parsed data
                 "activity": activities_schema.Activity(
@@ -160,6 +195,7 @@ def create_activity_objects(
                     workout_feeling=session_record["session"]["workout_feeling"],
                     workout_rpe=session_record["session"]["workout_rpe"],
                     calories=session_record["session"]["calories"],
+                    tss=tss_value if tss_value > 0 else None,
                     visibility=(
                         user_privacy_settings.default_activity_visibility
                         if user_privacy_settings.default_activity_visibility is not None
