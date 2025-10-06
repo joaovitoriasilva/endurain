@@ -340,6 +340,77 @@ $ npm install
 </tr>
 </tbody>
 </table>
+<h3 id="mfa-authentication-flow">MFA Authentication Flow</h3>
+<p>When Multi-Factor Authentication (MFA) is enabled for a user, the authentication process requires two steps:</p>
+<h4 id="step-1-initial-login-request">Step 1: Initial Login Request</h4>
+<p>Make a standard login request to <code>/token</code>:</p>
+<p><strong>Request:</strong></p>
+<pre><code class="language-http">POST /api/v1/token
+Content-Type: application/x-www-form-urlencoded
+X-Client-Type: web|mobile
+
+username=user@example.com&amp;password=userpassword
+</code></pre>
+<p><strong>Response (when MFA is enabled):</strong>
+- <strong>Web clients</strong>: HTTP 202 Accepted
+  <code>json
+  {
+    "mfa_required": true,
+    "username": "example",
+    "message": "MFA verification required"
+  }</code>
+- <strong>Mobile clients</strong>: HTTP 200 OK
+  <code>json
+  {
+    "mfa_required": true,
+    "username": "example",
+    "message": "MFA verification required"
+  }</code></p>
+<h4 id="step-2-mfa-verification">Step 2: MFA Verification</h4>
+<p>Complete the login by providing the MFA code to <code>/mfa/verify</code>:</p>
+<p><strong>Request:</strong></p>
+<pre><code class="language-http">POST /api/v1/mfa/verify
+Content-Type: application/json
+X-Client-Type: web|mobile
+
+{
+  &quot;username&quot;: &quot;user@example.com&quot;,
+  &quot;mfa_code&quot;: &quot;123456&quot;
+}
+</code></pre>
+<p><strong>Response (successful verification):</strong>
+- <strong>Web clients</strong>: Tokens are set as HTTP-only cookies
+  <code>json
+  {
+    "session_id": "unique_session_id"
+  }</code>
+- <strong>Mobile clients</strong>: Tokens are returned in response body
+  <code>json
+  {
+    "access_token": "eyJ...",
+    "refresh_token": "eyJ...",
+    "session_id": "unique_session_id"
+  }</code></p>
+<h4 id="error-handling">Error Handling</h4>
+<ul>
+<li><strong>No pending MFA login</strong>: HTTP 400 Bad Request
+  <code>json
+  {
+    "detail": "No pending MFA login found for this username"
+  }</code></li>
+<li><strong>Invalid MFA code</strong>: HTTP 401 Unauthorized
+  <code>json
+  {
+    "detail": "Invalid MFA code"
+  }</code></li>
+</ul>
+<h4 id="important-notes">Important Notes</h4>
+<ul>
+<li>The pending MFA login session is temporary and will expire if not completed within a reasonable time</li>
+<li>After successful MFA verification, the pending login is automatically cleaned up</li>
+<li>The user must still be active at the time of MFA verification</li>
+<li>If no MFA is enabled for the user, the standard single-step authentication flow applies</li>
+</ul>
 <h2 id="supported-activity-types">Supported activity types</h2>
 <p>The table bellow details the activity types supported by Endurain.</p>
 <table>
@@ -447,6 +518,10 @@ $ npm install
 <td>17</td>
 </tr>
 <tr>
+<td>Ice Skate</td>
+<td>37</td>
+</tr>
+<tr>
 <td>Transition</td>
 <td>18</td>
 </tr>
@@ -483,6 +558,10 @@ $ npm install
 <td>26</td>
 </tr>
 <tr>
+<td>Padel</td>
+<td>39</td>
+</tr>
+<tr>
 <td>Windsurf</td>
 <td>30</td>
 </tr>
@@ -493,6 +572,10 @@ $ npm install
 <tr>
 <td>Surf</td>
 <td>33</td>
+</tr>
+<tr>
+<td>Soccer</td>
+<td>38</td>
 </tr>
 </tbody>
 </table>
