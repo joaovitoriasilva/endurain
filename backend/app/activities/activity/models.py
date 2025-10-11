@@ -257,3 +257,10 @@ class Activity(Base):
         back_populates="activity",
         cascade="all, delete-orphan",
     )
+
+    # Establish a one-to-many relationship with 'personal_records'
+    personal_records = relationship(
+        "PersonalRecord",
+        back_populates="activity",
+        cascade="all, delete-orphan",
+    )
