@@ -62,10 +62,13 @@ def _check_running_prs(activity: activities_schema.Activity, db: Session) -> lis
         "fastest_marathon": 42195,
     }
 
-    # Check if activity distance matches or exceeds milestone
+    # Check if activity distance matches milestone (within 2% tolerance)
     for metric, milestone_distance in milestones.items():
-        if distance_meters >= milestone_distance:
-            # Calculate time for this distance
+        distance_diff = abs(distance_meters - milestone_distance)
+        tolerance = milestone_distance * 0.02  # 2% tolerance
+        
+        if distance_diff <= tolerance:
+            # Activity distance is close enough to milestone
             pr_time = time_seconds
 
             # Check existing PR
@@ -171,9 +174,12 @@ def _check_cycling_prs(activity: activities_schema.Activity, db: Session) -> lis
         "fastest_40km": 40000,
     }
 
-    # Check if activity distance matches or exceeds milestone
+    # Check if activity distance matches milestone (within 2% tolerance)
     for metric, milestone_distance in milestones.items():
-        if distance_meters >= milestone_distance:
+        distance_diff = abs(distance_meters - milestone_distance)
+        tolerance = milestone_distance * 0.02  # 2% tolerance
+        
+        if distance_diff <= tolerance:
             pr_time = time_seconds
 
             existing_pr = personal_records_crud.get_personal_record_by_metric(
@@ -304,9 +310,12 @@ def _check_swimming_prs(activity: activities_schema.Activity, db: Session) -> li
         "fastest_1500m": 1500,
     }
 
-    # Check if activity distance matches or exceeds milestone
+    # Check if activity distance matches milestone (within 5% tolerance for swimming)
     for metric, milestone_distance in milestones.items():
-        if distance_meters >= milestone_distance:
+        distance_diff = abs(distance_meters - milestone_distance)
+        tolerance = milestone_distance * 0.05  # 5% tolerance (pools can vary)
+        
+        if distance_diff <= tolerance:
             pr_time = time_seconds
 
             existing_pr = personal_records_crud.get_personal_record_by_metric(
@@ -387,7 +396,7 @@ async def recalculate_all_user_prs(user_id: int, db: Session):
     """
     try:
         # Get all activities for the user, ordered by date
-        activities = activities_crud.get_all_activities_from_user_id(user_id, db)
+        activities = activities_crud.get_user_activities(user_id, db)
 
         if not activities:
             return
