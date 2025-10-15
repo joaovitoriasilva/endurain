@@ -57,6 +57,16 @@ const routes = [
     component: () => import('../views/ActivitiesView.vue'),
     meta: { requiresAuth: true }
   },
+		{
+			path: '/segments',
+			name: 'segments',
+			component: () => import('../views/SegmentsView.vue'),
+		},
+		{
+			path: '/segment/:id',
+			name: 'segment',
+			component: () => import('../views/SegmentView.vue'),
+		},
   {
     path: '/summary',
     name: 'summary',

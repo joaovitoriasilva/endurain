@@ -21,7 +21,12 @@ const componentPaths = {
   activityMapComponent: 'components/activities/activityMapComponent.json',
   activitySummaryComponent: 'components/activities/activitySummaryComponent.json',
   activityWorkoutStepsComponent: 'components/activities/activityWorkoutStepsComponent.json',
+  activitySegmentsComponent: 'components/activities/activitySegmentsComponent.json',
   activitiesTableComponent: 'components/activities/activitiesTableComponent.json',
+  // Segments component
+  segmentsTableComponent: 'components/segments/segmentsTableComponent.json',
+  segmentSummaryComponent: 'components/segments/segmentSummaryComponent.json',
+  segmentDetailComponent: 'components/segments/segmentDetailComponent.json',
   // Followers component
   followersListComponent: 'components/followers/followersListComponent.json',
   // Gears component
@@ -101,6 +106,8 @@ const componentPaths = {
   settingsView: 'settingsView.json',
   userView: 'userView.json',
   summaryView: 'summaryView.json',
+  segmentsView: 'segmentsView.json',
+  segmentView: 'segmentView.json',
   resetPassword: 'resetPassword.json',
   signupView: 'signupView.json',
   emailVerificationView: 'emailVerificationView.json'
@@ -144,6 +151,7 @@ function buildMessages() {
   return messages
 }
 
+// Creating the Vue I18n instance
 const i18n = createI18n({
   legacy: false,
   locale: 'us',
