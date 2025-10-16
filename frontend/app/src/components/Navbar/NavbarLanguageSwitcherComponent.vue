@@ -8,7 +8,8 @@
       aria-expanded="false"
     >
       <span :class="'fi fi-' + currentLanguage" v-if="currentLanguage !== 'ca'"></span>
-      <span class="fi fi-es-ct" v-else></span>
+      <span class="fi fi-es-ct" v-else-if="currentLanguage === 'ca'"></span>
+      <span class="fi fi-es-ga" v-else-if="currentLanguage === 'gl'"></span>
     </a>
 
     <!-- dropdown menu -->
@@ -20,8 +21,9 @@
           :aria-pressed="currentLanguage === language.value ? 'true' : 'false'"
         >
           <span class="me-2">{{ language.label }}</span>
-          <span :class="'fi fi-' + language.value" v-if="language.value !== 'ca'"></span>
-          <span class="fi fi-es-ct" v-else></span>
+          <span :class="'fi fi-' + language.value" v-if="language.value !== 'ca' && language.value !== 'gl'"></span>
+          <span class="fi fi-es-ct" v-else-if="language.value === 'ca'"></span>
+          <span class="fi fi-es-ga" v-else-if="language.value === 'gl'"></span>
           <span v-if="currentLanguage === language.value" class="ms-3"
             ><font-awesome-icon :icon="['fas', 'check']"
           /></span>
@@ -38,8 +40,11 @@ import { useI18n } from 'vue-i18n'
 const { locale, t } = useI18n()
 const languages = computed(() => [
   { value: 'ca', label: t('generalItems.languageOption2') },
+  { value: 'cn', label: t('generalItems.languageOption8') },
+  { value: 'tw', label: t('generalItems.languageOption9') },
   { value: 'de', label: t('generalItems.languageOption4') },
   { value: 'fr', label: t('generalItems.languageOption5') },
+  { value: 'gl', label: t('generalItems.languageOption10') },
   { value: 'nl', label: t('generalItems.languageOption6') },
   { value: 'pt', label: t('generalItems.languageOption3') },
   { value: 'es', label: t('generalItems.languageOption7') },

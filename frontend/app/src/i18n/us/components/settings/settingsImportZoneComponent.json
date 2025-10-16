@@ -11,6 +11,7 @@
     "stravaGearImportBody": "Import bikes or shoes from a Strava bulk export (in data/strava_import).",
     "stravaGearImportButtonBikes": "Bikes import",
     "loadingMessageStravaBikesImport": "Importing bikes",
+    "successMessageStravaBikesImport": "Strava bikes imported successfully",
     "errorMessageUnableToImportBikes": "An error occurred while importing Strava bikes",
     "stravaGearImportButtonShoes": "Shoes import",
     "loadingMessageStravaShoesImport": "Importing shoes",

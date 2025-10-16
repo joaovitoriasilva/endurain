@@ -40,6 +40,7 @@ To perform an import of bikes:
 - Place the bikes.csv file from a Strava bulk export into the data/strava_import folder. Create the folder if needed.
 - In the "Settings" menu select "Import".
 - Click "Bikes Import" next to "Strava gear import".
+- Upon successful import, the shoes.csv file is moved to /data/activity_files/processed folder.
 - Status messages about the import, including why any gear was not imported, can be found in the logs.
 
 Ensure the file is named "bikes.csv" and has a header row with at least the fields 'Bike Name', 'Bike Brand', and 'Bike Model'.
@@ -54,6 +55,7 @@ To perform an import of shoes:
 - Place the shoes.csv file from a Strava bulk export into the data/strava_import folder. Create the folder if needed.
 - In the "Settings" menu select "Import".
 - Click "Shoes import" next to "Strava import".
+- Upon successful import, the shoes.csv file is moved to /data/activity_files/processed folder.
 - Status messages about the import, including why any gear was not imported, can be found in the logs.
 
 Ensure the file is named "shoes.csv" and has a header row with at least the fields 'Shoe Name', 'Shoe Brand', and 'Shoe Model'.
@@ -68,7 +70,7 @@ NOTE: There is currently no mechanism to undo a gear import.
 
 All gear will be imported as active, as Strava does not export the active/inactive status of the gear.
 
-Note that Endurain does not allow the "+" character in gear field names, and thus all +'s will be replaced with spaces on import.
+Note that Endurain does not allow the "+" character in gear field names, and thus all +'s will be replaced with spaces on import.  All beginning and ending space characters (" ") will be removed on import as well.
 
 Endurain does not allow duplicate gear nicknames, regardless of case (e.g., "Ilves" and "ilves" would not be allowed). Gear with duplicate nicknames will not be imported (i.e., only the first item with a given nickname will be imported).
 
