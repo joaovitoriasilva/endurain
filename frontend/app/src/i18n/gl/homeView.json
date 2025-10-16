@@ -13,6 +13,6 @@
   "processingActivity": "Procesando a actividade",
   "successActivityDeleted": "Actividade eliminada correctamente",
   "errorFetchingUserStats": "Erro ao obter estatísticas da usuaria",
-  "errorFetchingUserActivities": "Error fetching user activities",
-  "errorFetchingMedia": "Error fetching media for activity"
+  "errorFetchingUserActivities": "Erro ao obter as actividades da usuaria",
+  "errorFetchingMedia": "Erro ao obter multimedia da actividade"
 }
