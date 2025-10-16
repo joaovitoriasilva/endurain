@@ -207,7 +207,7 @@ async def import_bikes_from_strava_export(
 
         # Define variables for moving the bikes file
         processed_dir = core_config.FILES_PROCESSED_DIR
-        bulk_import_dir = core_config.FILES_BULK_IMPORT_DIR
+        bulk_import_dir = core_config.STRAVA_BULK_IMPORT_DIR
         bikes_file_name = core_config.STRAVA_BULK_IMPORT_BIKES_FILE
         bikes_file_path = os.path.join(bulk_import_dir, bikes_file_name)
 
