@@ -64,15 +64,15 @@
   "startDateLabel": "Data de inicio",
   "endDateLabel": "Data final",
   "cancel": "Cancelar",
-  "loading": "Loading",
-  "betaTag": " (Beta)",
+  "loading": "Cargando",
+  "betaTag": "(Beta)",
   "currencyEuro": "Euro",
   "currencyEuroSymbol": "€",
-  "currencyDollar": "US Dollar",
+  "currencyDollar": "Dólar estadounidense",
   "currencyDollarSymbol": "$",
-  "currencyPound": "British Pound",
+  "currencyPound": "Libra esterlina",
   "currencyPoundSymbol": "£",
-  "genderMale": "Male",
-  "genderFemale": "Female",
-  "genderUnspecified": "Unspecified"
+  "genderMale": "Masculino",
+  "genderFemale": "Feminino",
+  "genderUnspecified": "Sen especificar"
 }
