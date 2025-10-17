@@ -210,3 +210,82 @@ def queue_bulk_export_activities_for_import(
             queuedforprocessingcount+=1
     
     return queuedforprocessingcount
+
+def build_metadata_dict(
+    file_base_name: str, # String with the base filename being processed (also key to strav_activities dictionary)
+    strava_activities: dict,  # dictionary with info for a Strava bulk import - format strava_activities["filename"]["column header from Strava activities spreadsheet"]
+    import_initiated_time: str,  # String containing the time the Strava bulk import was initiated.
+    users_existing_gear_nickname_to_id: dict = None,  # Dictionary containing gear nickname to ID, needed for Strava bulk import
+) -> dict:
+    """
+    Creates a dictionary with metadata information pulled from a Strava activities file.
+
+    The field strava_activity_metadata["metadata_found_in_csv"] identifies whether there was an entry for this activity in the activities.csv file or not.
+
+    Returns: Dictionary that contains  the gear name as a key to look up the gear ID.
+    """
+    core_logger.print_to_log_and_console(f"TESTING CODE: file base name: {file_base_name}")
+    strava_activity_metadata = {}
+    if strava_activities.get(file_base_name):  # We have information on the activity
+        #core_logger.print_to_log_and_console(f"TESTING CODE: Inside metadata dict building if statemment: {strava_activities.get(file_base_name)}")
+        # Strava bulk import notes:
+        #     Importing Strava activity id to the activity's "strava_activity_id" field results in Endurain thinking the activity is linked to Strava via the Strava active linking mechanism.
+        #     Strava media will be worked on after the activity has been created, so it is not dealt with here.
+        strava_activity_metadata["name"]=strava_activities[file_base_name]["Activity Name"]
+        strava_activity_metadata["description"]=strava_activities[file_base_name]["Activity Description"]
+        strava_activity_metadata["activity type"]=strava_activities[file_base_name]["Activity Type"]
+
+        # Needed for checking for duplicates within multi-file .fit file Strava bulk imports
+        strava_activity_metadata["activity date"]=strava_activities[file_base_name]["Activity Date"]
+
+        # Gear work
+        activity_gear = None
+        activity_gear = strava_activities[file_base_name]["Activity Gear"]
+        if activity_gear and activity_gear is not None: 
+            if activity_gear.replace("+", " ").strip() in users_existing_gear_nickname_to_id:
+                    # Gear names in Endurain have all +'s swapped to spaces, thus need to do this here as well.
+                    strava_activity_metadata["gear_id"]=users_existing_gear_nickname_to_id[activity_gear][0]
+            else:
+                    strava_activity_metadata["gear_id"]=None
+                    core_logger.print_to_log_and_console(f"Gear for activity {file_base_name}, which activities.csv shows as {activity_gear}, was not found in the user's existing gear. Not adding gear to activity.")
+        else:
+            strava_activity_metadata["gear_id"]=None
+        import_dict = build_import_dictionary(file_base_name, import_initiated_time, True, strava_activities)
+        strava_activity_metadata["import_dict"]=import_dict
+        strava_activity_metadata["metadata_found_in_csv"]=True # We found metadata in the CSV! 
+        core_logger.print_to_log_and_console(f"Bulk file import: Strava activities.csv metadata extracted for activity {file_base_name}.")
+    else:
+        # We are in a Strava import, but don't have data on the file.  Just do a basic metadata addition.
+        import_dict = build_import_dictionary(file_base_name, import_initiated_time, False)
+        strava_activity_metadata["metadata_found_in_csv"]=False  # No metadata found in CSV, so don't try to add it in later.
+        strava_activity_metadata["import_dict"]=import_dict
+
+        core_logger.print_to_log_and_console(f"Bulk file import: No data in Strava activities.csv file for activity {file_base_name}.")
+
+    return strava_activity_metadata
+
+
+def build_import_dictionary (
+    file_base_name: str, # String with the base filename being processed (also key to strav_activities dictionary)
+    import_initiated_time: str,  # String containing the time the Strava bulk import was initiated.
+    is_Strava_bulk_import: bool = False,  # Boolean to track if we are doing a Strava bulk import or not
+    strava_activities: dict = None,  # dictionary with info for a Strava bulk import - format strava_activities["filename"]["column header from Strava activities spreadsheet"]
+)  -> dict:
+    """
+    Creates the "import_info" dictionary that is added to all activities that are imported from files. 
+
+    Functions both for Strava imports and generic bulk imports, depending on whether the is_Strava_bulk_import variable is set or not.
+    
+    Returns: Dictionary that contains the import_dict values for the activity (which is then added to the activity as a dictionary in the "import_info" field of the activity).
+    """
+    import_dict = {}
+    if is_Strava_bulk_import:
+        import_dict["imported"]=True
+        import_dict["import_source"]="Strava bulk import"
+        import_dict["strava_activity_id"]=int(strava_activities[file_base_name]["Activity ID"])
+        import_dict["import_ISO_time"]=import_initiated_time
+    else:
+        import_dict["imported"]=True
+        import_dict["import_source"]="Basic bulk import"
+        import_dict["import_ISO_time"]=import_initiated_time
+    return import_dict
