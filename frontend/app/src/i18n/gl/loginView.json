@@ -29,9 +29,9 @@
   "forgotPasswordModalRequestSuccess": "Se o enderezo está rexistrado no sistema enviaremos a esa dirección unha ligazón para restablecer o contrasinal",
   "forgotPasswordModalRequestError": "Fallou o proceso da solicitude de restablecemento",
   "forgotPasswordModalEmailNotConfigured": "O servizo de correo non está configurado. Contacta coa administración",
-  "forgotPasswordModalUnableToSendEmail": "Unable to send email. Please try again later or contact the administrator",
-  "signUpLink": "Don't have an account? Sign up",
-  "emailVerificationSent": "Please check your email for verification instructions",
-  "adminApprovalRequired": "Your account is pending admin approval",
-  "verifyEmailInvalidLink": "Invalid email verification link"
+  "forgotPasswordModalUnableToSendEmail": "Non se puido enviar o correo. Inténtao máis tarde ou contacta coa administración",
+  "signUpLink": "Non tes unha conta? Crea unha",
+  "emailVerificationSent": "Mira no teu correo para ler as instruccións de verificación",
+  "adminApprovalRequired": "A túa conta está pendente de ser aprobada pola administración",
+  "verifyEmailInvalidLink": "Ligazón de verificación de correo non válida"
 }
