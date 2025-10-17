@@ -18,7 +18,6 @@ import session.security as session_security
 import users.user.crud as users_crud
 import users.user.dependencies as users_dependencies
 import garmin.activity_utils as garmin_activity_utils
-import strava.bulk_import_utils as strava_bulk_import_utils
 import strava.gear_utils as strava_gear_utils
 import websocket.schema as websocket_schema
 import csv
@@ -687,110 +686,6 @@ async def create_activity_with_bulk_import(
         # Log the exception
         core_logger.print_to_log(
             f"Error in create_activity_with_bulk_import: {err}", "error"
-        )
-        # Raise an HTTPException with a 500 Internal Server Error status code
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal Server Error",
-        ) from err
-
-
-@router.post(
-    "/create/stravabulkimport",
-)
-async def strava_bulk_import(
-    token_user_id: Annotated[
-        int,
-        Depends(session_security.get_user_id_from_access_token),
-    ],
-    check_scopes: Annotated[
-        Callable, Security(session_security.check_scopes, scopes=["activities:write"])
-    ],
-    db: Annotated[
-        Session,
-        Depends(core_database.get_db),
-    ],
-    websocket_manager: Annotated[
-        websocket_schema.WebSocketManager,
-        Depends(websocket_schema.get_websocket_manager),
-    ],
-    background_tasks: BackgroundTasks,
-):
-    try:
-        # Get time of import initiation to pass to function for recording in import_data dictionary
-        import_time = datetime.now().isoformat()
-        core_logger.print_to_log_and_console(f"Strava bulk import initiated at {import_time}.")
-
-        # Parse activities data from activities.csv into a dictionary
-        strava_activities_dict = strava_bulk_import_utils.iterate_over_activities_csv()
-
-        if strava_activities_dict is None:  # Potentially add other test conditions that should trigger an import abort
-            core_logger.print_to_log_and_console("ABORTING IMPORT: Aborting strava bulk import due to improperly parsed CSV.", "error")
-            return {"Strava import ABORTED due to lack of, or improperly parsed, activities.csv file."}
-
-        # Create gear list here, so it does not have to be done separately for every single activity that is imported
-        users_existing_gear_nickname_to_id = strava_bulk_import_utils.create_gear_dictionary_for_bulk_import(token_user_id, db)
-
-        # Ensure the 'strava_import/activities' directory exists (activity files will be here)
-        strava_activities_import_dir = core_config.STRAVA_BULK_IMPORT_ACTIVITIES_DIR
-        os.makedirs(strava_activities_import_dir, exist_ok=True)
-
-        # Ensure the 'strava_import/media' directory exists (media files will be here)
-        strava_media_import_dir = core_config.STRAVA_BULK_IMPORT_MEDIA_DIR
-        os.makedirs(strava_media_import_dir, exist_ok=True)
-
-        # Grab list of supported file formats
-        supported_file_formats = core_config.SUPPORTED_FILE_FORMATS
-
-        # Get file list of all files in the 'strava_import/activities' directory
-        filelist = os.listdir(strava_activities_import_dir)
-
-        # Setup structure to allow basic import progress tracking
-        totalfilecount=len(filelist)
-        core_logger.print_to_log_and_console(f"Found {totalfilecount} files in the {strava_activities_import_dir}.")
-        filenumber=0
-        skippedprocessingcount=0
-        queuedforprocessingcount=0
-
-        # Iterate over each file and queue import
-        for filename in filelist:
-            filenumber+=1
-            file_path = os.path.join(strava_activities_import_dir, filename)
-
-            # Check if file is one we can process
-            _, file_extension = os.path.splitext(file_path)
-            if file_extension not in supported_file_formats:
-                core_logger.print_to_log_and_console(f"Skipping file number {filenumber} -  {file_path} - due to not having a supported file extension. Supported extensions are: {supported_file_formats}.")
-                skippedprocessingcount+=1
-                continue
-
-            if os.path.isfile(file_path):
-                core_logger.print_to_log_and_console(f"Queuing file number {filenumber} for processing: {file_path}")
-                # Build dictionary for import progress status reporting in logs
-                file_progress_dict = {'filenumber': filenumber, 'skippedprocessingcount': skippedprocessingcount, 'totalfilecount': totalfilecount }
-                # Parse and store the activity
-                background_tasks.add_task(
-                    activities_utils.parse_and_store_activity_from_file,
-                    token_user_id,
-                    file_path,
-                    websocket_manager,
-                    db,
-                    strava_activities=strava_activities_dict,
-                    import_initiated_time=import_time,
-                    users_existing_gear_nickname_to_id=users_existing_gear_nickname_to_id,
-                    file_progress_dict=file_progress_dict,
-                )
-                queuedforprocessingcount+=1
-
-        # Log a success message that explains processing will continue elsewhere.
-        core_logger.print_to_log_and_console(f"Strava bulk import initiated for {queuedforprocessingcount} of the {totalfilecount} files found in the strava_import directory.  Processing of files will continue in the background.")
-
-        # Return a success message
-        return {"Strava import initiated for all files found in the strava_import directory. Processing of files will continue in the background."}
-    except Exception as err:
-        # Log the exception
-        core_logger.print_to_log_and_console(
-            f"Error in strava_bulk_import: {err}", "error"
         )
         # Raise an HTTPException with a 500 Internal Server Error status code
         raise HTTPException(

@@ -29,6 +29,9 @@ export const strava = {
   importBikes() {
     return fetchPostRequest('strava/import/bikes')
   },
+  stravaBulkImport() {
+    return fetchPostRequest("strava/import/activities");
+  },
   linkStravaCallback(state, code, scope) {
     return fetchPutRequest(`strava/link?state=${state}&code=${code}&scope=${scope}`)
   },

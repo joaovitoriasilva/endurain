@@ -118,7 +118,7 @@ async function submitStravaBikesImport() {
 }
 async function submitStravaBulkImport() {
 	try {
-		await activities.stravaBulkImport();
+		await stravaService.stravaBulkImport();
 		// Show the loading alert.
 		push.info(t("settingsImportZone.loadingMessageStravaBulkImport"));
 	} catch (error) {
