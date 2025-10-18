@@ -34,9 +34,21 @@
             </div>
           </div>
           <div class="d-flex align-items-center">
-            <!-- import button -->
-            <a href="#" class="btn btn-primary" role="button" @click="submitStravaBikesImport"
-              >{{ $t('settingsImportZone.stravaGearImportbuttonBikes') }}
+            <!-- import bikes button -->
+            <a 
+              href="#" 
+              class="btn btn-primary" 
+              role="button" 
+              @click="submitStravaBikesImport">{{ $t("settingsImportZone.stravaGearImportbuttonBikes") }}
+            </a>
+          </div>
+          <div class="d-flex align-items-center">
+            <!-- import shoes button -->
+            <a 
+              href="#" 
+              class="btn btn-primary" 
+              role="button" 
+              @click="submitStravaShoesImport">{{ $t("settingsImportZone.stravaImportbuttonShoes") }}
             </a>
           </div>
         </li>
@@ -76,5 +88,19 @@ async function submitStravaBikesImport() {
     // Reject the loading message with an error message
     notification.reject(`${t('settingsImportZone.errorMessageUnableToImportBikes')} - ${error}`)
   }
+}
+async function submitStravaShoesImport() {
+  // Set the loading message
+  const notification = push.promise(t('settingsImportZone.loadingMessageStravaShoesImport'))
+	try {
+		await stravaService.importShoes();
+		// Resolve the loading message with a success message
+		notification.resolve(t("settingsImportZone.successMessageStravaShoesImport"));
+	} catch (error) {
+		// Reject the loading message with an error message
+		notification.reject(
+			`${t("settingsImportZone.errorMessageUnableToImportShoes")} - ${error}`,
+		);
+	}
 }
 </script>
