@@ -524,22 +524,9 @@ async def parse_and_store_activity_from_file(
                 move_file(processed_dir, new_file_name, file_path)
                 core_logger.print_to_log_and_console(f"Bulk file import: File successfully processed and moved. {file_path} - has become {new_file_name}")
 
-                # Deal with Strava bulk import media, if in Strava bulk import and media are present.
-                # Note - even multi-activity .fit files are good with this code, as there should only be a single imported activity per file.
+                # Deal with Strava bulk import media.
+                # Note - even multi-activity .fit files are good with this code, as there should only be a single imported activity per file in the Strava activities file directory.
                 if strava_activities: strava_bulk_import_utils.import_media_from_Strava_bulk_export(strava_activities, created_activity, file_base_name, db)
-
-                    # if strava_activities.get(file_base_name):
-                    #     media_string = strava_activities[file_base_name]["Media"].strip()
-                    #     media_list = []
-                    #     if media_string is None or not media_string:
-                    #         core_logger.print_to_log_and_console(f"Media import section - no media list in activities.csv for {file_base_name}")
-                    #     else:
-                    #         media_list = media_string.split('|')
-                    #         for media_item in media_list:
-                    #             strava_media_dir = core_config.STRAVA_BULK_IMPORT_MEDIA_DIR
-                    #             _, media_file_base_name = os.path.split(media_item)
-                    #             media_path = os.path.join(strava_media_dir, media_file_base_name)
-                    #             activity_media_crud.create_activity_media_from_strava_bulk_import(created_activity.id, media_file_base_name, media_path, db)
 
                 # Return the created activity
                 return created_activities
