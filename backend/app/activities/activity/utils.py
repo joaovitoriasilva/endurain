@@ -382,8 +382,6 @@ async def parse_and_store_activity_from_file(
 
     """
     try:
-        core_logger.print_to_log_and_console(f"Bulk file import: Beginning processing of {file_path}.")
-
         # Get file extension
         _, file_extension = os.path.splitext(file_path)
 
@@ -392,8 +390,9 @@ async def parse_and_store_activity_from_file(
 
         # Print import progress information to log
         if file_progress_dict is not None:
-            core_logger.print_to_log_and_console(f"-------NEW FILE---------")  # TESTING CODE
             core_logger.print_to_log_and_console(f"Bulk file import: Now beginning processing file number {file_progress_dict['filenumber']} of {file_progress_dict['totalfilecount']} total. File: {file_base_name}")
+        else: 
+            core_logger.print_to_log_and_console(f"Bulk file import: Beginning processing of {file_base_name}.")
 
         garmin_connect_activity_id = None
 
@@ -435,8 +434,6 @@ async def parse_and_store_activity_from_file(
                 # Not doing a Strava bulk import, so build an import info dict that reflects the generic import.
                 import_dict = strava_bulk_import_utils.build_import_dictionary(file_base_name, import_initiated_time, False)
                 activity_metadata_dict["import_dict"]=import_dict
-
-            #core_logger.print_to_log_and_console(f"TESTING CODE: Activity metadata addition is {activity_metadata_dict}") # Testing code
 
             if parsed_info is not None:
                 created_activities = []
@@ -527,6 +524,8 @@ async def parse_and_store_activity_from_file(
                 # Deal with Strava bulk import media.
                 # Note - even multi-activity .fit files are good with this code, as there should only be a single imported activity per file in the Strava activities file directory.
                 if strava_activities: strava_bulk_import_utils.import_media_from_Strava_bulk_export(strava_activities, created_activity, file_base_name, db)
+
+                core_logger.print_to_log_and_console(f"Bulk file import: Import work complete for file {file_base_name}.")
 
                 # Return the created activity
                 return created_activities

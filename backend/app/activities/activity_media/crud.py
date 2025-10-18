@@ -243,7 +243,7 @@ def create_activity_media_from_strava_bulk_import(activity_id: int, media_strava
 
             # Add media file to db
             create_activity_media(activity_id, new_file_path, db)
-            core_logger.print_to_log_and_console(f"Bulk file import media import: Media file {media_strava_filename} has been imported to db as {new_file_name}")
+            core_logger.print_to_log_and_console(f"Bulk file import media import: Media file {media_strava_filename} has been imported to db.")
         else:
             core_logger.print_to_log_and_console(f"Bulk file import media import warning: Media file {media_strava_filename} does not exist, skipping import of it - {media_path_from_strava}", "warning")
             return

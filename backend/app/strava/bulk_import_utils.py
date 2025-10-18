@@ -226,7 +226,6 @@ def build_metadata_dict(
 
     Returns: Dictionary that contains  the gear name as a key to look up the gear ID.
     """
-    core_logger.print_to_log_and_console(f"TESTING CODE: file base name: {file_base_name}")
     strava_activity_metadata = {}
     if strava_activities.get(file_base_name):  # We have information on the activity
         #core_logger.print_to_log_and_console(f"TESTING CODE: Inside metadata dict building if statemment: {strava_activities.get(file_base_name)}")
@@ -308,38 +307,32 @@ def append_bulk_import_metadata_to_activity(
 
     The function presumes that anything stored in the activities.csv file takes preference over contents of the parsed activity file.  This could be changed in the future (possibly a target for a user-selected option?)
         This decision was made becuase Joao's sample .fit files still contain a very generic title in the .fit files, but had a much more detailed name in Strava.  
-
+        # Code to give preference to items in the parsed activity file, should we ever want such a thing:
+        #    if activity["activity"].name is None and activity_metadata_dict.get("name"):
+        #    if activity["activity"].description is None and activity_metadata_dict.get("description"):
+        #    if activity["activity"].gear_id is None and activity_metadata_dict.get("gear_id"):
+        #    if activity["activity"].import_info is None and activity_metadata_dict.get("import_dict"):
     Note that basic bulk imports will not have many of these field names in activity_metadata_dict, so ensure that they are checked for existence before value checking.
+
+    I am leaving some testing code commented here, due to the high liklihood that this may be something we will need to look at in the future.
 
     Returns the activity (as a dictionary)
     """
-    core_logger.print_to_log_and_console(f"TESTING CODE: *********** Inside metadata adder.  ***********")
-    #core_logger.print_to_log_and_console(f"TESTING CODE: Activity metadata is: {activity["activity"]}")
-    core_logger.print_to_log_and_console(f"TESTING CODE: Strava extracted metadata is: {activity_metadata_dict}")
+    #core_logger.print_to_log_and_console(f"TESTING CODE: Activity metadata is: {activity["activity"]}")  # Testing code
+    #core_logger.print_to_log_and_console(f"TESTING CODE: Strava extracted metadata is: {activity_metadata_dict}")  # Testing code
     if activity_metadata_dict.get("name"):
         activity["activity"].name = activity_metadata_dict["name"]    
-        core_logger.print_to_log_and_console(f"TESTING CODE: Added metadata from Strava to the activity for NAME")
+        #core_logger.print_to_log_and_console(f"TESTING CODE: Added metadata from Strava to the activity for NAME") # Testing code
     if activity_metadata_dict.get("description"):
         activity["activity"].description = activity_metadata_dict["description"]    
-        core_logger.print_to_log_and_console(f"TESTING CODE: Added metadata from Strava to the activity for DESCRIPTION")
+        #core_logger.print_to_log_and_console(f"TESTING CODE: Added metadata from Strava to the activity for DESCRIPTION") # Testing code
     if activity_metadata_dict.get("gear_id"):
         activity["activity"].gear_id = activity_metadata_dict["gear_id"]    
-        core_logger.print_to_log_and_console(f"TESTING CODE: Added metadata from Strava to the activity for GEAR ID")
+        #core_logger.print_to_log_and_console(f"TESTING CODE: Added metadata from Strava to the activity for GEAR ID") # Testing code
     if activity_metadata_dict.get("import_dict"):
         activity["activity"].import_info = activity_metadata_dict["import_dict"]    
-        core_logger.print_to_log_and_console(f"TESTING CODE: Added metadata from Strava to the activity for IMPORT DICT")
-    #core_logger.print_to_log_and_console(f"TESTING CODE: Activity metadata AT THE END is now: {activity["activity"]}")
-
-# Code to give preference to items in the parsed activity file:
-#    if activity["activity"].name is None and activity_metadata_dict.get("name"):
-#    if activity["activity"].description is None and activity_metadata_dict.get("description"):
-#    if activity["activity"].gear_id is None and activity_metadata_dict.get("gear_id"):
-#    if activity["activity"].import_info is None and activity_metadata_dict.get("import_dict"):
-
-
+        #core_logger.print_to_log_and_console(f"TESTING CODE: Added metadata from Strava to the activity for IMPORT DICT") # Testing code
     return activity
-
-
 
 
 def does_activity_start_time_match_the_data_in_strava_activities_csv(
