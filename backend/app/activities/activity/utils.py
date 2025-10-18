@@ -393,7 +393,7 @@ async def parse_and_store_activity_from_file(
         # Print import progress information to log
         if file_progress_dict is not None:
             core_logger.print_to_log_and_console(f"-------NEW FILE---------")  # TESTING CODE
-            core_logger.print_to_log_and_console(f"Bulk file import: Now processing file number {file_progress_dict['filenumber']} of {file_progress_dict['totalfilecount']} total. File: {file_base_name}")
+            core_logger.print_to_log_and_console(f"Bulk file import: Now beginning processing file number {file_progress_dict['filenumber']} of {file_progress_dict['totalfilecount']} total. File: {file_base_name}")
 
         garmin_connect_activity_id = None
 
@@ -427,11 +427,8 @@ async def parse_and_store_activity_from_file(
                 db,
             )
 
-            #strava_activity_info = None  # NO LONGER USING  # Store Strava activities.csv info in a dictionary, to be added to activities later
-            #generic_activity_info = None  # NO LONGER USING  # Store generic bulk import info in a dictionary, to be added to activities later
-            activity_metadata_dict = {}
-
             # Build supplemental metadata. Check if a Strava bulk import is in progress, and if so check to see if any additional information can be added to the activity.
+            activity_metadata_dict = {}
             if strava_activities:
                 activity_metadata_dict = strava_bulk_import_utils.build_metadata_dict(file_base_name, strava_activities, import_initiated_time, users_existing_gear_nickname_to_id)
             else:
@@ -439,7 +436,7 @@ async def parse_and_store_activity_from_file(
                 import_dict = strava_bulk_import_utils.build_import_dictionary(file_base_name, import_initiated_time, False)
                 activity_metadata_dict["import_dict"]=import_dict
 
-            core_logger.print_to_log_and_console(f"TESTING CODE: Activity metadata addition is {activity_metadata_dict}")
+            #core_logger.print_to_log_and_console(f"TESTING CODE: Activity metadata addition is {activity_metadata_dict}") # Testing code
 
             if parsed_info is not None:
                 created_activities = []
@@ -448,14 +445,8 @@ async def parse_and_store_activity_from_file(
                     ".gpx",
                     ".tcx",
                 ):
-                    #Add Strava metadata to .gpx and .tcx files
-                    if strava_activities is not None and activity_metadata_dict["metadata_found_in_csv"] is True:
-                        parsed_info["activity"].description = activity_metadata_dict["description"]
-                        parsed_info["activity"].gear_id = activity_metadata_dict["gear_id"]
-                        parsed_info["activity"].import_info = activity_metadata_dict["import_dict"]
-                        # Strava seems to store activity name and type in GPX files, so not adding that info here.
-                    else: # This is a generic bulk import.
-                        parsed_info["activity"].import_info = activity_metadata_dict["import_dict"]
+                    #Add import metadata and Strava activities.csv metadata
+                    parsed_info = strava_bulk_import_utils.append_bulk_import_metadata_to_activity(parsed_info, activity_metadata_dict)
 
                     # Store the activity in the database
                     created_activity = await store_activity(
@@ -489,41 +480,22 @@ async def parse_and_store_activity_from_file(
                             db,
                         )
 
-                    # Check number of activities in fit file, to allow metadata importing of single-activity-containing fit files
+                    # Check number of activities in fit file, to allow simple metadata importing of single-activity-containing fit files
                     numberoffitactivities=len(created_activities_objects)
 
                     for activity in created_activities_objects:
-                        # REDO LOGIC HERE - First check if it is Strava, then deal with single or multiple.  As not strava is an easy case.   
-                        if strava_activities is None or activity_metadata_dict["metadata_found_in_csv"] is False:
-                            # We are doing a generic bulk import OR we have no Strava metadata to add, so just do a basic metadata addition.
-                            activity["activity"].import_info = activity_metadata_dict["import_dict"]
-                        else:
-                            # We are in a Strava bulk import and have supplemental metadata information to add. How we add this depends on the number of activities in the fit file.
-                            if numberoffitactivities == 1:
-                                # We have a single-activity .fit file, so things are simple: add Strava metadata or generic import metadata straight up
-                                activity["activity"].name = activity_metadata_dict["name"]  #Oddly the name does not seem to be being imported from the .fit files, like it is for.gpx
-                                activity["activity"].description = activity_metadata_dict["description"]
-                                activity["activity"].gear_id = activity_metadata_dict["gear_id"]
-                                activity["activity"].import_info = activity_metadata_dict["import_dict"]
-                            else:
-                                # We have a multi-activity .fit file being imported from a Strava bulk export.
-                                # Strava includes each multi-activity .fit file once for each activity inside the fit file.  Thus, run without filtering, a 5-activity fit file is imported 5 times for 25 activities imported.
-                                # So, to find out which activity goes with which file, we check if start time of activity aligns with start time of the activity's strava activities.csv file data.  If it does import.
-                                    #Activity start time - from Endurain activity parser: 2023-10-21T07:41:47
-                                    #Activity start time - from Strava activities.csv: Oct 21, 2023, 8:13:28 AM
-                                endurain_parsed_file_start_date = datetime.fromisoformat(activity["activity"].start_time)
-                                strava_csv_start_date = datetime.strptime(activity_metadata_dict["activity date"], "%b %d, %Y, %-I:%-M:%-S %p")
-                                if endurain_parsed_file_start_date == strava_csv_start_date:
-                                    # We have the activity that aligns with the Strava info for the .fit file - set up for the import.
-                                    core_logger.print_to_log_and_console(f"Bulk activity import of multi-activity .fit file: start time of activity aligns with start time of data in activities.csv file, so importing the activity.") 
-                                    activity["activity"].name = activity_metadata_dict["name"]  #Oddly the name does not seem to be being imported from the .fit files
-                                    activity["activity"].description = activity_metadata_dict["description"]
-                                    activity["activity"].gear_id = activity_metadata_dict["gear_id"]
-                                    activity["activity"].import_info = activity_metadata_dict["import_dict"]
-                                else:
-                                    # This is not the activity that aligns with the Strava info - skip import (to be clear, this only applies to a Strava bulk import).
-                                    core_logger.print_to_log_and_console(f"Bulk activity import of multi-activity .fit file: skipping likely duplicate import. Start time does not align with start time in the Strava activities.csv file.")  # 
-                                    continue
+                        # Iterate through activities and add them one at a time.
+                        
+                        # For a Strava bulk import of a multi-activity .fit file, check to see if this is the same activity referenced in the activities.csv for this file.
+                        if numberoffitactivities > 1 and strava_activities and activity_metadata_dict["metadata_found_in_csv"] is True:
+                            # We must check to see if this activity matches the start time of the activity contained in the activities.csv (to avoid double-importing activities)
+                            if not strava_bulk_import_utils.does_activity_start_time_match_the_data_in_strava_activities_csv(activity, activity_metadata_dict):
+                                # This is not the activity that aligns with the Strava info - skip import.
+                                core_logger.print_to_log_and_console(f"Bulk activity import of multi-activity .fit file: skipping likely duplicate import. Start time does not align with start time for this .fit file in the Strava activities.csv file.")  # 
+                                continue
+
+                        #Add import metadata and Strava activities.csv metadata
+                        activity = strava_bulk_import_utils.append_bulk_import_metadata_to_activity(activity, activity_metadata_dict)
 
                         # Store the activity in the database
                         created_activity = await store_activity(
@@ -539,7 +511,7 @@ async def parse_and_store_activity_from_file(
                                 "_"  # Add an underscore if it's not the last item
                             )
                 else:
-                     # Should no longer get here due to screening of extensions in router.py, but why not.
+                    # Should no longer get here due to screening of extensions in router.py, but why not.
                     core_logger.print_to_log_and_console(f"File extension not supported: {file_extension}", "error")
 
                 # Define the directory where the processed files will be stored
@@ -554,19 +526,20 @@ async def parse_and_store_activity_from_file(
 
                 # Deal with Strava bulk import media, if in Strava bulk import and media are present.
                 # Note - even multi-activity .fit files are good with this code, as there should only be a single imported activity per file.
-                if strava_activities:
-                    if strava_activities.get(file_base_name):
-                        media_string = strava_activities[file_base_name]["Media"].strip()
-                        media_list = []
-                        if media_string is None or not media_string:
-                            core_logger.print_to_log_and_console(f"Media import section - no media list in activities.csv for {file_base_name}")
-                        else:
-                            media_list = media_string.split('|')
-                            for media_item in media_list:
-                                strava_media_dir = core_config.STRAVA_BULK_IMPORT_MEDIA_DIR
-                                _, media_file_base_name = os.path.split(media_item)
-                                media_path = os.path.join(strava_media_dir, media_file_base_name)
-                                activity_media_crud.create_activity_media_from_strava_bulk_import(created_activity.id, media_file_base_name, media_path, db)
+                if strava_activities: strava_bulk_import_utils.import_media_from_Strava_bulk_export(strava_activities, created_activity, file_base_name, db)
+
+                    # if strava_activities.get(file_base_name):
+                    #     media_string = strava_activities[file_base_name]["Media"].strip()
+                    #     media_list = []
+                    #     if media_string is None or not media_string:
+                    #         core_logger.print_to_log_and_console(f"Media import section - no media list in activities.csv for {file_base_name}")
+                    #     else:
+                    #         media_list = media_string.split('|')
+                    #         for media_item in media_list:
+                    #             strava_media_dir = core_config.STRAVA_BULK_IMPORT_MEDIA_DIR
+                    #             _, media_file_base_name = os.path.split(media_item)
+                    #             media_path = os.path.join(strava_media_dir, media_file_base_name)
+                    #             activity_media_crud.create_activity_media_from_strava_bulk_import(created_activity.id, media_file_base_name, media_path, db)
 
                 # Return the created activity
                 return created_activities
@@ -740,7 +713,6 @@ def move_file(new_dir: str, new_filename: str, file_path: str):
             detail=f"Internal Server Error: {str(err)}",
         ) from err
 
-# Testing adding async here to facilitate Strava bulk import
 def parse_file(
     token_user_id: int,
     user_privacy_settings: users_privacy_settings_schema.UsersPrivacySettings,
