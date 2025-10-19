@@ -9,5 +9,5 @@
   "displayUserNumberOfGears3": " cargados):",
   "successGearDeleted": "Equipamento eliminado correctamente",
   "errorGearNotFound": "Non se atopa equipamento",
-  "errorFetchingGears": "Error fetching gears"
+  "errorFetchingGears": "Erro ao obter equipamentos"
 }
