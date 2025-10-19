@@ -131,10 +131,12 @@ async function submitStravaShoesImport() {
 	}
 }
 async function submitStravaBulkImport() {
+  // Set the loading message
+  const notification = push.promise(t('settingsImportZone.loadingMessageStravaBulkImport'))
 	try {
 		await stravaService.stravaBulkImport();
-		// Show the loading alert.
-		push.info(t("settingsImportZone.loadingMessageStravaBulkImport"));
+		// Resolve the loading message with a success message
+		notification.resolve(t("settingsImportZone.successMessageStravaBulkImport"));
 	} catch (error) {
 		// If there is an error, show the error alert.
 		push.error(

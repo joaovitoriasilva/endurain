@@ -19,6 +19,7 @@
     "stravaBulkImportTitle": "Strava bulk import",
     "stravaBulkImportBody": "Import activities and their media from a Strava bulk export (in data/strava_import)",
     "stravaBulkImportButton": "Strava bulk import",
-    "loadingMessageStravaBulkImport": "Importing Strava activities from a bulk export",
+    "loadingMessageStravaBulkImport": "Queuing Strava activities for import",
+    "successMessageStravaBulkImport": "Strava activities successfully queued for import; see logs for further status updates",
     "errorMessageUnableToBulkImport": "An error occurred while importing Strava activities from a bulk export"
 }
