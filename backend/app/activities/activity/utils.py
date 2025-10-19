@@ -10,7 +10,7 @@ import time
 from geopy.distance import geodesic
 from zoneinfo import ZoneInfo
 
-from fastapi import HTTPException, status, UploadFile
+from fastapi import HTTPException, status, UploadFile, BackgroundTasks
 
 from datetime import datetime
 from urllib.parse import urlencode
@@ -29,6 +29,8 @@ import users.user_privacy_settings.schema as users_privacy_settings_schema
 
 import activities.activity_laps.crud as activity_laps_crud
 
+import activities.activity_media.crud as activity_media_crud
+
 import activities.activity_sets.crud as activity_sets_crud
 
 import activities.activity_streams.crud as activity_streams_crud
@@ -36,11 +38,16 @@ import activities.activity_streams.schema as activity_streams_schema
 
 import activities.activity_workout_steps.crud as activity_workout_steps_crud
 
+import strava.bulk_import_utils as strava_bulk_import_utils
+
 import websocket.schema as websocket_schema
 
 import gpx.utils as gpx_utils
 import tcx.utils as tcx_utils
 import fit.utils as fit_utils
+
+import gears.gear.crud as gears_crud
+import gears.gear.schema as gears_schema
 
 import core.logger as core_logger
 import core.config as core_config
@@ -361,14 +368,32 @@ async def parse_and_store_activity_from_file(
     db: Session,
     from_garmin: bool = False,
     garminconnect_gear: dict = None,
+    strava_activities: dict = None,  # dictionary with info for a Strava bulk import - format strava_activities["filename"]["column header from Strava activities spreadsheet"]
+    import_initiated_time: str = None,  # String containing the time the Strava bulk import was initiated.
+    users_existing_gear_nickname_to_id: dict = None,  # Dictionary containing gear nickname to ID, needed for Strava bulk import
+    file_progress_dict: dict = None,  # Dictionary containing information on file processing count, to allow logs to show at least mediocre import progress messages (primarily for Strava bulk import).  Dictionary structure - {'filenumber': filenumber, 'totalfilecount': totalfilecount }
 ):
-    try:
-        core_logger.print_to_log_and_console(
-            f"Bulk file import: Beginning processing of {file_path}"
-        )
+    """
+    The core function to parse and store activities that are being imported from a file.
 
+    Used by both the basic bulk import function as well as the Strava bulk import function.
+
+    Importing additional information from the Strava bulk import requires some additional routines; these are all deliniated by testing whether strava_activities is None or not.
+
+    """
+    try:
         # Get file extension
         _, file_extension = os.path.splitext(file_path)
+
+        # Get pathless file name with extension, as this is the dictionary key for Strava's bulk import activities dictionary.
+        _, file_base_name = os.path.split(file_path)
+
+        # Print import progress information to log
+        if file_progress_dict is not None:
+            core_logger.print_to_log_and_console(f"Bulk file import: Now beginning processing file number {file_progress_dict['filenumber']} of {file_progress_dict['totalfilecount']} total. File: {file_base_name}")
+        else: 
+            core_logger.print_to_log_and_console(f"Bulk file import: Beginning processing of {file_base_name}.")
+
         garmin_connect_activity_id = None
 
         if from_garmin:
@@ -401,6 +426,15 @@ async def parse_and_store_activity_from_file(
                 db,
             )
 
+            # Build supplemental metadata. Check if a Strava bulk import is in progress, and if so check to see if any additional information can be added to the activity.
+            activity_metadata_dict = {}
+            if strava_activities:
+                activity_metadata_dict = strava_bulk_import_utils.build_metadata_dict(file_base_name, strava_activities, import_initiated_time, users_existing_gear_nickname_to_id)
+            else:
+                # Not doing a Strava bulk import, so build an import info dict that reflects the generic import.
+                import_dict = strava_bulk_import_utils.build_import_dictionary(file_base_name, import_initiated_time, False)
+                activity_metadata_dict["import_dict"]=import_dict
+
             if parsed_info is not None:
                 created_activities = []
                 idsToFileName = ""
@@ -408,6 +442,9 @@ async def parse_and_store_activity_from_file(
                     ".gpx",
                     ".tcx",
                 ):
+                    #Add import metadata and Strava activities.csv metadata
+                    parsed_info = strava_bulk_import_utils.append_bulk_import_metadata_to_activity(parsed_info, activity_metadata_dict)
+
                     # Store the activity in the database
                     created_activity = await store_activity(
                         parsed_info, websocket_manager, db
@@ -440,7 +477,23 @@ async def parse_and_store_activity_from_file(
                             db,
                         )
 
+                    # Check number of activities in fit file, to allow simple metadata importing of single-activity-containing fit files
+                    numberoffitactivities=len(created_activities_objects)
+
                     for activity in created_activities_objects:
+                        # Iterate through activities and add them one at a time.
+                        
+                        # For a Strava bulk import of a multi-activity .fit file, check to see if this is the same activity referenced in the activities.csv for this file.
+                        if numberoffitactivities > 1 and strava_activities and activity_metadata_dict["metadata_found_in_csv"] is True:
+                            # We must check to see if this activity matches the start time of the activity contained in the activities.csv (to avoid double-importing activities)
+                            if not strava_bulk_import_utils.does_activity_start_time_match_the_data_in_strava_activities_csv(activity, activity_metadata_dict):
+                                # This is not the activity that aligns with the Strava info - skip import.
+                                core_logger.print_to_log_and_console(f"Bulk activity import of multi-activity .fit file: skipping likely duplicate import. Start time does not align with start time for this .fit file in the Strava activities.csv file.")  # 
+                                continue
+
+                        #Add import metadata and Strava activities.csv metadata
+                        activity = strava_bulk_import_utils.append_bulk_import_metadata_to_activity(activity, activity_metadata_dict)
+
                         # Store the activity in the database
                         created_activity = await store_activity(
                             activity, websocket_manager, db
@@ -456,9 +509,8 @@ async def parse_and_store_activity_from_file(
                             )
                 else:
                     # Should no longer get here due to screening of extensions in router.py, but why not.
-                    core_logger.print_to_log_and_console(
-                        f"File extension not supported: {file_extension}", "error"
-                    )
+                    core_logger.print_to_log_and_console(f"File extension not supported: {file_extension}", "error")
+
                 # Define the directory where the processed files will be stored
                 processed_dir = core_config.FILES_PROCESSED_DIR
 
@@ -467,9 +519,13 @@ async def parse_and_store_activity_from_file(
 
                 # Move the file to the processed directory
                 move_file(processed_dir, new_file_name, file_path)
-                core_logger.print_to_log_and_console(
-                    f"Bulk file import: File successfully processed and moved. {file_path} - has become {new_file_name}"
-                )
+                core_logger.print_to_log_and_console(f"Bulk file import: File successfully processed and moved. {file_path} - has become {new_file_name}")
+
+                # Deal with Strava bulk import media.
+                # Note - even multi-activity .fit files are good with this code, as there should only be a single imported activity per file in the Strava activities file directory.
+                if strava_activities: strava_bulk_import_utils.import_media_from_Strava_bulk_export(strava_activities, created_activity, file_base_name, db)
+
+                core_logger.print_to_log_and_console(f"Bulk file import: Import work complete for file {file_base_name}.")
 
                 # Return the created activity
                 return created_activities
@@ -480,24 +536,24 @@ async def parse_and_store_activity_from_file(
     # raise http_err
     except Exception as err:
         # Log the exception
-        core_logger.print_to_log(
+        core_logger.print_to_log_and_console(
             f"Bulk file import: Error while parsing {file_path} in parse_and_store_activity_from_file - {str(err)}",
             "error",
             exc=err,
         )
         try:
             # Move the exception-causing file to an import errors directory.
-            error_file_dir = core_config.FILES_BULK_IMPORT_IMPORT_ERRORS_DIR
+            if strava_activities:  
+                # Use Strava bulk import errors directory if we are doing a Strava bulk import
+                error_file_dir = core_config.STRAVA_BULK_IMPORT_IMPORT_ERRORS_DIR
+            else: 
+                # otherwise use standard bulk import error directory
+                error_file_dir = core_config.FILES_BULK_IMPORT_IMPORT_ERRORS_DIR
             os.makedirs(error_file_dir, exist_ok=True)
             move_file(error_file_dir, os.path.basename(file_path), file_path)
-            core_logger.print_to_log_and_console(
-                f"Bulk file import: Due to import error, file {file_path} has been moved to {error_file_dir}"
-            )
+            core_logger.print_to_log_and_console(f"Bulk file import: Due to import error, file {file_path} has been moved to {error_file_dir}", "error")
         except Exception:
-            core_logger.print_to_log_and_console(
-                f"Bulk file import: Failed to move the error-producing file {file_path} to the import-error directory."
-            )
-
+            core_logger.print_to_log_and_console(f"Bulk file import: Failed to move the error-producing file {file_path} to the import-error directory.", "error")
 
 async def parse_and_store_activity_from_uploaded_file(
     token_user_id: int,
@@ -642,7 +698,6 @@ def move_file(new_dir: str, new_filename: str, file_path: str):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Internal Server Error: {str(err)}",
         ) from err
-
 
 def parse_file(
     token_user_id: int,

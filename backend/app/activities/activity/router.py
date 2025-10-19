@@ -12,12 +12,15 @@ import core.database as core_database
 import core.dependencies as core_dependencies
 import core.logger as core_logger
 import core.config as core_config
+import gears.gear.crud as gears_crud
 import gears.gear.dependencies as gears_dependencies
 import session.security as session_security
+import users.user.crud as users_crud
 import users.user.dependencies as users_dependencies
 import garmin.activity_utils as garmin_activity_utils
-import strava.activity_utils as strava_activity_utils
+import strava.gear_utils as strava_gear_utils
 import websocket.schema as websocket_schema
+import csv
 from fastapi import (
     APIRouter,
     BackgroundTasks,
@@ -638,7 +641,10 @@ async def create_activity_with_bulk_import(
     background_tasks: BackgroundTasks,
 ):
     try:
-        core_logger.print_to_log_and_console("Bulk import initiated.")
+        # Get time of import initiation to pass to function for recording in import_data
+        import_time = datetime.now().isoformat()
+
+        core_logger.print_to_log_and_console(f"Bulk import initiated at {import_time}.")
 
         # Ensure the 'bulk_import' directory exists
         bulk_import_dir = core_config.FILES_BULK_IMPORT_DIR
@@ -668,6 +674,7 @@ async def create_activity_with_bulk_import(
                     file_path,
                     websocket_manager,
                     db,
+                    import_initiated_time=import_time,
                 )
 
         # Log a success message that explains processing will continue elsewhere.

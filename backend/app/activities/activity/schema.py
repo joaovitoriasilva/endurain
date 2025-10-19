@@ -42,7 +42,7 @@ class Activity(BaseModel):
     strava_activity_id: int | None = None
     garminconnect_activity_id: int | None = None
     garminconnect_gear_id: str | None = None
-    import_info: dict | None = None
+    import_info: dict | None = None            # expected keys: imported (boolean), import_source (str), and import_ISO_time (str)
     is_hidden: bool = False
     hide_start_time: bool | None = None
     hide_location: bool | None = None

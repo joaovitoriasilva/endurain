@@ -1,4 +1,5 @@
 import os
+import shutil
 
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
@@ -10,6 +11,8 @@ import activities.activity.crud as activity_crud
 
 import activities.activity_media.models as activity_media_models
 import activities.activity_media.schema as activity_media_schema
+
+import core.config as core_config
 
 import core.logger as core_logger
 
@@ -215,6 +218,37 @@ def create_activity_medias(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal Server Error",
         ) from err
+
+def create_activity_media_from_strava_bulk_import(activity_id: int, media_strava_filename: str, media_path_from_strava: str, db: Session):
+    #core_logger.print_to_log_and_console(f"Media import: Beginning processing of {media_path_from_strava}")  # TESTING CODE
+    try:
+        # Ensure the 'data/activity_media' directory exists
+        final_media_dir = core_config.ACTIVITY_MEDIA_DIR
+        os.makedirs(final_media_dir, exist_ok=True)
+
+        # Create new file name and new file path
+        new_file_name = f"{activity_id}_{media_strava_filename}"
+        new_file_path = os.path.join(final_media_dir, new_file_name)
+
+        if os.path.exists(media_path_from_strava):
+            #core_logger.print_to_log_and_console(f"Media import: Media file exists - {media_path_from_strava}") # testing code
+            # Move the file
+            try:
+                shutil.move(media_path_from_strava, new_file_path)
+            except Exception as err:
+                # Log the file move exception
+                core_logger.print_to_log(f"Bulk file import media import: error moving file {media_path_from_strava} - {str(err)}", "error")
+                return
+            #core_logger.print_to_log_and_console(f"Media import: Media file {media_path_from_strava} has been moved to {new_file_path}")  # testing code
+
+            # Add media file to db
+            create_activity_media(activity_id, new_file_path, db)
+            core_logger.print_to_log_and_console(f"Bulk file import media import: Media file {media_strava_filename} has been imported to db.")
+        else:
+            core_logger.print_to_log_and_console(f"Bulk file import media import warning: Media file {media_strava_filename} does not exist, skipping import of it - {media_path_from_strava}", "warning")
+            return
+    except Exception as err:
+           core_logger.print_to_log_and_console(f"Bulk file import media import: Error during processing of {media_path_from_strava}: {err}", "error")
 
 
 def edit_activity_media_media_path(

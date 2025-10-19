@@ -25,7 +25,6 @@
               v-if="authStore.user.is_strava_linked == 0"
               >{{ $t('settingsIntegrationsZone.buttonConnect') }}</a
             >
-
             <!-- retrieve activities and other buttons -->
             <div class="dropdown" v-else>
               <button
@@ -112,7 +111,6 @@
               data-bs-target="#garminConnectAuthModal"
               >{{ $t('settingsIntegrationsZone.buttonConnect') }}</a
             >
-
             <!-- retrieve activities and other buttons -->
             <div class="dropdown" v-else>
               <button
