@@ -423,14 +423,6 @@ rows per range = 10
 <li>Check password authentication method (use MD5, not SCRAM-SHA-256)</li>
 <li>Verify <code>pg_hba.conf</code> allows connections from pgloader host</li>
 </ul>
-<h3 id="large-json-data-issues">Large JSON Data Issues</h3>
-<p><strong>Symptoms:</strong> Errors processing <code>stream_waypoints</code> column in <code>activities_streams</code>.</p>
-<p><strong>Solutions:</strong></p>
-<ul>
-<li>The updated <code>transforms.lisp</code> includes <code>stream-waypoints-to-jsonb</code> function</li>
-<li>Use split migration approach for better memory management</li>
-<li>Consider manual cleanup of very large JSON records before migration</li>
-</ul>
 <h3 id="migration-time-estimates">Migration Time Estimates</h3>
 <ul>
 <li><strong>Small databases</strong> (&lt; 1000 activities): 5-15 minutes</li>
