@@ -193,16 +193,6 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-              </ul>
-            </li>
-            
-            <li class="nav-item" data-bs-level="1"><a href="#replication-privilege" class="nav-link">replication privilege.</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            
-            <li class="nav-item" data-bs-level="1"><a href="#allow-md5-just-for-endurain-ipv4-example-remove-this-line" class="nav-link">Allow MD5 just for endurain (IPv4 example). # Remove this line</a>
-              <ul class="nav flex-column">
             <li class="nav-item" data-bs-level="2"><a href="#troubleshooting-common-issues" class="nav-link">Troubleshooting Common Issues</a>
               <ul class="nav flex-column">
               </ul>
@@ -229,12 +219,18 @@ This guide uses some <a href="https://github.com/joaovitoriasilva/endurain/tree/
 <li>Checking pgloader outputs and logs.</li>
 </ul>
 </li>
-<li>Update environment variables (adapt to your environment):
-    <code>DB_TYPE=postgres
-    DB_HOST=postgres
-    DB_PORT=5432</code></li>
-<li>Start with PostgreSQL:
-    <code>docker compose up -d</code></li>
+<li>Update environment variables (adapt to your environment):</li>
+</ol>
+<pre><code class="language-bash">DB_TYPE=postgres
+DB_HOST=postgres
+DB_PORT=5432
+</code></pre>
+<ol>
+<li>Start with PostgreSQL:</li>
+</ol>
+<pre><code class="language-bash">docker compose up -d
+</code></pre>
+<ol>
 <li>Monitor logs for any issues;</li>
 <li>Verify application functionality:<ul>
 <li>Test login;</li>
@@ -248,93 +244,123 @@ This guide uses some <a href="https://github.com/joaovitoriasilva/endurain/tree/
 <h1 id="mariadb-dump-backup-options">MariaDB dump backup options</h1>
 <h2 id="option-1-run-mysqldump-mariadb-dump-from-the-host">Option 1: Run <code>mysqldump</code> / <code>mariadb-dump</code> from the host</h2>
 <p>Run the dump from your host machine (Ubuntu) using the MySQL or MariaDB client tools installed locally. You need to adjust host, port, database and password to match your environment.</p>
-<pre><code>mysqldump -h 127.0.0.1 -P 3306 -u endurain -p'redacted' endurain \
+<pre><code class="language-bash">mysqldump -h 127.0.0.1 -P 3306 -u endurain -p'redacted' endurain \
 &gt; final_backup_$(date +%Y%m%d_%H%M%S).sql
 </code></pre>
-<pre><code>mariadb-dump -h 127.0.0.1 -P 3306 -u endurain -p'redacted' endurain \
+<pre><code class="language-bash">mariadb-dump -h 127.0.0.1 -P 3306 -u endurain -p'redacted' endurain \
 &gt; final_backup_$(date +%Y%m%d_%H%M%S).sql
 </code></pre>
-<p><strong>Pros:</strong>
-- No need to modify the container<br />
-- Easy to automate in cron or scripts  </p>
-<p><strong>Cons:</strong>
-- Requires MariaDB client installed on the host
-- The container’s database port must be exposed</p>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>No need to modify the container  </li>
+<li>Easy to automate in cron or scripts  </li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Requires MariaDB client installed on the host</li>
+<li>The container’s database port must be exposed</li>
+</ul>
 <h2 id="option-2-use-a-temporary-mariadb-client-container">Option 2: Use a temporary MariaDB client container</h2>
 <p>Use a one-time client container that connects to your running MariaDB instance. You need to adjust container name, host, port, database and password to match your environment.</p>
-<pre><code>sudo docker run --rm \
+<pre><code class="language-bash">sudo docker run --rm \
   --network container:mariadb_endurain_prod \
   mariadb:latest \
   mariadb-dump -h127.0.0.1 -u endurain -p'redacted' endurain \
   &gt; final_backup_$(date +%Y%m%d_%H%M%S).sql
 </code></pre>
-<p><strong>Pros:</strong>
-- Doesn’t modify your running container
-- Uses an official image that already includes <code>mariadb-dump</code></p>
-<p><strong>Cons:</strong>
-- Slightly longer to run (needs to pull/start the client container)</p>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Doesn’t modify your running container</li>
+<li>Uses an official image that already includes <code>mariadb-dump</code></li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Slightly longer to run (needs to pull/start the client container)</li>
+</ul>
 <h2 id="option-3-install-mariadb-client-inside-the-existing-container">Option 3: Install <code>mariadb-client</code> inside the existing container</h2>
 <p>If you prefer to back up directly from inside the existing MariaDB container, install the client tools and use <code>mariadb-dump</code>.</p>
 <h3 id="installation">Installation</h3>
-<p>Connect to the container shell and do:
-- For Debian/Ubuntu-based containers:
-  <code>apt-get update &amp;&amp; apt-get install -y mariadb-client</code>
-- For Alpine-based containers:
-  <code>apk add --no-cache mariadb-client</code></p>
+<p>Connect to the container shell and do:</p>
+<ul>
+<li>For Debian/Ubuntu-based containers:</li>
+</ul>
+<pre><code class="language-bash">apt-get update &amp;&amp; apt-get install -y mariadb-client
+</code></pre>
+<ul>
+<li>For Alpine-based containers:</li>
+</ul>
+<pre><code class="language-bash">apk add --no-cache mariadb-client
+</code></pre>
 <h3 id="backup-command-single-database-no-gtid">Backup Command (Single Database, No GTID)</h3>
 <p>You need to adjust container name, host, port, database and password to match your environment.</p>
-<pre><code>sudo docker exec mariadb_endurain_prod sh -lc \
+<pre><code class="language-bash">sudo docker exec mariadb_endurain_prod sh -lc \
 &quot;mariadb-dump -u endurain -p'redacted' \
   --databases endurain \
   --single-transaction --routines --triggers --events --hex-blob&quot; \
 &gt; final_backup_$(date +%Y%m%d_%H%M%S).sql
 </code></pre>
-<p><strong>Pros:</strong>
-- All-in-one (runs inside the existing container)
-- Direct socket access to MariaDB</p>
-<p><strong>Cons:</strong>
-- You modify the production container
-- Must remember to reinstall client tools after container rebuilds</p>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>All-in-one (runs inside the existing container)</li>
+<li>Direct socket access to MariaDB</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>You modify the production container</li>
+<li>Must remember to reinstall client tools after container rebuilds</li>
+</ul>
 <h1 id="postgres-preparation-for-pgloader">Postgres preparation for pgloader</h1>
-<p>Postgres dropped support for MD5 hashed passwords in favor of SHA256, however pgloader <a href="https://github.com/dimitri/pgloader/issues/1207">does not support SHA256</a>. What I did was:
- - Change password to be MD5 hashed:
-    <code>set password_encryption to 'md5';
-    ALTER ROLE endurain password 'JUST_RETYPE_YOUR_EXISTING_PASSWORD';</code>
- - Change <code>pg_hba.conf</code> file to allow MD5 logins:
-    - On my machine using postgres 18 Docker image: <code>/opt/containers/postgres_endurain_prod/18/docker/pg_hba.conf</code>
-    ```
-    # replication privilege.
-    local   replication     all                                     trust
-    host    replication     all             127.0.0.1/32            trust
-    host    replication     all             ::1/128                 trust</p>
-<pre><code># Allow MD5 just for endurain (IPv4 example). # Add this line
+<p>Postgres dropped support for MD5 hashed passwords in favor of SHA256, however pgloader <a href="https://github.com/dimitri/pgloader/issues/1207">does not support SHA256</a>. What I did was:</p>
+<ul>
+<li>Change password to be MD5 hashed:</li>
+</ul>
+<pre><code class="language-sql">set password_encryption to 'md5';
+ALTER ROLE endurain password 'JUST_RETYPE_YOUR_EXISTING_PASSWORD';
+</code></pre>
+<ul>
+<li>Change <code>pg_hba.conf</code> file to allow MD5 logins:<ul>
+<li>On my machine using postgres 18 Docker image: <code>/opt/containers/postgres_endurain_prod/18/docker/pg_hba.conf</code></li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-bash"># replication privilege.
+local   replication     all                                     trust
+host    replication     all             127.0.0.1/32            trust
+host    replication     all             ::1/128                 trust
+
+# Allow MD5 just for endurain (IPv4 example). # Add this line
 host    all     endurain   0.0.0.0/0     md5  # Add this line
 
 host all all all scram-sha-256
-```
 </code></pre>
 <h1 id="do-the-migration">Do the migration</h1>
 <h2 id="prerequisites-and-important-notes">Prerequisites and Important Notes</h2>
-<p>⚠️ <strong>Important Notes:</strong>
- - DB passwords with special characters like <code>@</code> or <code>!</code> can cause issues;
- - Recommendation: Use simple passwords during migration, change them afterward;
- - The migration can be memory-intensive, especially for large <code>activities_streams</code> tables;
- - Ensure sufficient RAM (at least 4GB available) on the machine running pgloader.</p>
+<p>⚠️ <strong>Important Notes:</strong></p>
+<ul>
+<li>DB passwords with special characters like <code>@</code> or <code>!</code> can cause issues;</li>
+<li>Recommendation: Use simple passwords during migration, change them afterward;</li>
+<li>The migration can be memory-intensive, especially for large <code>activities_streams</code> tables;</li>
+<li>Ensure sufficient RAM (at least 4GB available) on the machine running pgloader.</li>
+</ul>
 <h2 id="migration-process">Migration Process</h2>
-<p>Remember: Always keep your MariaDB backup until you're confident the PostgreSQL migration is successful and stable.
-After <a href="https://pgloader.readthedocs.io/en/latest/">pgloader</a> is installed:</p>
+<p>Remember: Always keep your MariaDB backup until you're confident the PostgreSQL migration is successful and stable.</p>
+<p>After <a href="https://pgloader.readthedocs.io/en/latest/">pgloader</a> is installed:</p>
 <ol>
 <li><strong>Clone Endurain repository:</strong></li>
 </ol>
-<pre><code>git clone https://github.com/joaovitoriasilva/endurain
+<pre><code class="language-bash">git clone https://github.com/joaovitoriasilva/endurain
 cd endurain/mariadb_to_postgres
 </code></pre>
 <ol>
-<li><strong>Edit the migration configuration:</strong>
-Edit <code>mariadb_to_postgres_streams_only.load</code> and <code>mariadb_to_postgres_without_streams.load</code> to match your environment:</li>
-<li>Change DB connections (adjust host, port, database, user and password):</li>
+<li>
+<p><strong>Edit the migration configuration:</strong></p>
+</li>
+<li>
+<p>Edit <code>mariadb_to_postgres_streams_only.load</code> and <code>mariadb_to_postgres_without_streams.load</code> to match your environment;</p>
+</li>
+<li>Change DB connections (adjust host, port, database, user and password).</li>
 </ol>
-<pre><code>LOAD DATABASE
+<pre><code class="language-sql">LOAD DATABASE
     FROM mysql://endurain:password@mariadb-host:3306/endurain
     INTO postgresql://endurain:password@postgres-host:5432/endurain
 </code></pre>
@@ -343,46 +369,52 @@ Edit <code>mariadb_to_postgres_streams_only.load</code> and <code>mariadb_to_pos
 </ol>
 <p>The migration is splitted because activity_streams table has large json data, causing memory issues</p>
 <p><strong>Step 1:</strong> Migrate all tables except activities_streams:</p>
-<pre><code>pgloader --verbose --load-lisp-file transforms.lisp mariadb_to_postgres_without_streams.load &gt; migration_main_$(date +%Y%m%d_%H%M%S).log 2&gt;&amp;1
+<pre><code class="language-bash">pgloader --verbose --load-lisp-file transforms.lisp mariadb_to_postgres_without_streams.load &gt; migration_main_$(date +%Y%m%d_%H%M%S).log 2&gt;&amp;1
 </code></pre>
-<p>This step may take several minutes to conclude</p>
+<p>This step may take several minutes to conclude (1h+ in my case. You can try to ajust load file to increase speed)</p>
 <p><strong>Step 2:</strong> Migrate activities_streams separately:</p>
-<pre><code>pgloader --verbose --load-lisp-file transforms.lisp mariadb_to_postgres_streams_only.load &gt; migration_streams_$(date +%Y%m%d_%H%M%S).log 2&gt;&amp;1
+<pre><code class="language-bash">pgloader --verbose --load-lisp-file transforms.lisp mariadb_to_postgres_streams_only.load &gt; migration_streams_$(date +%Y%m%d_%H%M%S).log 2&gt;&amp;1
 </code></pre>
 <h2 id="revert-postgres-changes">Revert Postgres changes</h2>
 <p>Revert changes made to user endurain:</p>
 <ul>
-<li>Change password to be SHA256 hashed:
-    <code>set password_encryption to 'scram-sha-256';
-    ALTER ROLE endurain password 'JUST_RETYPE_YOUR_EXISTING_PASSWORD';</code></li>
-<li>
-<p>Change <code>pg_hba.conf</code> file to allow MD5 logins:</p>
-<ul>
-<li>On my machine using postgres 18 Docker image: <code>/opt/containers/postgres_endurain_prod/18/docker/pg_hba.conf</code>
-```</li>
+<li>Change password to be SHA256 hashed:</li>
 </ul>
-<h1 id="replication-privilege">replication privilege.</h1>
-<p>local   replication     all                                     trust
-host    replication     all             127.0.0.1/32            trust
-host    replication     all             ::1/128                 trust</p>
-<h1 id="allow-md5-just-for-endurain-ipv4-example-remove-this-line">Allow MD5 just for endurain (IPv4 example). # Remove this line</h1>
-<p>host    all     endurain   0.0.0.0/0     md5  # Remove this line</p>
-<p>host all all all scram-sha-256
-```</p>
+<pre><code class="language-sql">set password_encryption to 'scram-sha-256';
+ALTER ROLE endurain password 'JUST_RETYPE_YOUR_EXISTING_PASSWORD';
+</code></pre>
+<ul>
+<li>Change <code>pg_hba.conf</code> file to allow MD5 logins:<ul>
+<li>On my machine using postgres 18 Docker image: <code>/opt/containers/postgres_endurain_prod/18/docker/pg_hba.conf</code></li>
+</ul>
 </li>
 </ul>
+<pre><code class="language-bash"># replication privilege.
+local   replication     all                                     trust
+host    replication     all             127.0.0.1/32            trust
+host    replication     all             ::1/128                 trust
+
+# Allow MD5 just for endurain (IPv4 example). # Remove this line
+host    all     endurain   0.0.0.0/0     md5  # Remove this line
+
+host all all all scram-sha-256
+</code></pre>
 <h2 id="troubleshooting-common-issues">Troubleshooting Common Issues</h2>
 <h3 id="memory-exhaustion-errors">Memory Exhaustion Errors</h3>
 <p><strong>Symptoms:</strong> "Heap exhausted during allocation" errors, especially when processing <code>activities_streams</code> table.</p>
 <p><strong>Solutions:</strong></p>
 <ol>
 <li><strong>Increase system memory</strong> or close other applications</li>
-<li><strong>Reduce batch size</strong> in the .load file:
-   <code>change bellow to minor, default is 10
-   rows per range = 10</code></li>
-<li><strong>Reduce workers</strong> in the .load file:
-   <code>workers = 1, concurrency = 1,</code></li>
+<li><strong>Reduce batch size</strong> in the .load file:</li>
 </ol>
+<pre><code class="language-bash">change bellow to minor, default is 10
+rows per range = 10 
+</code></pre>
+<ol>
+<li><strong>Reduce workers</strong> in the .load file:</li>
+</ol>
+<pre><code class="language-bash">workers = 1, concurrency = 1,
+</code></pre>
 <h3 id="postgresql-connection-issues">PostgreSQL Connection Issues</h3>
 <p><strong>Symptoms:</strong> Connection refused or authentication errors.</p>
 <p><strong>Solutions:</strong></p>
