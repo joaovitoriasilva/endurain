@@ -212,9 +212,13 @@ This guide uses some <a href="https://github.com/joaovitoriasilva/endurain/tree/
 <p>Refer to <a href="https://pgloader.readthedocs.io/en/latest/">pgloader docs</a> for installation instructions.</p>
 <h1 id="migration-steps">Migration steps</h1>
 <ol>
-<li>Stop Endurain container (<code>docker compose down</code>);</li>
-<li>Backup existent database <a href="#mariadb-dump-backup-options">MariaDB dump backup options</a>)</li>
-<li>Run pgloader to do the migration <a href="#do-the-migration">Do the migration</a>;</li>
+<li>Stop Endurain container;</li>
+</ol>
+<pre><code class="language-bash">docker compose down
+</code></pre>
+<ol>
+<li>Backup existent database - <a href="#mariadb-dump-backup-options">MariaDB dump backup options</a>;</li>
+<li>Run pgloader to do the migration - <a href="#do-the-migration">Do the migration</a>;</li>
 <li>Verify migration by:<ul>
 <li>Checking pgloader outputs and logs.</li>
 </ul>
