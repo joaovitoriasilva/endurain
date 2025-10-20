@@ -140,11 +140,11 @@
             
             <li class="nav-item" data-bs-level="1"><a href="#3rd-party-services" class="nav-link">3rd party services</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-bs-level="2"><a href="#strava-integration" class="nav-link">Strava Integration</a>
+            <li class="nav-item" data-bs-level="2"><a href="#garmin-connect-integration" class="nav-link">Garmin Connect Integration</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#garmin-connect-integration" class="nav-link">Garmin Connect Integration</a>
+            <li class="nav-item" data-bs-level="2"><a href="#strava-integration" class="nav-link">Strava Integration</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -157,6 +157,10 @@
 
 <h1 id="3rd-party-services">3rd party services</h1>
 <hr />
+<h2 id="garmin-connect-integration">Garmin Connect Integration</h2>
+<p>To enable Garmin Connect integration, Endurain will ask for your Garmin Connect credentials. These credentials are not stored, but the authentication tokens (access and refresh tokens) are stored in the DB, similar to the Strava integration. The credentials are sent from the frontend to the backend in plain text, so the use of HTTPS is highly recommended.</p>
+<p>Once the integration with Garmin Connect is configured, on startup, every one and four hours the backend will check if there is new unimported activities and new body composition entries respectively. If yes, the new data is automatically imported.</p>
+<p>For Garmin Connect integration <a href="https://github.com/cyberjunky/python-garminconnect">python-garminconnect</a> Python module is used.</p>
 <h2 id="strava-integration">Strava Integration</h2>
 <blockquote>
 <p>⚠️ <strong>Warning</strong><br />
@@ -166,11 +170,7 @@ Due to recent Strava API changes, expect changes in the Strava integration in a 
 <p>Once the integration with Strava is configured, on startup and every hour the backend will check if there is new unimported activities. If yes, the new activity is automatically imported.</p>
 <p>On link, user will need to provide his/her API client ID and secret. Pair will be temporary stored in the DB until the process finishes. Info is sent on a JSON payload and HTTPS end2end is encouraged.</p>
 <p>On Strava unlink action every data imported from Strava, i.e. activities and gears, will be deleted according to Strava <a href="https://www.strava.com/legal/api">API Agreement</a>.</p>
-<p>For Strava integration <a href="https://github.com/stravalib/stravalib">stravalib</a> Python module is used.</p>
-<h2 id="garmin-connect-integration">Garmin Connect Integration</h2>
-<p>To enable Garmin Connect integration, Endurain will ask for your Garmin Connect credentials. These credentials are not stored, but the authentication tokens (access and refresh tokens) are stored in the DB, similar to the Strava integration. The credentials are sent from the frontend to the backend in plain text, so the use of HTTPS is highly recommended.</p>
-<p>Once the integration with Garmin Connect is configured, on startup, every one and four hours the backend will check if there is new unimported activities and new body composition entries respectively. If yes, the new data is automatically imported.</p>
-<p>For Garmin Connect integration <a href="https://github.com/cyberjunky/python-garminconnect">python-garminconnect</a> Python module is used.</p></div>
+<p>For Strava integration <a href="https://github.com/stravalib/stravalib">stravalib</a> Python module is used.</p></div>
             </div>
         </div>
 
