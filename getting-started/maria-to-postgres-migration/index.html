@@ -211,12 +211,12 @@ This guide uses some <a href="https://github.com/joaovitoriasilva/endurain/tree/
 <h1 id="install-pgloader">Install pgloader</h1>
 <p>Refer to <a href="https://pgloader.readthedocs.io/en/latest/">pgloader docs</a> for installation instructions.</p>
 <h1 id="migration-steps">Migration steps</h1>
-<ol>
+<ul>
 <li>Stop Endurain container;</li>
-</ol>
+</ul>
 <pre><code class="language-bash">docker compose down
 </code></pre>
-<ol>
+<ul>
 <li>Backup existent database - <a href="#mariadb-dump-backup-options">MariaDB dump backup options</a>;</li>
 <li>Run pgloader to do the migration - <a href="#do-the-migration">Do the migration</a>;</li>
 <li>Verify migration by:<ul>
@@ -224,17 +224,17 @@ This guide uses some <a href="https://github.com/joaovitoriasilva/endurain/tree/
 </ul>
 </li>
 <li>Update environment variables (adapt to your environment):</li>
-</ol>
+</ul>
 <pre><code class="language-bash">DB_TYPE=postgres
 DB_HOST=postgres
 DB_PORT=5432
 </code></pre>
-<ol>
+<ul>
 <li>Start with PostgreSQL:</li>
-</ol>
+</ul>
 <pre><code class="language-bash">docker compose up -d
 </code></pre>
-<ol>
+<ul>
 <li>Monitor logs for any issues;</li>
 <li>Verify application functionality:<ul>
 <li>Test login;</li>
@@ -244,7 +244,7 @@ DB_PORT=5432
 <li>Others.</li>
 </ul>
 </li>
-</ol>
+</ul>
 <h1 id="mariadb-dump-backup-options">MariaDB dump backup options</h1>
 <h2 id="option-1-run-mysqldump-mariadb-dump-from-the-host">Option 1: Run <code>mysqldump</code> / <code>mariadb-dump</code> from the host</h2>
 <p>Run the dump from your host machine (Ubuntu) using the MySQL or MariaDB client tools installed locally. You need to adjust host, port, database and password to match your environment.</p>
@@ -349,34 +349,30 @@ host all all all scram-sha-256
 <h2 id="migration-process">Migration Process</h2>
 <p>Remember: Always keep your MariaDB backup until you're confident the PostgreSQL migration is successful and stable.</p>
 <p>After <a href="https://pgloader.readthedocs.io/en/latest/">pgloader</a> is installed:</p>
-<ol>
-<li><strong>Clone Endurain repository:</strong></li>
-</ol>
+<h3 id="clone-endurain-repository">Clone Endurain repository</h3>
 <pre><code class="language-bash">git clone https://github.com/joaovitoriasilva/endurain
 cd endurain/mariadb_to_postgres
 </code></pre>
-<ol>
-<li>
-<p><strong>Edit the migration configuration:</strong></p>
-</li>
-<li>
-<p>Edit <code>mariadb_to_postgres_streams_only.load</code> and <code>mariadb_to_postgres_without_streams.load</code> to match your environment;</p>
-</li>
+<h3 id="edit-the-migration-configuration">Edit the migration configuration</h3>
+<ul>
+<li>Edit <code>mariadb_to_postgres_streams_only.load</code> and <code>mariadb_to_postgres_without_streams.load</code> to match your environment;</li>
 <li>Change DB connections (adjust host, port, database, user and password).</li>
-</ol>
+</ul>
 <pre><code class="language-sql">LOAD DATABASE
     FROM mysql://endurain:password@mariadb-host:3306/endurain
     INTO postgresql://endurain:password@postgres-host:5432/endurain
 </code></pre>
-<ol>
-<li><strong>Migration:</strong></li>
-</ol>
-<p>The migration is splitted because activity_streams table has large json data, causing memory issues</p>
-<p><strong>Step 1:</strong> Migrate all tables except activities_streams:</p>
+<h3 id="migration">Migration</h3>
+<p>The migration is splitted because activity_streams table has large json data, causing memory issues:</p>
+<ul>
+<li><strong>Step 1:</strong> Migrate all tables except activities_streams:</li>
+</ul>
 <pre><code class="language-bash">pgloader --verbose --load-lisp-file transforms.lisp mariadb_to_postgres_without_streams.load &gt; migration_main_$(date +%Y%m%d_%H%M%S).log 2&gt;&amp;1
 </code></pre>
-<p>This step may take several minutes to conclude (1h+ in my case. You can try to ajust load file to increase speed)</p>
-<p><strong>Step 2:</strong> Migrate activities_streams separately:</p>
+<ul>
+<li><strong>Step 2:</strong> Migrate activities_streams separately:</li>
+</ul>
+<p>This step may take several minutes to conclude (1h+ in my case. You can try to ajust load file to increase speed).</p>
 <pre><code class="language-bash">pgloader --verbose --load-lisp-file transforms.lisp mariadb_to_postgres_streams_only.load &gt; migration_streams_$(date +%Y%m%d_%H%M%S).log 2&gt;&amp;1
 </code></pre>
 <h2 id="revert-postgres-changes">Revert Postgres changes</h2>
@@ -407,34 +403,34 @@ host all all all scram-sha-256
 <h3 id="memory-exhaustion-errors">Memory Exhaustion Errors</h3>
 <p><strong>Symptoms:</strong> "Heap exhausted during allocation" errors, especially when processing <code>activities_streams</code> table.</p>
 <p><strong>Solutions:</strong></p>
-<ol>
+<ul>
 <li><strong>Increase system memory</strong> or close other applications</li>
 <li><strong>Reduce batch size</strong> in the .load file:</li>
-</ol>
+</ul>
 <pre><code class="language-bash">change bellow to minor, default is 10
 rows per range = 10 
 </code></pre>
-<ol>
+<ul>
 <li><strong>Reduce workers</strong> in the .load file:</li>
-</ol>
+</ul>
 <pre><code class="language-bash">workers = 1, concurrency = 1,
 </code></pre>
 <h3 id="postgresql-connection-issues">PostgreSQL Connection Issues</h3>
 <p><strong>Symptoms:</strong> Connection refused or authentication errors.</p>
 <p><strong>Solutions:</strong></p>
-<ol>
+<ul>
 <li>Verify PostgreSQL is running and accessible</li>
 <li>Check password authentication method (use MD5, not SCRAM-SHA-256)</li>
 <li>Verify <code>pg_hba.conf</code> allows connections from pgloader host</li>
-</ol>
+</ul>
 <h3 id="large-json-data-issues">Large JSON Data Issues</h3>
 <p><strong>Symptoms:</strong> Errors processing <code>stream_waypoints</code> column in <code>activities_streams</code>.</p>
 <p><strong>Solutions:</strong></p>
-<ol>
+<ul>
 <li>The updated <code>transforms.lisp</code> includes <code>stream-waypoints-to-jsonb</code> function</li>
 <li>Use split migration approach for better memory management</li>
 <li>Consider manual cleanup of very large JSON records before migration</li>
-</ol>
+</ul>
 <h3 id="migration-time-estimates">Migration Time Estimates</h3>
 <ul>
 <li><strong>Small databases</strong> (&lt; 1000 activities): 5-15 minutes</li>
