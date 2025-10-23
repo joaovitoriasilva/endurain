@@ -32,13 +32,13 @@
   "colActivities": "Activities",
   "metricTotalDistance": "Total distance",
   "metricTotalDuration": "Total duration",
-  "metricTotalElevation": "Total elevation",
-  "metricTotalCalories": "Total calories",
-  "metricTotalActivities": "Total activities",
-  "invalidYearSelected": "Invalid year selected",
-  "headerTypeBreakdown": "Breakdown by type",
-  "colActivityType": "Type",
-  "headerYear": "Year {year}",
-  "headerWeekStarting": "Week of {date}",
-  "colYear": "Year"
+  "metricTotalElevation": "Desnivel total",
+  "metricTotalCalories": "Calorías totais",
+  "metricTotalActivities": "Total de actividades",
+  "invalidYearSelected": "Ano seleccionado non válido",
+  "headerTypeBreakdown": "Separar por tipo",
+  "colActivityType": "Tipo",
+  "headerYear": "Ano {year}",
+  "headerWeekStarting": "Semana do {date}",
+  "colYear": "Ano"
 }
