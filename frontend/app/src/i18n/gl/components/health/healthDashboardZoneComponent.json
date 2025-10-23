@@ -1,8 +1,8 @@
 {
   "weight": "Peso",
-  "noWeightData": "No weight data",
-  "noWeightTarget": "No weight target",
-  "noHeightDefined": "No height defined for user",
+  "noWeightData": "Sen datos do peso",
+  "noWeightTarget": "Sen obxectivo de peso",
+  "noHeightDefined": "Sen peso definido pola usuaria",
   "bmi": "BMI",
   "bmiUnderweight": "Underweight",
   "bmiNormalWeight": "Normal weight",
