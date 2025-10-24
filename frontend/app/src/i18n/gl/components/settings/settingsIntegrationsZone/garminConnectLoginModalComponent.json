@@ -1,8 +1,8 @@
 {
-  "garminConnectAuthModalTitle": "Link Garmin Connect account",
-  "garminConnectAuthModalUsernameLabel": "Garmin Connect email",
-  "garminConnectAuthModalUsernamePlaceholder": "Garmin Connect email",
-  "garminConnectAuthModalPasswordLabel": "Garmin Connect password",
+  "garminConnectAuthModalTitle": "Ligar a conta Garmin Connect",
+  "garminConnectAuthModalUsernameLabel": "Correo electrónico en Garmin Connect",
+  "garminConnectAuthModalUsernamePlaceholder": "Correo electrónico en Garmin Connect",
+  "garminConnectAuthModalPasswordLabel": "Contrasinal de Garmin Connect",
   "garminConnectAuthModalPasswordPlaceholder": "Contrasinal de Garmin Connect",
   "garminConnectAuthModalMfaCodeLabel": "Código AMF",
   "garminConnectAuthModalMfaCodePlaceholder": "Código AMF",
