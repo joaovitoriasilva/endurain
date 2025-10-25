@@ -43,10 +43,10 @@
   "addEditUserModalErrorFetchingUserByUsername": "Erro ao obter usuara por identificador",
   "addEditUserModalErrorFetchingUserByEmail": "Erro ao obter usuaria polo correo",
   "addEditUserModalSuccessDeleteUserPhoto": "Eliminouse a foto correctamente",
-  "addEditUserModalErrorDeleteUserPhoto": "Error deleting user photo",
-  "addEditUserModalErrorUploadingUserPhoto": "Error uploading user photo",
-  "addEditUserModalSuccessAddUser": "User added successfully",
-  "addEditUserModalErrorAddUser": "Error adding user",
-  "addEditUserModalSuccessEditUser": "User edited successfully",
-  "addEditUserModalErrorEditUser": "Error editing user"
+  "addEditUserModalErrorDeleteUserPhoto": "Erro ao eliminar a foto da usuaria",
+  "addEditUserModalErrorUploadingUserPhoto": "Erro ao subir a foto da usuaria",
+  "addEditUserModalSuccessAddUser": "Usuaria engadida correctamente",
+  "addEditUserModalErrorAddUser": "Erro ao engadir a usuaria",
+  "addEditUserModalSuccessEditUser": "Usuaria editada correctamente",
+  "addEditUserModalErrorEditUser": "Erro ao editar a usuaria"
 }
