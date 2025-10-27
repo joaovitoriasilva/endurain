@@ -32,6 +32,6 @@
   "resultIsInactiveBadge": "未运动",
   "searchInputPlaceholder": "搜索文本",
   "errorFetchingUserWithUsernameContains": "获取用户名包含逻辑的用户时出错",
-  "errorFetchingActivityWithNameContains": "获取活动名称包含逻辑时出错",
+  "errorFetchingActivityWithNameContains": "获取名称中包含逻辑的活动时出错",
   "errorFetchingGearWithNicknameContains": "获取昵称中包含逻辑的装备时出错"
 }
