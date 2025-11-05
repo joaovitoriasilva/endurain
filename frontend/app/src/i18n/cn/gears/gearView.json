@@ -1,8 +1,8 @@
 {
-  "buttonAddComponent": "Add component",
-  "buttonEditGear": "Edit gear",
-  "buttonDeleteGear": "Delete gear",
-  "modalDeleteGearBody1": "Are you sure you want to delete gear",
+  "buttonAddComponent": "添加部件",
+  "buttonEditGear": "编辑装备",
+  "buttonDeleteGear": "移除装备",
+  "modalDeleteGearBody1": "确定要删除此装备吗？",
   "modalDeleteGearBody2": "This action cannot be undone.",
   "gearIsActiveBadge": "Active",
   "gearIsInactiveBadge": "Inactive",
