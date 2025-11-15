@@ -25,7 +25,7 @@
   "titleComponents": "Komponente",
   "showInactiveComponents": "Prikaži neaktivne",
   "title": "Dejavnosti",
-  "successGearEdited": "Gear edited successfully",
-  "errorGearDelete": "Error deleting gear",
-  "errorFetchingGears": "Error fetching gears"
+  "successGearEdited": "Oprema je bila uspešno urejena",
+  "errorGearDelete": "Napaka pri brisanju opreme",
+  "errorFetchingGears": "Napaka pri pridobivanju opreme"
 }
