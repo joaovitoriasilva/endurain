@@ -32,7 +32,7 @@
   "searchSelectGearType8": "Deska za vodne športe",
   "resultIsInactiveBadge": "Neaktiven",
   "searchInputPlaceholder": "Besedilo za iskanje",
-  "errorFetchingUserWithUsernameContains": "Error fetching user with username contains logic",
-  "errorFetchingActivityWithNameContains": "Error fetching activity with name contains logic",
-  "errorFetchingGearWithNicknameContains": "Error fetching gear with nickname contains logic"
+  "errorFetchingUserWithUsernameContains": "Napaka pri pridobivanju uporabnika z uporabniškim imenom, ki vsebuje logiko",
+  "errorFetchingActivityWithNameContains": "Napaka pri pridobivanju dejavnosti z imenom, ki vsebuje logiko",
+  "errorFetchingGearWithNicknameContains": "Napaka pri pridobivanju opreme z vzdevkom, ki vsebuje logiko"
 }
