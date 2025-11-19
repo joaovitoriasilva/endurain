@@ -398,6 +398,16 @@ async def save_activity_streams_laps(
         # Create the laps in the database
         activity_laps_crud.create_activity_laps(laps, created_activity.id, db)
 
+    # Check and update personal records
+    try:
+        import activities.personal_records.utils as personal_records_utils
+        personal_records_utils.check_and_update_personal_records(created_activity, db)
+    except Exception as err:
+        # Log the error but don't fail the activity creation
+        core_logger.print_to_log(
+            f"Error checking personal records: {err}", "error", exc=err
+        )
+
     # return the created activity
     return created_activity
 

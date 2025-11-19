@@ -15,6 +15,7 @@ import activities.activity_streams.public_router as activity_streams_public_rout
 import activities.activity_summaries.router as activity_summaries_router
 import activities.activity_workout_steps.router as activity_workout_steps_router
 import activities.activity_workout_steps.public_router as activity_workout_steps_public_router
+import activities.personal_records.router as personal_records_router
 import core.config as core_config
 import core.router as core_router
 import followers.router as followers_router
@@ -88,6 +89,12 @@ router.include_router(
     activity_summaries_router.router,
     prefix=core_config.ROOT_PATH + "/activities_summaries",
     tags=["summaries"],
+    dependencies=[Depends(session_security.validate_access_token)],
+)
+router.include_router(
+    personal_records_router.router,
+    prefix=core_config.ROOT_PATH + "/personal_records",
+    tags=["personal_records"],
     dependencies=[Depends(session_security.validate_access_token)],
 )
 router.include_router(
