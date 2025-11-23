@@ -1,6 +1,6 @@
 {
-  "modalEditActivityTitle": "Edit activity",
-  "modalEditActivityDescriptionLabel": "Description",
+  "modalEditActivityTitle": "編輯活動",
+  "modalEditActivityDescriptionLabel": "說明",
   "modalEditActivityDescriptionPlaceholder": "Description (max 2500 characters)",
   "modalEditActivityPrivateNotesLabel": "Private notes",
   "modalEditActivityPrivateNotesPlaceholder": "Private notes (max 2500 characters)",
