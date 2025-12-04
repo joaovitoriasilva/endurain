@@ -5,7 +5,7 @@
   "userListUserIsAdminBadge": "Administrador",
   "userListUserIsInactiveBadge": "Inativo",
   "userListUserHasUnverifiedEmailBadge": "E-mail não verificado",
-  "userListUserHasExternalAuthBadge": "Auth Externa",
+  "userListUserHasExternalAuthBadge": "External Auth",
   "modalApproveSignUpTitle": "Aprovar inscrição de utilizador",
   "modalApproveSignUpBody": "Tem certeza de que deseja aprovar o utilizador ",
   "processingApproval": "A processar aprovação...",
@@ -20,9 +20,9 @@
   "userListUserSessionsTitle": "Sessões do utilizador",
   "userSessionDeleteSuccessMessage": "Sessão eliminada com sucesso",
   "userSessionDeleteErrorMessage": "Erro ao eliminar sessão",
-  "tabSessions": "Sessões",
-  "tabIdentityProviders": "Fornecedores de identidade",
-  "userIdpsLoadErrorMessage": "Erro ao carregar fornecedores de identidade",
-  "userIdpDeleteSuccessMessage": "Fornecedor de identidade desvinculado com sucesso",
-  "userIdpDeleteErrorMessage": "Erro ao desvincular fornecedor de identidade"
+  "tabSessions": "Sessions",
+  "tabIdentityProviders": "Identity Providers",
+  "userIdpsLoadErrorMessage": "Error loading identity providers",
+  "userIdpDeleteSuccessMessage": "Identity provider unlinked successfully",
+  "userIdpDeleteErrorMessage": "Error unlinking identity provider"
 }
