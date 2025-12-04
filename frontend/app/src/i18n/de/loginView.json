@@ -33,5 +33,5 @@
   "signUpLink": "Kein Konto? Jetzt registrieren",
   "emailVerificationSent": "Please check your email for verification instructions",
   "adminApprovalRequired": "Your account is pending admin approval",
-  "verifyEmailInvalidLink": "Invalid email verification link"
+  "verifyEmailInvalidLink": "Ungültiger E-Mail Bestätigungslink"
 }
