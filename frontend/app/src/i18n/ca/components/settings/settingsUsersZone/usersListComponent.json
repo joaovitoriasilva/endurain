@@ -5,7 +5,7 @@
   "userListUserIsAdminBadge": "Admin",
   "userListUserIsInactiveBadge": "Inactiu",
   "userListUserHasUnverifiedEmailBadge": "Correu no verificat",
-  "userListUserHasExternalAuthBadge": "External Auth",
+  "userListUserHasExternalAuthBadge": "External auth",
   "modalApproveSignUpTitle": "Aprova el registre d'usuari",
   "modalApproveSignUpBody": "Esteu segur que voleu aprovar l'usuari ",
   "processingApproval": "Processant aprovació...",
@@ -21,7 +21,7 @@
   "userSessionDeleteSuccessMessage": "Sessió eliminada correctament",
   "userSessionDeleteErrorMessage": "Error esborrant sessió",
   "tabSessions": "Sessions",
-  "tabIdentityProviders": "Identity Providers",
+  "tabIdentityProviders": "Identity providers",
   "userIdpsLoadErrorMessage": "Error loading identity providers",
   "userIdpDeleteSuccessMessage": "Identity provider unlinked successfully",
   "userIdpDeleteErrorMessage": "Error unlinking identity provider"
