@@ -3,7 +3,8 @@ import {
   fetchPostRequest,
   fetchPutRequest,
   fetchDeleteRequest,
-  fetchPostFileRequest
+  fetchPostFileRequest,
+  fetchGetRequestWithRedirect
 } from '@/utils/serviceUtils'
 
 export const profile = {
@@ -58,5 +59,14 @@ export const profile = {
   },
   verifyMFA(data) {
     return fetchPostRequest('profile/mfa/verify', data)
+  },
+  getMyIdentityProviders() {
+    return fetchGetRequest('profile/idp')
+  },
+  unlinkIdentityProvider(idpId) {
+    return fetchDeleteRequest(`profile/idp/${idpId}`)
+  },
+  linkIdentityProvider(idpId) {
+    return fetchGetRequestWithRedirect(`profile/idp/${idpId}/link`)
   }
 }

@@ -1,10 +1,9 @@
-import logging
 from typing import Annotated
 from fastapi import APIRouter, Depends, BackgroundTasks
 from sqlalchemy.orm import Session
 from datetime import datetime, timezone, date
 
-import session.security as session_security
+import auth.security as auth_security
 
 import users.user_integrations.crud as user_integrations_crud
 
@@ -31,7 +30,7 @@ async def garminconnect_link(
     garmin_user: garmin_schema.GarminLogin,
     token_user_id: Annotated[
         int,
-        Depends(session_security.get_user_id_from_access_token),
+        Depends(auth_security.get_sub_from_access_token),
     ],
     db: Annotated[Session, Depends(core_database.get_db)],
     mfa_codes: Annotated[
@@ -61,7 +60,7 @@ async def garminconnect_mfa_code(
     mfa_request: garmin_schema.MFARequest,
     token_user_id: Annotated[
         int,
-        Depends(session_security.get_user_id_from_access_token),
+        Depends(auth_security.get_sub_from_access_token),
     ],
     mfa_codes: Annotated[
         garmin_schema.MFACodeStore, Depends(garmin_schema.get_mfa_store)
@@ -81,7 +80,7 @@ async def garminconnect_retrieve_activities_days(
     end_date: date,
     token_user_id: Annotated[
         int,
-        Depends(session_security.get_user_id_from_access_token),
+        Depends(auth_security.get_sub_from_access_token),
     ],
     db: Annotated[Session, Depends(core_database.get_db)],
     websocket_manager: Annotated[
@@ -90,7 +89,9 @@ async def garminconnect_retrieve_activities_days(
     ],
     background_tasks: BackgroundTasks,
 ):
-    start_datetime = datetime.combine(start_date, datetime.min.time(), tzinfo=timezone.utc)
+    start_datetime = datetime.combine(
+        start_date, datetime.min.time(), tzinfo=timezone.utc
+    )
     end_datetime = datetime.combine(end_date, datetime.max.time(), tzinfo=timezone.utc)
 
     # Process Garmin Connect activities in the background
@@ -116,7 +117,7 @@ async def garminconnect_retrieve_activities_days(
 async def garminconnect_retrieve_gear(
     token_user_id: Annotated[
         int,
-        Depends(session_security.get_user_id_from_access_token),
+        Depends(auth_security.get_sub_from_access_token),
     ],
     background_tasks: BackgroundTasks,
 ):
@@ -144,17 +145,19 @@ async def garminconnect_retrieve_health_days(
     end_date: date,
     token_user_id: Annotated[
         int,
-        Depends(session_security.get_user_id_from_access_token),
+        Depends(auth_security.get_sub_from_access_token),
     ],
     # db: Annotated[Session, Depends(core_database.get_db)],
     background_tasks: BackgroundTasks,
 ):
-    start_datetime = datetime.combine(start_date, datetime.min.time(), tzinfo=timezone.utc)
+    start_datetime = datetime.combine(
+        start_date, datetime.min.time(), tzinfo=timezone.utc
+    )
     end_datetime = datetime.combine(end_date, datetime.max.time(), tzinfo=timezone.utc)
 
     # Process Garmin Connect activities in the background
     background_tasks.add_task(
-        garmin_health_utils.get_user_garminconnect_bc_by_dates,
+        garmin_health_utils.get_user_garminconnect_health_by_dates,
         start_datetime,
         end_datetime,
         token_user_id,
@@ -173,7 +176,7 @@ async def garminconnect_retrieve_health_days(
 async def garminconnect_unlink(
     token_user_id: Annotated[
         int,
-        Depends(session_security.get_user_id_from_access_token),
+        Depends(auth_security.get_sub_from_access_token),
     ],
     db: Annotated[
         Session,

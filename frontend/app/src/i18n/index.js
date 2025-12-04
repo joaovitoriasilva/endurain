@@ -36,6 +36,14 @@ const componentPaths = {
   healthDashboardZoneComponent: 'components/health/healthDashboardZoneComponent.json',
   healthSideBarComponent: 'components/health/healthSideBarComponent.json',
   healthWeightZoneComponent: 'components/health/healthWeightZoneComponent.json',
+  healthStepsZoneComponent: 'components/health/healthStepsZoneComponent.json',
+  healthStepsListComponent: 'components/health/healthStepsZone/healthStepsListComponent.json',
+  healthStepsAddEditModalComponent:
+    'components/health/healthStepsZone/healthStepsAddEditModalComponent.json',
+  healthSleepZoneComponent: 'components/health/healthSleepZoneComponent.json',
+  healthSleepListComponent: 'components/health/healthSleepZone/healthSleepListComponent.json',
+  healthSleepListTabsComponent: 'components/health/healthSleepZone/healthSleepListTabsComponent.json',
+  healthRHRZoneComponent: 'components/health/healthRHRZoneComponent.json',
   // Navbar components
   navbarBottomMobileComponent: 'components/navbar/navbarBottomMobileComponent.json',
   navbarComponent: 'components/navbar/navbarComponent.json',
@@ -71,10 +79,15 @@ const componentPaths = {
   usersListComponent: 'components/settings/settingsUsersZone/usersListComponent.json',
   usersPasswordRequirementsComponent:
     'components/settings/settingsUsersZone/usersPasswordRequirementsComponent.json',
+  userIdentityProviderListComponent:
+    'components/settings/settingsUsersZone/userIdentityProviderListComponent.json',
   userSessionsListComponent:
     'components/settings/settingsUserSessionsZone/userSessionsListComponent.json',
   settingsServerSettingsZoneComponent:
     'components/settings/settingsServerSettingsZoneComponent.json',
+  settingsIdentityProvidersZone: 'components/settings/settingsIdentityProvidersZoneComponent.json',
+  identityProvidersAddEditModal:
+    'components/settings/settingsIdentityProvidersZone/identityProvidersAddEditModalComponent.json',
   settingsUserGoalsZone: 'components/settings/settingsUserGoals.json',
   goalsListComponent: 'components/settings/settingsUserGoalsZone/goalsListComponent.json',
   goalsAddEditGoalModalComponent:

@@ -1,26 +1,13 @@
 import os
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy.engine.url import URL
 
 import core.config as core_config
 
-
-# Fetch the database type (e.g., mariadb or postgresql)
-db_type = os.environ.get("DB_TYPE", "postgres").lower()
-
-# Define supported database drivers
-supported_drivers = {"mariadb": "mysql+mysqldb", "postgres": "postgresql+psycopg"}
-
-if db_type not in supported_drivers:
-    raise ValueError(
-        f"Unsupported DB_TYPE: {db_type}. Supported types are {list(supported_drivers.keys())}"
-    )
-
 # Define the database connection URL using environment variables
 db_url = URL.create(
-    drivername=supported_drivers[db_type],
+    drivername="postgresql+psycopg",
     username=os.environ.get("DB_USER", "endurain"),
     password=core_config.read_secret("DB_PASSWORD"),
     host=os.environ.get("DB_HOST", "postgres"),
@@ -30,7 +17,12 @@ db_url = URL.create(
 
 # Create the SQLAlchemy engine
 engine = create_engine(
-    db_url, pool_size=10, max_overflow=20, pool_timeout=180, pool_recycle=3600
+    db_url,
+    pool_size=20,
+    max_overflow=40,
+    pool_timeout=180,
+    pool_recycle=3600,
+    pool_pre_ping=True,
 )
 
 # Create a session factory
@@ -41,6 +33,21 @@ Base = declarative_base()
 
 
 def get_db():
+    """
+    Yields a new SQLAlchemy database session.
+
+    This generator function creates a new database session using SessionLocal,
+    yields it for use in database operations, and ensures the session is properly
+    closed after use. Intended for use as a dependency in FastAPI routes or other
+    contexts where session management is required.
+
+    Yields:
+        Session: An active SQLAlchemy database session.
+
+    Example:
+        with get_db() as db:
+            # use db session here
+    """
     # Create a new database session and return it
     db = SessionLocal()
 

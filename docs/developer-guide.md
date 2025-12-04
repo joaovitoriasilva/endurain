@@ -31,7 +31,6 @@ services:
         image: unified-image # based on image that will be created above
         environment:
             - TZ=Europe/Lisbon # change if needed. Default is UTC
-            - DB_TYPE=postgres
             - DB_HOST=postgres
             - DB_PORT=5432
             - DB_PASSWORD=changeme
@@ -131,7 +130,7 @@ Endurain supports integration with other apps:
 
 ### API Requirements
 - **Add a header:** Every request must include an `X-Client-Type` header with either `web` or `mobile` as the value. Requests with other values will receive a `403` error.
-- **Authorization:** Every request must include an `Authorization Bearer: <access token>` header with a valid (new or refreshed) access token.
+- **Authorization:** Every request must include an `Authorization: Bearer <access token>` header with a valid (new or refreshed) access token.
 
 ### Token Handling
 - The backend will generate an `access_token` valid for 15 minutes and an `refresh_token` valid for 7 days. This follow the logic of short and longed lived tokens for auth session.
@@ -211,7 +210,9 @@ X-Client-Type: web|mobile
   {
     "access_token": "eyJ...",
     "refresh_token": "eyJ...",
-    "session_id": "unique_session_id"
+    "session_id": "unique_session_id",
+    "token_type": "Bearer",
+    "expires_in": 900,
   }
   ```
 

@@ -3,7 +3,7 @@ from typing import Annotated, Callable
 from fastapi import APIRouter, Depends, HTTPException, status, Security
 from sqlalchemy.orm import Session
 
-import session.security as session_security
+import auth.security as auth_security
 
 import gears.gear_components.schema as gears_components_schema
 import gears.gear_components.crud as gears_components_crud
@@ -21,12 +21,10 @@ router = APIRouter()
     response_model=list[gears_components_schema.GearComponents] | None,
 )
 async def read_gear_components(
-    check_scopes: Annotated[
-        Callable, Security(session_security.check_scopes, scopes=["gears:read"])
+    _check_scopes: Annotated[
+        Callable, Security(auth_security.check_scopes, scopes=["gears:read"])
     ],
-    token_user_id: Annotated[
-        int, Depends(session_security.get_user_id_from_access_token)
-    ],
+    token_user_id: Annotated[int, Depends(auth_security.get_sub_from_access_token)],
     db: Annotated[Session, Depends(core_database.get_db)],
 ):
     # Return the gear_components
@@ -40,12 +38,10 @@ async def read_gear_components(
 async def read_gear_components_gear_id(
     gear_id: int,
     validate_gear_id: Annotated[Callable, Depends(gears_dependencies.validate_gear_id)],
-    check_scopes: Annotated[
-        Callable, Security(session_security.check_scopes, scopes=["gears:read"])
+    _check_scopes: Annotated[
+        Callable, Security(auth_security.check_scopes, scopes=["gears:read"])
     ],
-    token_user_id: Annotated[
-        int, Depends(session_security.get_user_id_from_access_token)
-    ],
+    token_user_id: Annotated[int, Depends(auth_security.get_sub_from_access_token)],
     db: Annotated[Session, Depends(core_database.get_db)],
 ):
     # Return the gear
@@ -61,15 +57,13 @@ async def read_gear_components_gear_id(
 )
 async def create_gear_component(
     gear_component: gears_components_schema.GearComponents,
-    check_scopes: Annotated[
-        Callable, Security(session_security.check_scopes, scopes=["gears:write"])
+    _check_scopes: Annotated[
+        Callable, Security(auth_security.check_scopes, scopes=["gears:write"])
     ],
     verify_gear_type: Annotated[
         Callable, Security(gears_components_dependencies.validate_gear_component_type)
     ],
-    token_user_id: Annotated[
-        int, Depends(session_security.get_user_id_from_access_token)
-    ],
+    token_user_id: Annotated[int, Depends(auth_security.get_sub_from_access_token)],
     db: Annotated[
         Session,
         Depends(core_database.get_db),
@@ -84,12 +78,10 @@ async def create_gear_component(
 @router.put("")
 async def edit_gear_component(
     gear_component: gears_components_schema.GearComponents,
-    check_scopes: Annotated[
-        Callable, Security(session_security.check_scopes, scopes=["gears:write"])
+    _check_scopes: Annotated[
+        Callable, Security(auth_security.check_scopes, scopes=["gears:write"])
     ],
-    token_user_id: Annotated[
-        int, Depends(session_security.get_user_id_from_access_token)
-    ],
+    token_user_id: Annotated[int, Depends(auth_security.get_sub_from_access_token)],
     db: Annotated[
         Session,
         Depends(core_database.get_db),
@@ -138,12 +130,10 @@ async def delete_component_gear(
     validate_id: Annotated[
         Callable, Depends(gears_components_dependencies.validate_gear_component_id)
     ],
-    check_scopes: Annotated[
-        Callable, Security(session_security.check_scopes, scopes=["gears:write"])
+    _check_scopes: Annotated[
+        Callable, Security(auth_security.check_scopes, scopes=["gears:write"])
     ],
-    token_user_id: Annotated[
-        int, Depends(session_security.get_user_id_from_access_token)
-    ],
+    token_user_id: Annotated[int, Depends(auth_security.get_sub_from_access_token)],
     db: Annotated[
         Session,
         Depends(core_database.get_db),

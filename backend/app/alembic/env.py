@@ -16,8 +16,11 @@ import activities.activity_workout_steps.models
 import followers.models
 import gears.gear.models
 import gears.gear_components.models
-import health_data.models
+import health_sleep.models
+import health_steps.models
 import health_targets.models
+import health_weight.models
+import auth.identity_providers.models
 import migrations.models
 import notifications.models
 import password_reset_tokens.models
@@ -27,6 +30,7 @@ import session.models
 import users.user.models
 import users.user_goals.models
 import users.user_default_gear.models
+import users.user_identity_providers.models
 import users.user_integrations.models
 import users.user_privacy_settings.models
 
@@ -39,7 +43,7 @@ config = context.config
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
-if config.attributes.get('configure_logger', True):
+if config.attributes.get("configure_logger", True):
     fileConfig(config.config_file_name)
 
 # add your model's MetaData object here

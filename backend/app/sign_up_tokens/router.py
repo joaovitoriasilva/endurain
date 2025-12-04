@@ -11,16 +11,13 @@ from sqlalchemy.orm import Session
 import users.user.crud as users_crud
 import users.user.utils as users_utils
 import users.user.schema as users_schema
-import users.user_integrations.crud as user_integrations_crud
-import users.user_default_gear.crud as user_default_gear_crud
-import users.user_privacy_settings.crud as users_privacy_settings_crud
 
 import notifications.utils as notifications_utils
 
-import health_targets.crud as health_targets_crud
-
 import sign_up_tokens.utils as sign_up_tokens_utils
 import sign_up_tokens.schema as sign_up_tokens_schema
+
+import auth.password_hasher as auth_password_hasher
 
 import server_settings.utils as server_settings_utils
 
@@ -40,6 +37,10 @@ async def signup(
         core_apprise.AppriseService,
         Depends(core_apprise.get_email_service),
     ],
+    password_hasher: Annotated[
+        auth_password_hasher.PasswordHasher,
+        Depends(auth_password_hasher.get_password_hasher),
+    ],
     db: Annotated[
         Session,
         Depends(core_database.get_db),
@@ -55,6 +56,7 @@ async def signup(
         verification and admin approval emails.
     - websocket_manager (websocket_schema.WebSocketManager): Injected manager used to send
         real-time notifications (e.g., admin approval requests).
+    - password_hasher (auth_password_hasher.PasswordHasher): Injected password hasher used to hash user passwords.
     - db (Session): Database session/connection used to create the user and related records.
 
     Behavior and side effects
@@ -107,19 +109,12 @@ async def signup(
         )
 
     # Create the user in the database
-    created_user = users_crud.create_signup_user(user, server_settings, db)
+    created_user = users_crud.create_signup_user(
+        user, server_settings, password_hasher, db
+    )
 
-    # Create the user integrations in the database
-    user_integrations_crud.create_user_integrations(created_user.id, db)
-
-    # Create the user privacy settings
-    users_privacy_settings_crud.create_user_privacy_settings(created_user.id, db)
-
-    # Create the user health targets
-    health_targets_crud.create_health_targets(created_user.id, db)
-
-    # Create the user default gear
-    user_default_gear_crud.create_user_default_gear(created_user.id, db)
+    # Create default data for the user
+    users_utils.create_user_default_data(created_user.id, db)
 
     # Return appropriate response based on server configuration
     response_data = {"message": "User created successfully."}

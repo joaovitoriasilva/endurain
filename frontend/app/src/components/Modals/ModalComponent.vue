@@ -1,15 +1,16 @@
 <template>
   <div
+    ref="modalRef"
     class="modal fade"
-    :id="`${modalId}`"
+    :id="modalId"
     tabindex="-1"
-    :aria-labelledby="`${modalId}`"
+    :aria-labelledby="`${modalId}Title`"
     aria-hidden="true"
   >
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" :id="`${modalId}`">{{ title }}</h1>
+          <h1 class="modal-title fs-5" :id="`${modalId}Title`">{{ title }}</h1>
           <button
             type="button"
             class="btn-close"
@@ -21,30 +22,43 @@
           <span v-html="body"></span>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+            aria-label="Close modal"
+          >
             {{ $t('generalItems.buttonClose') }}
           </button>
-          <a
+          <button
             type="button"
-            @click="submitAction()"
+            @click="submitAction"
             class="btn"
             :class="{
               'btn-success': actionButtonType === 'success',
               'btn-danger': actionButtonType === 'danger',
               'btn-warning': actionButtonType === 'warning',
-              'btn-primary': actionButtonType === 'loading'
+              'btn-primary': actionButtonType === 'primary'
             }"
             data-bs-dismiss="modal"
-            >{{ actionButtonText }}</a
+            :aria-label="actionButtonText"
           >
+            {{ actionButtonText }}
+          </button>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script setup>
-// Define props
+<script setup lang="ts">
+// Vue composition API
+import { ref, onMounted, onUnmounted, type PropType } from 'vue'
+// Composables
+import { useBootstrapModal } from '@/composables/useBootstrapModal'
+// Types
+import type { ActionButtonType } from '@/types'
+
 const props = defineProps({
   modalId: {
     type: String,
@@ -59,15 +73,16 @@ const props = defineProps({
     required: true
   },
   actionButtonType: {
-    type: String,
-    required: true
+    type: String as PropType<ActionButtonType>,
+    required: true,
+    validator: (value: string) => ['success', 'danger', 'warning', 'primary'].includes(value)
   },
   actionButtonText: {
     type: String,
     required: true
   },
   valueToEmit: {
-    type: [Number, String],
+    type: [Number, String] as PropType<number | string | null>,
     default: null
   },
   emitValue: {
@@ -76,15 +91,27 @@ const props = defineProps({
   }
 })
 
-// Define emits
-const emit = defineEmits(['submitAction'])
+const emit = defineEmits<{
+  submitAction: [value: number | string | boolean | null]
+}>()
 
-// Methods
-function submitAction() {
+const { initializeModal, disposeModal } = useBootstrapModal()
+
+const modalRef = ref<HTMLDivElement | null>(null)
+
+const submitAction = (): void => {
   if (props.emitValue) {
     emit('submitAction', props.valueToEmit)
   } else {
     emit('submitAction', true)
   }
 }
+
+onMounted(async () => {
+  await initializeModal(modalRef)
+})
+
+onUnmounted(() => {
+  disposeModal()
+})
 </script>

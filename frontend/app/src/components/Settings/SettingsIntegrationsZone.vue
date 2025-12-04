@@ -49,6 +49,17 @@
                   >
                 </li>
                 <li>
+                  <!-- retrieve strava activities by date range -->
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    role="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#retrieveStravaActivitiesByDateRangeModal"
+                    >{{ $t('settingsIntegrationsZone.modalRetrieveActivitiesByDateRangeTitle') }}</a
+                  >
+                </li>
+                <li>
                   <!-- retrieve gear -->
                   <a href="#" class="dropdown-item" @click="submitRetrieveStravaGear">{{
                     $t('settingsIntegrationsZone.buttonRetrieveGear')
@@ -91,7 +102,7 @@
           <div class="d-flex align-items-center">
             <!--<font-awesome-icon :icon="['fas', 'file-import']" size="2x" />-->
             <img
-              src="/src/assets/garminconnect/Garmin_Connect_app_1024x1024-02.png"
+              :src="INTEGRATION_LOGOS.garminConnectApp"
               alt="Garmin Connect logo"
               height="32"
             />
@@ -204,10 +215,10 @@
       <ModalComponentNumberAndStringInput
         modalId="retrieveStravaClientIdModal"
         :title="t('settingsIntegrationsZone.modalRetrieveClientIdTitle')"
-        :numberFieldLabel="`${t('settingsIntegrationsZone.modalRetrieveClientIdLabel')}`"
+        :numberFieldLabel="t('settingsIntegrationsZone.modalRetrieveClientIdLabel')"
         :numberDefaultValue="Number(123456)"
-        :stringFieldLabel="`${t('settingsIntegrationsZone.modalRetrieveClientSecretLabel')}`"
-        :actionButtonType="`success`"
+        :stringFieldLabel="t('settingsIntegrationsZone.modalRetrieveClientSecretLabel')"
+        actionButtonType="success"
         :actionButtonText="t('settingsIntegrationsZone.buttonConnect')"
         @fieldsToEmitAction="submitConnectStrava"
       />
@@ -216,18 +227,28 @@
       <ModalComponentNumberInput
         modalId="retrieveStravaActivitiesByDaysModal"
         :title="t('settingsIntegrationsZone.modalRetrieveActivitiesByDaysTitle')"
-        :numberFieldLabel="`${t('settingsIntegrationsZone.modalRetrieveActivitiesByDaysLabel')}`"
-        :actionButtonType="`success`"
+        :numberFieldLabel="t('settingsIntegrationsZone.modalRetrieveActivitiesByDaysLabel')"
+        :numberDefaultValue="Number(7)"
+        actionButtonType="success"
         :actionButtonText="t('settingsIntegrationsZone.modalRetrieveButton')"
-        @numberToEmitAction="submitRetrieveStravaActivities"
+        @numberToEmitAction="submitRetrieveStravaActivitiesDays"
+      />
+
+      <!-- modal retrieve Strava activities by date range -->
+      <ModalComponentDateRangeInput
+        modalId="retrieveStravaActivitiesByDateRangeModal"
+        :title="t('settingsIntegrationsZone.modalRetrieveActivitiesByDateRangeTitle')"
+        actionButtonType="success"
+        :actionButtonText="t('settingsIntegrationsZone.modalRetrieveButton')"
+        @datesToEmitAction="submitRetrieveStravaActivitiesDataRange"
       />
 
       <!-- modal unlink Strava -->
       <ModalComponent
         modalId="unlinkStravaModal"
         :title="t('settingsIntegrationsZone.modalUnlinkStravaTitle')"
-        :body="`${t('settingsIntegrationsZone.modalUnlinkStravaBody')}`"
-        :actionButtonType="`danger`"
+        :body="t('settingsIntegrationsZone.modalUnlinkStravaBody')"
+        actionButtonType="danger"
         :actionButtonText="t('settingsIntegrationsZone.modalUnlinkStravaTitle')"
         @submitAction="buttonStravaUnlink"
       />
@@ -239,8 +260,9 @@
       <ModalComponentNumberInput
         modalId="retrieveGarminConnectActivitiesByDaysModal"
         :title="t('settingsIntegrationsZone.modalRetrieveActivitiesByDaysTitle')"
-        :numberFieldLabel="`${t('settingsIntegrationsZone.modalRetrieveActivitiesByDaysLabel')}`"
-        :actionButtonType="`success`"
+        :numberFieldLabel="t('settingsIntegrationsZone.modalRetrieveActivitiesByDaysLabel')"
+        :numberDefaultValue="Number(7)"
+        actionButtonType="success"
         :actionButtonText="t('settingsIntegrationsZone.modalRetrieveButton')"
         @numberToEmitAction="submitRetrieveGarminConnectActivitiesDays"
       />
@@ -249,7 +271,7 @@
       <ModalComponentDateRangeInput
         modalId="retrieveGarminConnectActivitiesByDateRangeModal"
         :title="t('settingsIntegrationsZone.modalRetrieveActivitiesByDateRangeTitle')"
-        :actionButtonType="`success`"
+        actionButtonType="success"
         :actionButtonText="t('settingsIntegrationsZone.modalRetrieveButton')"
         @datesToEmitAction="submitRetrieveGarminConnectActivitiesDataRange"
       />
@@ -258,8 +280,9 @@
       <ModalComponentNumberInput
         modalId="retrieveGarminConnectHealthDataByDaysModal"
         :title="t('settingsIntegrationsZone.modalRetrieveHealthDataByDaysTitle')"
-        :numberFieldLabel="`${t('settingsIntegrationsZone.modalRetrieveActivitiesByDaysLabel')}`"
-        :actionButtonType="`success`"
+        :numberFieldLabel="t('settingsIntegrationsZone.modalRetrieveActivitiesByDaysLabel')"
+        :numberDefaultValue="Number(7)"
+        actionButtonType="success"
         :actionButtonText="t('settingsIntegrationsZone.modalRetrieveButton')"
         @numberToEmitAction="submitRetrieveGarminConnectHealthDataDays"
       />
@@ -268,7 +291,7 @@
       <ModalComponentDateRangeInput
         modalId="retrieveGarminConnectHealthDataByDateRangeModal"
         :title="t('settingsIntegrationsZone.modalRetrieveHealthDataByDateRangeTitle')"
-        :actionButtonType="`success`"
+        actionButtonType="success"
         :actionButtonText="t('settingsIntegrationsZone.modalRetrieveButton')"
         @datesToEmitAction="submitRetrieveGarminConnectHealthDataDataRange"
       />
@@ -277,8 +300,8 @@
       <ModalComponent
         modalId="unlinkGarminConnectModal"
         :title="t('settingsIntegrationsZone.modalUnlinkGarminConnectTitle')"
-        :body="`${t('settingsIntegrationsZone.modalUnlinkGarminConnectBody')}`"
-        :actionButtonType="`danger`"
+        :body="t('settingsIntegrationsZone.modalUnlinkGarminConnectBody')"
+        actionButtonType="danger"
         :actionButtonText="t('settingsIntegrationsZone.modalUnlinkGarminConnectTitle')"
         @submitAction="buttonGarminConnectUnlink"
       />
@@ -298,9 +321,19 @@ import ModalComponentNumberAndStringInput from '@/components/Modals/ModalCompone
 import ModalComponentNumberInput from '@/components/Modals/ModalComponentNumberInput.vue'
 import ModalComponentDateRangeInput from '@/components/Modals/ModalComponentDateRangeInput.vue'
 import GarminConnectLoginModalComponent from './SettingsIntegrations/GarminConnectLoginModalComponent.vue'
+import { INTEGRATION_LOGOS } from '@/constants/integrationLogoConstants'
 
 const authStore = useAuthStore()
 const { locale, t } = useI18n()
+
+function getStartAndEndDateFromDaysAgo(days) {
+  const endDate = new Date()
+  const startDate = new Date()
+  startDate.setDate(endDate.getDate() - days)
+  const formattedStartDate = startDate.toISOString().split('T')[0]
+  const formattedEndDate = endDate.toISOString().split('T')[0]
+  return { startDate: formattedStartDate, endDate: formattedEndDate }
+}
 
 async function submitConnectStrava(stravaClient) {
   const array = new Uint8Array(16)
@@ -325,9 +358,21 @@ async function submitConnectStrava(stravaClient) {
   }
 }
 
-async function submitRetrieveStravaActivities(daysToRetrieveStrava) {
+async function submitRetrieveStravaActivitiesDays(days) {
   try {
-    await strava.getStravaActivitiesLastDays(daysToRetrieveStrava)
+    const dates = getStartAndEndDateFromDaysAgo(days)
+    await strava.getStravaActivitiesByDates(dates.startDate, dates.endDate)
+    push.info(t('settingsIntegrationsZone.loadingMessageRetrievingStravaActivities'))
+  } catch (error) {
+    push.error(
+      `${t('settingsIntegrationsZone.errorMessageUnableToGetStravaActivities')} - ${error}`
+    )
+  }
+}
+
+async function submitRetrieveStravaActivitiesDataRange(dateRange) {
+  try {
+    await strava.getStravaActivitiesByDates(dateRange.startDate, dateRange.endDate)
     push.info(t('settingsIntegrationsZone.loadingMessageRetrievingStravaActivities'))
   } catch (error) {
     push.error(
@@ -362,12 +407,8 @@ async function buttonStravaUnlink() {
 
 async function submitRetrieveGarminConnectActivitiesDays(days) {
   try {
-    const endDate = new Date()
-    const startDate = new Date()
-    startDate.setDate(endDate.getDate() - days)
-    const formattedStartDate = startDate.toISOString().split('T')[0]
-    const formattedEndDate = endDate.toISOString().split('T')[0]
-    await garminConnect.getGarminConnectActivitiesByDates(formattedStartDate, formattedEndDate)
+    const dates = getStartAndEndDateFromDaysAgo(days)
+    await garminConnect.getGarminConnectActivitiesByDates(dates.startDate, dates.endDate)
     push.info(t('settingsIntegrationsZone.loadingMessageRetrievingGarminConnectActivities'))
   } catch (error) {
     push.error(
@@ -411,12 +452,8 @@ async function submitRetrieveGarminConnectHealthDataDataRange(dateRange) {
 
 async function submitRetrieveGarminConnectHealthDataDays(days) {
   try {
-    const endDate = new Date()
-    const startDate = new Date()
-    startDate.setDate(endDate.getDate() - days)
-    const formattedStartDate = startDate.toISOString().split('T')[0]
-    const formattedEndDate = endDate.toISOString().split('T')[0]
-    await garminConnect.getGarminConnectHealthDataByDates(formattedStartDate, formattedEndDate)
+    const dates = getStartAndEndDateFromDaysAgo(days)
+    await garminConnect.getGarminConnectHealthDataByDates(dates.startDate, dates.endDate)
     push.info(t('settingsIntegrationsZone.loadingMessageRetrievingGarminConnectHealthData'))
   } catch (error) {
     push.error(

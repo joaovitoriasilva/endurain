@@ -1,17 +1,16 @@
 import os
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone, date
 from typing import Annotated, Callable
 from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks, Security
 from sqlalchemy.orm import Session
 
 from stravalib.exc import AccessUnauthorized
 
-import session.security as session_security
+import auth.security as auth_security
 
 import users.user_integrations.crud as user_integrations_crud
 
 import gears.gear.crud as gears_crud
-import gears.gear.utils as gears_utils
 
 import activities.activity.crud as activities_crud
 import activities.activity.utils as activities_utils
@@ -103,22 +102,23 @@ async def strava_link(
 
 
 @router.get(
-    "/activities/days/{days}",
+    "/activities",
     status_code=202,
 )
 async def strava_retrieve_activities_days(
-    days: int,
-    validate_access_token: Annotated[
+    start_date: date,
+    end_date: date,
+    _validate_access_token: Annotated[
         Callable,
-        Depends(session_security.validate_access_token),
+        Depends(auth_security.validate_access_token),
     ],
-    check_scopes: Annotated[
+    _check_scopes: Annotated[
         Callable,
-        Security(session_security.check_scopes, scopes=["profile"]),
+        Security(auth_security.check_scopes, scopes=["profile"]),
     ],
     token_user_id: Annotated[
         int,
-        Depends(session_security.get_user_id_from_access_token),
+        Depends(auth_security.get_sub_from_access_token),
     ],
     websocket_manager: Annotated[
         websocket_schema.WebSocketManager,
@@ -127,12 +127,16 @@ async def strava_retrieve_activities_days(
     # db: Annotated[Session, Depends(core_database.get_db)],
     background_tasks: BackgroundTasks,
 ):
+    start_datetime = datetime.combine(
+        start_date, datetime.min.time(), tzinfo=timezone.utc
+    )
+    end_datetime = datetime.combine(end_date, datetime.max.time(), tzinfo=timezone.utc)
+
     # Process strava activities in the background
     background_tasks.add_task(
-        strava_activity_utils.get_user_strava_activities_by_days,
-        (datetime.now(timezone.utc) - timedelta(days=days)).strftime(
-            "%Y-%m-%dT%H:%M:%S"
-        ),
+        strava_activity_utils.get_user_garminconnect_activities_by_dates,
+        start_datetime,
+        end_datetime,
         token_user_id,
         websocket_manager,
     )
@@ -148,17 +152,17 @@ async def strava_retrieve_activities_days(
 
 @router.get("/gear", status_code=201)
 async def strava_retrieve_gear(
-    validate_access_token: Annotated[
+    _validate_access_token: Annotated[
         Callable,
-        Depends(session_security.validate_access_token),
+        Depends(auth_security.validate_access_token),
     ],
-    check_scopes: Annotated[
+    _check_scopes: Annotated[
         Callable,
-        Security(session_security.check_scopes, scopes=["profile"]),
+        Security(auth_security.check_scopes, scopes=["profile"]),
     ],
     token_user_id: Annotated[
         int,
-        Depends(session_security.get_user_id_from_access_token),
+        Depends(auth_security.get_sub_from_access_token),
     ],
     background_tasks: BackgroundTasks,
 ):
@@ -181,7 +185,7 @@ async def strava_retrieve_gear(
 async def import_bikes_from_strava_export(
     token_user_id: Annotated[
         int,
-        Depends(session_security.get_user_id_from_access_token),
+        Depends(auth_security.get_sub_from_access_token),
     ],
     db: Annotated[
         Session,
@@ -237,7 +241,7 @@ async def import_bikes_from_strava_export(
 async def import_shoes_from_strava_export(
     token_user_id: Annotated[
         int,
-        Depends(session_security.get_user_id_from_access_token),
+        Depends(auth_security.get_sid_from_access_token),
     ],
     db: Annotated[
         Session,
@@ -292,17 +296,17 @@ async def import_shoes_from_strava_export(
 @router.put("/client")
 async def strava_set_user_client(
     client: strava_schema.StravaClient,
-    validate_access_token: Annotated[
+    _validate_access_token: Annotated[
         Callable,
-        Depends(session_security.validate_access_token),
+        Depends(auth_security.validate_access_token),
     ],
-    check_scopes: Annotated[
+    _check_scopes: Annotated[
         Callable,
-        Security(session_security.check_scopes, scopes=["profile"]),
+        Security(auth_security.check_scopes, scopes=["profile"]),
     ],
     token_user_id: Annotated[
         int,
-        Depends(session_security.get_user_id_from_access_token),
+        Depends(auth_security.get_sub_from_access_token),
     ],
     db: Annotated[Session, Depends(core_database.get_db)],
 ):
@@ -320,17 +324,17 @@ async def strava_set_user_client(
 )
 async def strava_set_user_unique_state(
     state: str | None,
-    validate_access_token: Annotated[
+    _validate_access_token: Annotated[
         Callable,
-        Depends(session_security.validate_access_token),
+        Depends(auth_security.validate_access_token),
     ],
-    check_scopes: Annotated[
+    _check_scopes: Annotated[
         Callable,
-        Security(session_security.check_scopes, scopes=["profile"]),
+        Security(auth_security.check_scopes, scopes=["profile"]),
     ],
     token_user_id: Annotated[
         int,
-        Depends(session_security.get_user_id_from_access_token),
+        Depends(auth_security.get_sub_from_access_token),
     ],
     db: Annotated[Session, Depends(core_database.get_db)],
 ):
@@ -343,17 +347,17 @@ async def strava_set_user_unique_state(
 
 @router.delete("/unlink")
 async def strava_unlink(
-    validate_access_token: Annotated[
+    _validate_access_token: Annotated[
         Callable,
-        Depends(session_security.validate_access_token),
+        Depends(auth_security.validate_access_token),
     ],
-    check_scopes: Annotated[
+    _check_scopes: Annotated[
         Callable,
-        Security(session_security.check_scopes, scopes=["profile"]),
+        Security(auth_security.check_scopes, scopes=["profile"]),
     ],
     token_user_id: Annotated[
         int,
-        Depends(session_security.get_user_id_from_access_token),
+        Depends(auth_security.get_sub_from_access_token),
     ],
     db: Annotated[
         Session,

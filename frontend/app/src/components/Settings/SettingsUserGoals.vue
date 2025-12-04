@@ -8,7 +8,7 @@
         role="button"
         data-bs-toggle="modal"
         data-bs-target="#addGoalModal"
-        >{{ $t('settingsUserGoalsZone.addNewGoal') }}{{ $t('generalItems.betaTag') }}</a
+        >{{ $t('settingsUserGoalsZone.addNewGoal') }}</a
       >
 
       <!-- Modal goal user -->
@@ -17,7 +17,9 @@
         @createdGoal="addGoalList"
         @isLoadingNewGoal="setIsLoadingNewGoal"
       />
-      <LoadingComponent v-if="isLoading" />
+
+      <!-- loading state -->
+      <LoadingComponent class="mt-3" v-if="isLoading" />
       <div v-else>
         <div class="mt-3" v-if="goalsArray && goalsArray.length">
           <span

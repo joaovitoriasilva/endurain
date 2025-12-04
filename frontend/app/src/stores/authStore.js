@@ -22,6 +22,7 @@ export const useAuthStore = defineStore('auth', {
       active: null,
       first_day_of_week: 0,
       currency: null,
+      max_heart_rate: null,
       is_strava_linked: null,
       is_garminconnect_linked: null,
       default_activity_visibility: 0,
@@ -65,12 +66,15 @@ export const useAuthStore = defineStore('auth', {
     setUser(userData, session_id, locale) {
       this.user = userData
       localStorage.setItem('user', JSON.stringify(this.user))
-      localStorage.setItem('session_id', session_id)
+      this.setUserSessionId(session_id)
       this.isAuthenticated = true
       this.setUserWebsocket()
-      this.session_id = session_id
 
       this.setLocale(this.user.preferred_language, locale)
+    },
+    setUserSessionId(session_id) {
+      this.session_id = session_id
+      localStorage.setItem('session_id', session_id)
     },
     clearUser(locale) {
       this.isAuthenticated = false
@@ -90,6 +94,7 @@ export const useAuthStore = defineStore('auth', {
         active: null,
         first_day_of_week: 0,
         currency: null,
+        max_heart_rate: null,
         is_strava_linked: null,
         is_garminconnect_linked: null,
         default_activity_visibility: 0,

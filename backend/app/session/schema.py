@@ -1,107 +1,42 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
-from fastapi import Request, HTTPException
-from starlette.middleware.base import BaseHTTPMiddleware
 
 
 class UsersSessions(BaseModel):
-    id: str
-    user_id: int
-    refresh_token: str
-    ip_address: str
-    device_type: str
-    operating_system: str
-    operating_system_version: str
-    browser: str
-    browser_version: str
-    created_at: datetime
-    expires_at: datetime
+    """
+    Represents a user session with metadata about the device, browser, and session timing.
+    Attributes:
+        id (str): Unique session identifier.
+        user_id (int): User ID that owns this session.
+        refresh_token (str): Session refresh token.
+        ip_address (str): Client IP address (max length: 45).
+        device_type (str): Device type (max length: 45).
+        operating_system (str): Operating system (max length: 45).
+        operating_system_version (str): OS version (max length: 45).
+        browser (str): Browser name (max length: 45).
+        browser_version (str): Browser version (max length: 45).
+        created_at (datetime): Session creation timestamp.
+        expires_at (datetime): Session expiration timestamp.
+    Config:
+        from_attributes (bool): Allows model initialization from attributes.
+        extra (str): Forbids extra fields not defined in the model.
+        validate_assignment (bool): Enables validation on assignment.
+    Validators:
+        expires_at: Ensures that the expiration timestamp is after the creation timestamp.
+    """
 
-    model_config = {"from_attributes": True}
+    id: str = Field(..., description="Unique session identifier")
+    user_id: int = Field(..., description="User ID that owns this session")
+    refresh_token: str = Field(..., description="Session refresh token")
+    ip_address: str = Field(..., max_length=45, description="Client IP address")
+    device_type: str = Field(..., max_length=45, description="Device type")
+    operating_system: str = Field(..., max_length=45, description="Operating system")
+    operating_system_version: str = Field(..., max_length=45, description="OS version")
+    browser: str = Field(..., max_length=45, description="Browser name")
+    browser_version: str = Field(..., max_length=45, description="Browser version")
+    created_at: datetime = Field(..., description="Session creation timestamp")
+    expires_at: datetime = Field(..., description="Session expiration timestamp")
 
-
-class LoginRequest(BaseModel):
-    username: str
-    password: str
-
-
-class MFALoginRequest(BaseModel):
-    username: str
-    mfa_code: str
-
-
-class MFARequiredResponse(BaseModel):
-    mfa_required: bool = True
-    username: str
-    message: str = "MFA verification required"
-
-
-class PendingMFALogin:
-    """Store for pending MFA logins"""
-
-    def __init__(self):
-        self._store = {}
-
-    def add_pending_login(self, username: str, user_id: int):
-        self._store[username] = user_id
-
-    def get_pending_login(self, username: str):
-        return self._store.get(username)
-
-    def delete_pending_login(self, username: str):
-        if username in self._store:
-            del self._store[username]
-
-    def has_pending_login(self, username: str):
-        return username in self._store
-
-    def clear_all(self):
-        self._store.clear()
-
-
-def get_pending_mfa_store():
-    return pending_mfa_store
-
-
-pending_mfa_store = PendingMFALogin()
-
-
-class CSRFMiddleware(BaseHTTPMiddleware):
-    def __init__(self, app):
-        super().__init__(app)
-        # Define paths that don't need CSRF protection
-        self.exempt_paths = [
-            "/api/v1/token",
-            "/api/v1/refresh",
-            "/api/v1/mfa/verify",
-            "/api/v1/password-reset/request",
-            "/api/v1/password-reset/confirm",
-            "/api/v1/sign-up/request",
-            "/api/v1/sign-up/confirm"
-        ]
-
-    async def dispatch(self, request: Request, call_next):
-        # Get client type from header
-        client_type = request.headers.get("X-Client-Type")
-
-        # Skip CSRF checks for not web clients
-        if client_type != "web":
-            return await call_next(request)
-
-        # Skip CSRF check for exempt paths
-        if request.url.path in self.exempt_paths:
-            return await call_next(request)
-
-        # Check for CSRF token in POST, PUT, DELETE, and PATCH requests
-        if request.method in ["POST", "PUT", "DELETE", "PATCH"]:
-            csrf_cookie = request.cookies.get("endurain_csrf_token")
-            csrf_header = request.headers.get("X-CSRF-Token")
-
-            if not csrf_cookie or not csrf_header:
-                raise HTTPException(status_code=403, detail="CSRF token missing")
-
-            if csrf_cookie != csrf_header:
-                raise HTTPException(status_code=403, detail="CSRF token invalid")
-
-        response = await call_next(request)
-        return response
+    model_config = ConfigDict(
+        from_attributes=True, extra="forbid", validate_assignment=True
+    )

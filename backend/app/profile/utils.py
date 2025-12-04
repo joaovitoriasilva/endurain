@@ -496,13 +496,15 @@ def initialize_operation_counts(include_user_count: bool = False) -> Dict[str, i
         "activity_exercise_titles": 0,
         "gears": 0,
         "gear_components": 0,
-        "health_data": 0,
+        "health_weight": 0,
         "health_targets": 0,
+        "notifications": 0,
         "user_images": 0,
         "user": 1 if include_user_count else 0,
         "user_default_gear": 0,
-        "user_integrations": 0,
         "user_goals": 0,
+        "user_identity_providers": 0,
+        "user_integrations": 0,
         "user_privacy_settings": 0,
     }
 

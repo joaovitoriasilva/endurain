@@ -26,6 +26,20 @@
           <span class="ms-1">{{ $t('settingsSideBar.serverSettingsSection') }}</span>
         </a>
       </li>
+      <li class="nav-item" v-if="authStore.user.access_type == 2">
+        <a
+          href="#"
+          class="nav-link link-body-emphasis"
+          :class="{ active: activeSection === 'identityProviders' }"
+          @click.prevent="changeActive('identityProviders')"
+        >
+          <font-awesome-icon :icon="['fas', 'id-card']" />
+          <span class="ms-1"
+            >{{ $t('settingsSideBar.identityProvidersSection')
+            }}{{ $t('generalItems.betaTag') }}</span
+          >
+        </a>
+      </li>
       <hr v-if="authStore.user.access_type == 2" />
       <li class="nav-item">
         <a
@@ -57,9 +71,7 @@
           @click.prevent="changeActive('myGoals')"
         >
           <font-awesome-icon :icon="['fas', 'fa-check-double']" />
-          <span class="ms-1"
-            >{{ $t('settingsSideBar.myGoals') }}{{ $t('generalItems.betaTag') }}</span
-          >
+          <span class="ms-1">{{ $t('settingsSideBar.myGoals') }}</span>
         </a>
       </li>
       <li class="nav-item">

@@ -6,11 +6,53 @@ from sqlalchemy.orm import Session
 
 import shutil
 
+import auth.password_hasher as auth_password_hasher
+
 import users.user.crud as users_crud
 import users.user.schema as users_schema
 
+import users.user_integrations.crud as user_integrations_crud
+import users.user_default_gear.crud as user_default_gear_crud
+import users.user_privacy_settings.crud as users_privacy_settings_crud
+import health_targets.crud as health_targets_crud
+
 import core.logger as core_logger
 import core.config as core_config
+
+
+def create_user_default_data(user_id: int, db: Session) -> None:
+    # Create the user integrations in the database
+    user_integrations_crud.create_user_integrations(user_id, db)
+
+    # Create the user privacy settings
+    users_privacy_settings_crud.create_user_privacy_settings(user_id, db)
+
+    # Create the user health targets
+    health_targets_crud.create_health_targets(user_id, db)
+
+    # Create the user default gear
+    user_default_gear_crud.create_user_default_gear(user_id, db)
+
+
+def check_password_and_hash(
+    password: str,
+    password_hasher: auth_password_hasher.PasswordHasher,
+    min_length: int = 8,
+) -> str:
+    # Check if password meets requirements
+    try:
+        password_hasher.validate_password(password, min_length)
+    except auth_password_hasher.PasswordPolicyError as err:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(err),
+        ) from err
+
+    # Hash the password
+    hashed_password = password_hasher.hash_password(password)
+
+    # Return the hashed password
+    return hashed_password
 
 
 def check_user_is_active(user: users_schema.UserRead) -> None:
@@ -30,7 +72,7 @@ def check_user_is_active(user: users_schema.UserRead) -> None:
             detail="Inactive user",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    
+
 
 def get_admin_users(db: Session):
     admins = users_crud.get_users_admin(db)
@@ -40,7 +82,7 @@ def get_admin_users(db: Session):
             status_code=status.HTTP_404_NOT_FOUND,
             detail="No admin users found",
         )
-    
+
     return admins
 
 

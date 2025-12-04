@@ -1,8 +1,8 @@
 import fitdecode
+from enum import Enum
 
 from fastapi import HTTPException, status
 from datetime import datetime, timedelta
-import time as timelib
 from sqlalchemy.orm import Session
 from timezonefinder import TimezoneFinder
 from zoneinfo import ZoneInfo, available_timezones
@@ -92,6 +92,7 @@ def create_activity_objects(
                 session_record["session"]["total_timer_time"],
                 session_record["session"]["activity_type"],
                 session_record["split_summary"],
+                session_record["lengths"],
             )
 
             if activity_type != 3 and activity_type != 7:
@@ -187,6 +188,10 @@ def create_activity_objects(
                     hide_workout_sets_steps=user_privacy_settings.hide_activity_workout_sets_steps
                     or False,
                     hide_gear=user_privacy_settings.hide_activity_gear or False,
+                    tracker_manufacturer=session_record["file_id"].get(
+                        "manufacturer", None
+                    ),
+                    tracker_model=str(session_record["file_id"].get("product", None)),
                 ),
                 "is_elevation_set": session_record["is_elevation_set"],
                 "ele_waypoints": session_record["ele_waypoints"],
@@ -303,6 +308,8 @@ def split_records_by_activity(parsed_data: dict) -> dict:
             "split_summary": parsed_data["split_summary"],
             "workout_steps": parsed_data["workout_steps"],
             "sets": parsed_data["sets"],
+            "lengths": parsed_data["lengths"],
+            "file_id": parsed_data["file_id"],
         }
 
         # Only parse arrays if the respective flag is set
@@ -464,6 +471,12 @@ def parse_fit_file(
 
         # Array to store exercises titles
         exercises_titles = []
+
+        # Array to store lengths
+        lengths = []
+
+        # Dictionary to store file ID data
+        file_id = {}
 
         # Initialize variables to store previous latitude and longitude
         prev_latitude, prev_longitude = None, None
@@ -713,6 +726,12 @@ def parse_fit_file(
                         time_offset = parse_frame_device_settings(frame)
                         time_offset = interpret_time_offset(time_offset)
 
+                    if frame.name == "length":
+                        lengths.append(parse_frame_length(frame))
+
+                    if frame.name == "file_id":
+                        file_id = parse_frame_file_id(frame)
+
         # Check if exercises titles is not none
         if exercises_titles:
             activity_exercise_titles_crud.create_activity_exercise_titles(
@@ -742,6 +761,8 @@ def parse_fit_file(
             "split_summary": split_summary,
             "sets": sets,
             "workout_steps": workout_steps,
+            "lengths": lengths,
+            "file_id": file_id,
         }
     except HTTPException as http_err:
         raise http_err
@@ -805,7 +826,7 @@ def parse_frame_session(frame):
         get_value_from_frame(frame, "normalized_power"),
         get_value_from_frame(frame, "enhanced_avg_speed"),
         get_value_from_frame(frame, "enhanced_max_speed"),
-        get_value_from_frame(frame, "workout_feeling"),
+        get_value_from_frame(frame, "workout_feel"),
         get_value_from_frame(frame, "workout_rpe"),
     )
 
@@ -1047,6 +1068,30 @@ def parse_frame_device_settings(frame):
     return get_value_from_frame(frame, "time_offset")
 
 
+def parse_frame_length(frame):
+    return {
+        "message_index": get_value_from_frame(frame, "message_index"),
+        "start_time": get_value_from_frame(frame, "start_time"),
+        "total_elapsed_time": get_value_from_frame(frame, "total_elapsed_time"),
+        "total_timer_time": get_value_from_frame(frame, "total_timer_time"),
+        "total_strokes": get_value_from_frame(frame, "total_strokes"),
+        "avg_speed": get_value_from_frame(frame, "avg_speed"),
+        "swim_stroke": get_value_from_frame(frame, "swim_stroke"),
+        "avg_swimming_cadence": get_value_from_frame(frame, "avg_swimming_cadence"),
+        "length_type": get_value_from_frame(frame, "length_type"),
+    }
+
+
+def parse_frame_file_id(frame):
+    return {
+        "type": get_value_from_frame(frame, "type"),
+        "manufacturer": get_value_from_frame(frame, "manufacturer"),
+        "product": get_value_from_frame(frame, "product"),
+        "serial_number": get_value_from_frame(frame, "serial_number"),
+        "time_created": get_value_from_frame(frame, "time_created"),
+    }
+
+
 def interpret_time_offset(raw_offset):
     # Check for two's complement representation (values > 2^31)
     if raw_offset != 0 and raw_offset is not None:
@@ -1085,10 +1130,21 @@ def append_if_not_none(waypoint_list, time, value, key):
         waypoint_list.append({"time": time, key: value})
 
 
-def calculate_pace(distance, total_timer_time, activity_type, split_summary):
+def calculate_pace(distance, total_timer_time, activity_type, split_summary, lengths):
     if distance:
-        if activity_type != "lap_swimming":
+        if activity_type != "lap_swimming" or (
+            activity_type == "lap_swimming" and not split_summary and not lengths
+        ):
             return total_timer_time, total_timer_time / distance
+        if activity_type == "lap_swimming" and lengths:
+            # Swimming pace calculation based on lengths
+            time_active = 0
+            for length in lengths:
+                if length["length_type"] == "active":
+                    time_active += length["total_timer_time"]
+
+            return time_active, time_active / distance
+        # Swimming pace calculation based on split summary
         time_active = 0
         for split in split_summary:
             if split["split_type"] != 4:

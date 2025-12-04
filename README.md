@@ -7,6 +7,7 @@
   ![License](https://img.shields.io/github/license/joaovitoriasilva/endurain)
   [![GitHub release](https://img.shields.io/github/v/release/joaovitoriasilva/endurain)](https://github.com/joaovitoriasilva/endurain/releases)
   [![GitHub stars](https://img.shields.io/github/stars/joaovitoriasilva/endurain.svg?style=social&label=Star)](https://github.com/joaovitoriasilva/endurain/stargazers)
+  [![Trademark Policy](https://img.shields.io/badge/trademark-Endurain%E2%84%A2-blue)](./TRADEMARK.md)
 
   **A self-hosted fitness tracking service**  
   Visit Endurain's [Mastodon profile](https://fosstodon.org/@endurain) and [Discord server](https://discord.gg/6VUjUq2uZR).
@@ -30,7 +31,7 @@ Endurain is a self-hosted fitness tracking service designed to give users full c
 
 - **Frontend:** Vue.js, Notivue and Bootstrap CSS
 - **Backend:** Python FastAPI, Alembic, SQLAlchemy, Apprise, stravalib and python-garminconnect for Strava and Garmin Connect integration, gpxpy, tcxreader and fitdecode for .gpx, .tcx and .fit file import respectively
-- **Database:** MariaDB or PostgreSQL for efficient data management
+- **Database:** PostgreSQL for efficient data management
 - **Observability:** Jaeger for basic tracing and monitoring
 - **Integrations:** Supports Strava and Garmin Connect. Manual upload of activities using .gpx, .tcx and .fit files are also supported
 
@@ -55,3 +56,13 @@ Endurain has multi-language support, and you can help translate it into more lan
 ## License
 
 This project is licensed under the AGPL-3.0 License - see the [LICENSE](LICENSE) file for details.
+
+## Trademark Notice
+
+Endurain™ is a trademark of João Vitória Silva.  
+An application for registration with the European Union Intellectual Property Office (EUIPO) is currently pending.
+
+You are welcome to self-host Endurain and use the name and logo, including for personal, educational, research, or community (non-commercial) use.  
+Commercial use of the Endurain name or logos (such as offering paid hosting, products, or services) is **not permitted without prior written permission**.
+
+See [`TRADEMARK.md`](./TRADEMARK.md) for full details.

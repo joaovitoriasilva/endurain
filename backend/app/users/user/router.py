@@ -17,7 +17,8 @@ import users.user_privacy_settings.crud as users_privacy_settings_crud
 import health_targets.crud as health_targets_crud
 
 import sign_up_tokens.utils as sign_up_tokens_utils
-import session.security as session_security
+import auth.security as auth_security
+import auth.password_hasher as auth_password_hasher
 
 import core.apprise as core_apprise
 import core.database as core_database
@@ -29,8 +30,8 @@ router = APIRouter()
 
 @router.get("/number", response_model=int)
 async def read_users_number(
-    check_scopes: Annotated[
-        Callable, Security(session_security.check_scopes, scopes=["users:read"])
+    _check_scopes: Annotated[
+        Callable, Security(auth_security.check_scopes, scopes=["users:read"])
     ],
     db: Annotated[
         Session,
@@ -50,8 +51,8 @@ async def read_users_all_pagination(
     validate_pagination_values: Annotated[
         Callable, Depends(core_dependencies.validate_pagination_values)
     ],
-    check_scopes: Annotated[
-        Callable, Security(session_security.check_scopes, scopes=["users:read"])
+    _check_scopes: Annotated[
+        Callable, Security(auth_security.check_scopes, scopes=["users:read"])
     ],
     db: Annotated[
         Session,
@@ -68,8 +69,8 @@ async def read_users_all_pagination(
 )
 async def read_users_contain_username(
     username: str,
-    check_scopes: Annotated[
-        Callable, Security(session_security.check_scopes, scopes=["users:read"])
+    _check_scopes: Annotated[
+        Callable, Security(auth_security.check_scopes, scopes=["users:read"])
     ],
     db: Annotated[
         Session,
@@ -86,8 +87,8 @@ async def read_users_contain_username(
 )
 async def read_users_username(
     username: str,
-    check_scopes: Annotated[
-        Callable, Security(session_security.check_scopes, scopes=["users:read"])
+    _check_scopes: Annotated[
+        Callable, Security(auth_security.check_scopes, scopes=["users:read"])
     ],
     db: Annotated[
         Session,
@@ -104,8 +105,8 @@ async def read_users_username(
 )
 async def read_users_email(
     email: str,
-    check_scopes: Annotated[
-        Callable, Security(session_security.check_scopes, scopes=["users:read"])
+    _check_scopes: Annotated[
+        Callable, Security(auth_security.check_scopes, scopes=["users:read"])
     ],
     db: Annotated[
         Session,
@@ -120,8 +121,8 @@ async def read_users_email(
 async def read_users_id(
     user_id: int,
     validate_id: Annotated[Callable, Depends(users_dependencies.validate_user_id)],
-    check_scopes: Annotated[
-        Callable, Security(session_security.check_scopes, scopes=["users:read"])
+    _check_scopes: Annotated[
+        Callable, Security(auth_security.check_scopes, scopes=["users:read"])
     ],
     db: Annotated[
         Session,
@@ -135,8 +136,12 @@ async def read_users_id(
 @router.post("", response_model=users_schema.UserRead, status_code=201)
 async def create_user(
     user: users_schema.UserCreate,
-    check_scopes: Annotated[
-        Callable, Security(session_security.check_scopes, scopes=["users:write"])
+    _check_scope: Annotated[
+        Callable, Security(auth_security.check_scopes, scopes=["users:write"])
+    ],
+    password_hasher: Annotated[
+        auth_password_hasher.PasswordHasher,
+        Depends(auth_password_hasher.get_password_hasher),
     ],
     db: Annotated[
         Session,
@@ -144,19 +149,10 @@ async def create_user(
     ],
 ):
     # Create the user in the database
-    created_user = users_crud.create_user(user, db)
+    created_user = users_crud.create_user(user, password_hasher, db)
 
-    # Create the user integrations in the database
-    user_integrations_crud.create_user_integrations(created_user.id, db)
-
-    # Create the user privacy settings
-    users_privacy_settings_crud.create_user_privacy_settings(created_user.id, db)
-
-    # Create the user health targets
-    health_targets_crud.create_health_targets(created_user.id, db)
-
-    # Create the user default gear
-    user_default_gear_crud.create_user_default_gear(created_user.id, db)
+    # Create default data for the user
+    users_utils.create_user_default_data(created_user.id, db)
 
     # Return the user with formatted birthdate
     return users_utils.format_user_birthdate(created_user)
@@ -171,8 +167,8 @@ async def upload_user_image(
     user_id: int,
     validate_id: Annotated[Callable, Depends(users_dependencies.validate_user_id)],
     file: UploadFile,
-    check_scopes: Annotated[
-        Callable, Security(session_security.check_scopes, scopes=["users:write"])
+    _check_scopes: Annotated[
+        Callable, Security(auth_security.check_scopes, scopes=["users:write"])
     ],
     db: Annotated[
         Session,
@@ -187,8 +183,8 @@ async def edit_user(
     user_id: int,
     validate_id: Annotated[Callable, Depends(users_dependencies.validate_user_id)],
     user_attributtes: users_schema.UserRead,
-    check_scopes: Annotated[
-        Callable, Security(session_security.check_scopes, scopes=["users:write"])
+    _check_scopes: Annotated[
+        Callable, Security(auth_security.check_scopes, scopes=["users:write"])
     ],
     db: Annotated[
         Session,
@@ -206,8 +202,8 @@ async def edit_user(
 async def approve_user(
     user_id: int,
     validate_id: Annotated[Callable, Depends(users_dependencies.validate_user_id)],
-    check_scopes: Annotated[
-        Callable, Security(session_security.check_scopes, scopes=["users:write"])
+    _check_scopes: Annotated[
+        Callable, Security(auth_security.check_scopes, scopes=["users:write"])
     ],
     email_service: Annotated[
         core_apprise.AppriseService,
@@ -231,28 +227,24 @@ async def approve_user(
 @router.put("/{user_id}/password")
 async def edit_user_password(
     user_id: int,
-    validate_id: Annotated[Callable, Depends(users_dependencies.validate_user_id)],
+    _validate_id: Annotated[Callable, Depends(users_dependencies.validate_user_id)],
     user_attributes: users_schema.UserEditPassword,
-    check_scopes: Annotated[
-        Callable, Security(session_security.check_scopes, scopes=["users:write"])
+    _check_scope: Annotated[
+        Callable, Security(auth_security.check_scopes, scopes=["users:write"])
+    ],
+    password_hasher: Annotated[
+        auth_password_hasher.PasswordHasher,
+        Depends(auth_password_hasher.get_password_hasher),
     ],
     db: Annotated[
         Session,
         Depends(core_database.get_db),
     ],
 ):
-    # Check if the password meets the complexity requirements
-    is_valid, message = session_security.is_password_complexity_valid(
-        user_attributes.password
-    )
-    if not is_valid:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=message,
-        )
-
     # Update the user password in the database
-    users_crud.edit_user_password(user_id, user_attributes.password, db)
+    users_crud.edit_user_password(
+        user_id, user_attributes.password, password_hasher, db
+    )
 
     # Return success message
     return {f"User ID {user_id} password updated successfully"}
@@ -262,8 +254,8 @@ async def edit_user_password(
 async def delete_user_photo(
     user_id: int,
     validate_id: Annotated[Callable, Depends(users_dependencies.validate_user_id)],
-    check_scopes: Annotated[
-        Callable, Security(session_security.check_scopes, scopes=["users:write"])
+    _check_scopes: Annotated[
+        Callable, Security(auth_security.check_scopes, scopes=["users:write"])
     ],
     db: Annotated[
         Session,
@@ -281,8 +273,8 @@ async def delete_user_photo(
 async def delete_user(
     user_id: int,
     validate_id: Annotated[Callable, Depends(users_dependencies.validate_user_id)],
-    check_scopes: Annotated[
-        Callable, Security(session_security.check_scopes, scopes=["users:write"])
+    _check_scopes: Annotated[
+        Callable, Security(auth_security.check_scopes, scopes=["users:write"])
     ],
     db: Annotated[
         Session,

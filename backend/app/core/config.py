@@ -7,14 +7,15 @@ from cryptography.fernet import Fernet
 import core.logger as core_logger
 
 # Constant related to version
-API_VERSION = "v0.15.9"
+API_VERSION = "v0.16.0"
 LICENSE_NAME = "GNU Affero General Public License v3.0 or later"
 LICENSE_IDENTIFIER = "AGPL-3.0-or-later"
 LICENSE_URL = "https://spdx.org/licenses/AGPL-3.0-or-later.html"
 ROOT_PATH = "/api/v1"
+ENDURAIN_HOST = os.getenv("ENDURAIN_HOST", "http://localhost:8080")
 FRONTEND_DIR = os.getenv("FRONTEND_DIR", "/app/frontend/dist")
 BACKEND_DIR = os.getenv("BACKEND_DIR", "/app/backend")
-DATA_DIR = os.getenv("DATA_DIR", "/app/backend/data")
+DATA_DIR = os.getenv("DATA_DIR", f"{BACKEND_DIR}/data")
 LOGS_DIR = os.getenv("LOGS_DIR", f"{BACKEND_DIR}/logs")
 USER_IMAGES_URL_PATH = "user_images"
 USER_IMAGES_DIR = f"{DATA_DIR}/{USER_IMAGES_URL_PATH}"

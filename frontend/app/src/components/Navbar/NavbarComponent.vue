@@ -1,6 +1,6 @@
 <template>
-  <nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container-fluid">
+  <div class="container-fluid">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
       <!-- Navbar brand + search in the left -->
       <router-link :to="{ name: 'home' }" class="navbar-brand d-flex align-items-center">
         <img src="/logo/logo.svg" alt="Logo" width="24" height="24" class="me-2 rounded" />
@@ -131,11 +131,14 @@
           <span class="ms-1">{{ $t('navbarComponent.login') }}</span>
         </router-link>
       </div>
-    </div>
-  </nav>
+    </nav>
+  </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+/**
+ * @fileoverview Navigation bar component with responsive design and user authentication state.
+ */
 import { useRouter } from 'vue-router'
 // Importing the i18n
 import { useI18n } from 'vue-i18n'
@@ -158,9 +161,9 @@ const serverSettingsStore = useServerSettingsStore()
 const { locale, t } = useI18n()
 
 // Methods
-async function handleLogout() {
+async function handleLogout(): Promise<void> {
   try {
-    await authStore.logoutUser(router, locale)
+    await authStore.logoutUser(router as never, locale as never)
     serverSettingsStore.setServerSettingsOnLogout()
   } catch (error) {
     push.error(`${t('navbarComponent.errorLogout')} - ${error}`)

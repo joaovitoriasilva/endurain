@@ -11,7 +11,7 @@ import { registerSW } from 'virtual:pwa-register'
 registerSW()
 
 import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+//import 'bootstrap/dist/js/bootstrap.bundle.min.js' // Not needed
 
 import 'leaflet/dist/leaflet.css'
 
@@ -71,7 +71,7 @@ async function initApp() {
   themeStore.loadThemeFromStorage()
 
   const serverSettingsStore = useServerSettingsStore()
-  serverSettingsStore.loadServerSettingsFromServer()
+  await serverSettingsStore.loadServerSettingsFromServer()
 
   // Setup router
   app.use(router)

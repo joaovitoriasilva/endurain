@@ -3,6 +3,7 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.sessions import SessionMiddleware
 
 from alembic.config import Config
 from alembic import command
@@ -11,12 +12,12 @@ import core.logger as core_logger
 import core.config as core_config
 import core.scheduler as core_scheduler
 import core.tracing as core_tracing
+import core.middleware as core_middleware
 import core.migrations as core_migrations
+import core.rate_limit as core_rate_limit
 
 import garmin.activity_utils as garmin_activity_utils
 import garmin.health_utils as garmin_health_utils
-
-import session.schema as session_schema
 
 import strava.activity_utils as strava_activity_utils
 import strava.utils as strava_utils
@@ -58,11 +59,11 @@ async def startup_event():
     await garmin_activity_utils.retrieve_garminconnect_users_activities_for_days(1)
     await strava_activity_utils.retrieve_strava_users_activities_for_days(1, True)
 
-    # Retrieve last day body composition from Garmin Connect
+    # Retrieve last day health stats from Garmin Connect
     core_logger.print_to_log_and_console(
-        "Retrieving last day body composition from Garmin Connect on startup"
+        "Retrieving last day health stats from Garmin Connect on startup"
     )
-    garmin_health_utils.retrieve_garminconnect_users_bc_for_days(1)
+    garmin_health_utils.retrieve_garminconnect_users_health_for_days(1)
 
     # Delete invalid password reset tokens
     core_logger.print_to_log_and_console(
@@ -87,7 +88,7 @@ def shutdown_event():
 
 def create_app() -> FastAPI:
     # Define the FastAPI object
-    app = FastAPI(
+    fastapi_app = FastAPI(
         docs_url=core_config.ROOT_PATH + "/docs",
         redoc_url=core_config.ROOT_PATH + "/redoc",
         title="Endurain",
@@ -100,51 +101,64 @@ def create_app() -> FastAPI:
         },
     )
 
+    # Add session middleware for OAuth state management
+    fastapi_app.add_middleware(
+        SessionMiddleware,
+        secret_key=os.environ.get("SECRET_KEY"),
+        session_cookie="endurain_session",
+        max_age=3600,  # 1 hour session timeout
+        same_site="lax",
+        https_only=(core_config.ENVIRONMENT == "production"),
+    )
+
     # Add CORS middleware to allow requests from the frontend
     origins = [
         "http://localhost:8080",
         "http://localhost:5173",
-        os.environ.get("ENDURAIN_HOST"),
+        core_config.ENDURAIN_HOST,
     ]
 
-    app.add_middleware(
+    fastapi_app.add_middleware(
         CORSMiddleware,
         allow_origins=(
             origins
             if core_config.ENVIRONMENT == "development"
-            else os.environ.get("ENDURAIN_HOST")
+            else core_config.ENDURAIN_HOST
         ),
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
     )
 
-    app.add_middleware(session_schema.CSRFMiddleware)
+    fastapi_app.add_middleware(core_middleware.CSRFMiddleware)
+
+    # Add rate limiting
+    fastapi_app.state.limiter = core_rate_limit.limiter
+    fastapi_app.add_exception_handler(
+        core_rate_limit.RateLimitExceeded, core_rate_limit.rate_limit_exceeded_handler
+    )
 
     # Router files
-    app.include_router(api_router)
+    fastapi_app.include_router(api_router)
 
     # Add a route to serve the user images
-    app.mount(
+    fastapi_app.mount(
         f"/{core_config.USER_IMAGES_DIR}",
         StaticFiles(directory=core_config.USER_IMAGES_DIR),
         name="user_images",
     )
-    app.mount(
+    fastapi_app.mount(
         f"/{core_config.SERVER_IMAGES_DIR}",
         StaticFiles(directory=core_config.SERVER_IMAGES_DIR),
         name="server_images",
     )
-    app.mount(
+    fastapi_app.mount(
         f"/{core_config.ACTIVITY_MEDIA_DIR}",
         StaticFiles(directory=core_config.ACTIVITY_MEDIA_DIR),
         name="activity_media",
     )
-    app.mount(
-        "/", StaticFiles(directory=core_config.FRONTEND_DIR, html=True), name="frontend"
-    )
 
-    return app
+    return fastapi_app
 
 
 # Silence stravalib token warnings

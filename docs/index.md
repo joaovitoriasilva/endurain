@@ -14,6 +14,9 @@
     <a href="https://github.com/joaovitoriasilva/endurain/stargazers">
       <img src="https://img.shields.io/github/stars/joaovitoriasilva/endurain.svg?style=social&label=Star" alt="GitHub stars">
     </a>
+    <a href="https://github.com/joaovitoriasilva/endurain/blob/master/TRADEMARK.md">
+      <img src="https://img.shields.io/badge/trademark-Endurain%E2%84%A2-blue" alt="Trademark Policy">
+    </a>
   </p>
 
   <h2>
@@ -30,14 +33,14 @@ Endurain is a self-hosted fitness tracking service designed to give users full c
 
 - **Frontend:** Vue.js, Notivue and Bootstrap CSS
 - **Backend:** Python FastAPI, Alembic, SQLAlchemy, Apprise, stravalib and python-garminconnect for Strava and Garmin Connect integration, gpxpy, tcxreader and fitdecode for .gpx, .tcx and .fit file import respectively 
-- **Database:** MariaDB or PostgreSQL for efficient data management
+- **Database:** PostgreSQL for efficient data management
 - **Observability:** Jaeger for basic tracing and monitoring
 
 To deploy Endurain, a Docker image is available, and a comprehensive example can be found in the "docker-compose.yml.example" file provided in the project repository. Configuration is facilitated through environment variables, ensuring flexibility and ease of customization.
 
 ## Developer's Note
 
-As a non-professional developer, my journey with Endurain involved learning and implementing new technologies and concepts, with invaluable assistance from ChatGPT. The primary motivation behind this project was to gain hands-on experience and expand my understanding of modern development practices. Second motivation is that I'm an amateur triathlete and I want to keep track of my gear and gear components usage.
+As a non-professional developer, my journey with Endurain involved learning and implementing new technologies and concepts, with invaluable assistance from GitHub Copilot and ChatGPT. The primary motivation behind this project was to gain hands-on experience and expand my understanding of modern development practices. Second motivation is that I'm an amateur triathlete and I want to keep track of my gear and gear components usage.
 
 If you have any recommendations or insights on improving any aspect of Endurain, whether related to technology choices, user experience, or any other relevant area, I would greatly appreciate your input. The goal is to create a reliable and user-friendly fitness tracking solution that caters to the needs of individuals who prefer self-hosted applications. Your constructive feedback will undoubtedly contribute to the refinement of Endurain.
 
@@ -109,3 +112,13 @@ Currently supported in:
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=joaovitoriasilva/endurain&type=Date)](https://star-history.com/#joaovitoriasilva/endurain&Date)
+
+## Trademark Notice
+
+Endurain™ is a trademark of João Vitória Silva.  
+An application for registration with the European Union Intellectual Property Office (EUIPO) is currently pending.
+
+You are welcome to self-host Endurain and use the name and logo, including for personal, educational, research, or community (non-commercial) use.  
+Commercial use of the Endurain name or logos (such as offering paid hosting, products, or services) is **not permitted without prior written permission**.
+
+See [`TRADEMARK.md`](https://github.com/joaovitoriasilva/endurain/blob/master/TRADEMARK.md) for full details.

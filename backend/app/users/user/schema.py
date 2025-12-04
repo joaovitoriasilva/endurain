@@ -1,5 +1,12 @@
 from enum import Enum, IntEnum
-from pydantic import BaseModel, EmailStr, field_validator, StrictInt, ConfigDict
+from datetime import date
+from pydantic import (
+    BaseModel,
+    EmailStr,
+    field_validator,
+    StrictInt,
+    ConfigDict,
+)
 import re
 import server_settings.schema as server_settings_schema
 
@@ -125,10 +132,32 @@ class UserBase(BaseModel):
     gender: Gender = Gender.MALE
     units: server_settings_schema.Units = server_settings_schema.Units.METRIC
     height: int | None = None
+    max_heart_rate: int | None = None
     first_day_of_week: WeekDay = WeekDay.MONDAY
     currency: server_settings_schema.Currency = server_settings_schema.Currency.EURO
 
     model_config = ConfigDict(use_enum_values=True)
+
+    @field_validator("birthdate", mode="before")
+    @classmethod
+    def validate_birthdate(cls, value: date | str | None) -> str | None:
+        """
+        Validate and convert birthdate field to ISO format string.
+
+        Converts datetime.date objects to ISO format strings (YYYY-MM-DD).
+        Handles None values and string values that are already formatted.
+
+        Args:
+            value: The birthdate as a date object, string, or None.
+
+        Returns:
+            str | None: ISO format date string (YYYY-MM-DD) or None.
+        """
+        if value is None:
+            return None
+        if isinstance(value, date):
+            return value.isoformat()
+        return value
 
 
 class User(UserBase):
@@ -147,6 +176,7 @@ class User(UserBase):
 
 class UserRead(User):
     id: StrictInt
+    external_auth_count: int = 0
 
 
 class UserMe(UserRead):

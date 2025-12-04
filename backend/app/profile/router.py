@@ -4,9 +4,17 @@ from fastapi import APIRouter, Depends, HTTPException, status, UploadFile
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
+from safeuploads import FileValidator, FileSecurityConfig, SecurityLimits
+from safeuploads.exceptions import FileValidationError
+
 import users.user.schema as users_schema
 import users.user.crud as users_crud
 import users.user.utils as users_utils
+
+import users.user_identity_providers.crud as user_idp_crud
+import users.user_identity_providers.schema as user_idp_schema
+
+import auth.identity_providers.crud as idp_crud
 
 import users.user_integrations.crud as user_integrations_crud
 
@@ -19,15 +27,12 @@ import profile.export_service as profile_export_service
 import profile.import_service as profile_import_service
 import profile.exceptions as profile_exceptions
 
-import session.security as session_security
+import auth.security as auth_security
 import session.crud as session_crud
+import auth.password_hasher as auth_password_hasher
 
 import core.database as core_database
 import core.logger as core_logger
-
-from core.file_security.config import FileSecurityConfig, SecurityLimits
-from core.file_security.file_validator import FileValidator
-from core.file_security.exceptions import FileValidationError
 
 import websocket.schema as websocket_schema
 
@@ -49,7 +54,7 @@ file_validator = FileValidator(config=custom_config)
 async def read_users_me(
     token_user_id: Annotated[
         int,
-        Depends(session_security.get_user_id_from_access_token),
+        Depends(auth_security.get_sub_from_access_token),
     ],
     db: Annotated[
         Session,
@@ -117,7 +122,7 @@ async def read_users_me(
 async def read_sessions_me(
     token_user_id: Annotated[
         int,
-        Depends(session_security.get_user_id_from_access_token),
+        Depends(auth_security.get_sub_from_access_token),
     ],
     db: Annotated[
         Session,
@@ -147,7 +152,7 @@ async def upload_profile_image(
     file: UploadFile,
     token_user_id: Annotated[
         int,
-        Depends(session_security.get_user_id_from_access_token),
+        Depends(auth_security.get_sub_from_access_token),
     ],
     db: Annotated[
         Session,
@@ -185,7 +190,7 @@ async def edit_user(
     user_attributtes: users_schema.UserRead,
     token_user_id: Annotated[
         int,
-        Depends(session_security.get_user_id_from_access_token),
+        Depends(auth_security.get_sub_from_access_token),
     ],
     db: Annotated[
         Session,
@@ -215,7 +220,7 @@ async def edit_profile_privacy_settings(
     user_privacy_settings: users_privacy_settings_schema.UsersPrivacySettings,
     token_user_id: Annotated[
         int,
-        Depends(session_security.get_user_id_from_access_token),
+        Depends(auth_security.get_sub_from_access_token),
     ],
     db: Annotated[
         Session,
@@ -247,7 +252,11 @@ async def edit_profile_password(
     user_attributtes: users_schema.UserEditPassword,
     token_user_id: Annotated[
         int,
-        Depends(session_security.get_user_id_from_access_token),
+        Depends(auth_security.get_sub_from_access_token),
+    ],
+    password_hasher: Annotated[
+        auth_password_hasher.PasswordHasher,
+        Depends(auth_password_hasher.get_password_hasher),
     ],
     db: Annotated[
         Session,
@@ -258,28 +267,18 @@ async def edit_profile_password(
     Update user password after validation.
 
     Args:
-        user_attributtes: New password data.
-        token_user_id: User ID from access token.
-        db: Database session.
+        user_attributtes (users_schema.UserEditPassword): Schema containing the new password.
+        token_user_id (int): ID of the user extracted from the access token.
+        password_hasher (auth_password_hasher.PasswordHasher): Password hasher dependency.
+        db (Session): Database session dependency.
 
     Returns:
-        Success message.
-
-    Raises:
-        HTTPException: If password complexity invalid.
+        dict: A success message indicating the user's password was updated.
     """
-    # Check if the password meets the complexity requirements
-    is_valid, message = session_security.is_password_complexity_valid(
-        user_attributtes.password
-    )
-    if not is_valid:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=message,
-        )
-
     # Update the user password in the database
-    users_crud.edit_user_password(token_user_id, user_attributtes.password, db)
+    users_crud.edit_user_password(
+        token_user_id, user_attributtes.password, password_hasher, db
+    )
 
     # Return success message
     return {f"User ID {token_user_id} password updated successfully"}
@@ -289,7 +288,7 @@ async def edit_profile_password(
 async def delete_profile_photo(
     token_user_id: Annotated[
         int,
-        Depends(session_security.get_user_id_from_access_token),
+        Depends(auth_security.get_sub_from_access_token),
     ],
     db: Annotated[
         Session,
@@ -318,7 +317,7 @@ async def delete_profile_session(
     session_id: str,
     token_user_id: Annotated[
         int,
-        Depends(session_security.get_user_id_from_access_token),
+        Depends(auth_security.get_sub_from_access_token),
     ],
     db: Annotated[
         Session,
@@ -347,7 +346,7 @@ async def delete_profile_session(
 async def export_profile_data(
     token_user_id: Annotated[
         int,
-        Depends(session_security.get_user_id_from_access_token),
+        Depends(auth_security.get_sub_from_access_token),
     ],
     db: Annotated[
         Session,
@@ -433,7 +432,7 @@ async def import_profile_data(
     file: UploadFile,
     token_user_id: Annotated[
         int,
-        Depends(session_security.get_user_id_from_access_token),
+        Depends(auth_security.get_sub_from_access_token),
     ],
     db: Annotated[Session, Depends(core_database.get_db)],
     websocket_manager: Annotated[
@@ -569,7 +568,7 @@ async def import_profile_data(
 async def get_mfa_status(
     token_user_id: Annotated[
         int,
-        Depends(session_security.get_user_id_from_access_token),
+        Depends(auth_security.get_sub_from_access_token),
     ],
     db: Annotated[Session, Depends(core_database.get_db)],
 ):
@@ -591,7 +590,7 @@ async def get_mfa_status(
 async def setup_mfa(
     token_user_id: Annotated[
         int,
-        Depends(session_security.get_user_id_from_access_token),
+        Depends(auth_security.get_sub_from_access_token),
     ],
     db: Annotated[Session, Depends(core_database.get_db)],
     mfa_secret_store: Annotated[
@@ -622,7 +621,7 @@ async def enable_mfa(
     request: profile_schema.MFASetupRequest,
     token_user_id: Annotated[
         int,
-        Depends(session_security.get_user_id_from_access_token),
+        Depends(auth_security.get_sub_from_access_token),
     ],
     db: Annotated[Session, Depends(core_database.get_db)],
     mfa_secret_store: Annotated[
@@ -668,7 +667,7 @@ async def disable_mfa(
     request: profile_schema.MFADisableRequest,
     token_user_id: Annotated[
         int,
-        Depends(session_security.get_user_id_from_access_token),
+        Depends(auth_security.get_sub_from_access_token),
     ],
     db: Annotated[Session, Depends(core_database.get_db)],
 ):
@@ -692,7 +691,7 @@ async def verify_mfa(
     request: profile_schema.MFARequest,
     token_user_id: Annotated[
         int,
-        Depends(session_security.get_user_id_from_access_token),
+        Depends(auth_security.get_sub_from_access_token),
     ],
     db: Annotated[Session, Depends(core_database.get_db)],
 ):
@@ -716,3 +715,177 @@ async def verify_mfa(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid MFA code"
         )
     return {"message": "MFA code verified successfully"}
+
+
+# Identity Provider Management Endpoints
+@router.get(
+    "/idp",
+    response_model=list[user_idp_schema.UserIdentityProviderResponse],
+    status_code=status.HTTP_200_OK,
+)
+async def get_my_identity_providers(
+    token_user_id: Annotated[
+        int,
+        Depends(auth_security.get_sub_from_access_token),
+    ],
+    db: Annotated[
+        Session,
+        Depends(core_database.get_db),
+    ],
+):
+    """
+    Retrieve all identity provider links for the authenticated user.
+    This endpoint fetches all external identity provider (IdP) connections associated
+    with the current user's account. Each link includes connection metadata and enriched
+    details about the identity provider (name, slug, icon, and provider type).
+    Args:
+        token_user_id (int): The authenticated user's ID extracted from the JWT access token.
+            Injected automatically via dependency injection.
+        db (Session): Database session for executing queries.
+            Injected automatically via dependency injection.
+    Returns:
+        list[dict]: A list of dictionaries representing the user's IdP links. Each dictionary contains:
+            - id (int): Unique identifier for the user-IdP link
+            - user_id (int): ID of the user
+            - idp_id (int): ID of the identity provider
+            - idp_subject (str): User's unique identifier at the IdP
+            - linked_at (datetime): Timestamp when the link was created
+            - last_login (datetime): Timestamp of the last login via this IdP
+            - idp_access_token_expires_at (datetime): Expiration time of the IdP access token
+            - idp_refresh_token_updated_at (datetime): Last update time of the refresh token
+            - idp_name (str): Display name of the identity provider (if available)
+            - idp_slug (str): URL-safe identifier for the IdP (if available)
+            - idp_icon (str): Icon/logo URL for the IdP (if available)
+            - idp_provider_type (str): Type of provider (e.g., "oauth2", "oidc") (if available)
+    Raises:
+        HTTPException: May raise authentication/authorization errors via the dependency injection.
+    """
+    # Get user's IdP links
+    idp_links = user_idp_crud.get_user_identity_providers_by_user_id(token_user_id, db)
+
+    # Enrich with IDP details (reuse logic from admin endpoint)
+    enriched_links = []
+    for link in idp_links:
+        # Convert SQLAlchemy model to dict
+        link_dict = {
+            "id": link.id,
+            "user_id": link.user_id,
+            "idp_id": link.idp_id,
+            "idp_subject": link.idp_subject,
+            "linked_at": link.linked_at,
+            "last_login": link.last_login,
+            "idp_access_token_expires_at": link.idp_access_token_expires_at,
+            "idp_refresh_token_updated_at": link.idp_refresh_token_updated_at,
+        }
+
+        # Fetch IDP details for display
+        idp = idp_crud.get_identity_provider(link.idp_id, db)
+        if idp:
+            link_dict["idp_name"] = idp.name
+            link_dict["idp_slug"] = idp.slug
+            link_dict["idp_icon"] = idp.icon
+            link_dict["idp_provider_type"] = idp.provider_type
+
+        enriched_links.append(link_dict)
+    return enriched_links
+
+
+@router.delete(
+    "/idp/{idp_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def delete_my_identity_provider(
+    idp_id: int,
+    token_user_id: Annotated[
+        int,
+        Depends(auth_security.get_sub_from_access_token),
+    ],
+    db: Annotated[
+        Session,
+        Depends(core_database.get_db),
+    ],
+):
+    """
+    Delete (unlink) an identity provider from the authenticated user's account.
+
+    This endpoint allows users to remove the association between their account and
+    a specific identity provider. It includes critical safety checks to prevent
+    account lockout by ensuring users maintain at least one authentication method
+    (either a password or another IdP link).
+
+    Args:
+        idp_id (int): The ID of the identity provider to unlink.
+        token_user_id (int): The authenticated user's ID extracted from the access token.
+        db (Session): Database session dependency.
+
+    Returns:
+        None: Returns 204 No Content on successful deletion.
+
+    Raises:
+        HTTPException (404): If the identity provider doesn't exist or is not linked
+            to the user's account.
+        HTTPException (400): If attempting to unlink the last authentication method
+            without having a password set (prevents account lockout).
+        HTTPException (500): If the deletion operation fails at the database level.
+
+    Notes:
+        - Prevents account lockout by ensuring users have at least one authentication
+          method (password or remaining IdP link).
+        - Logs the unlinking action for audit purposes.
+        - Uses token-based authentication to ensure users can only unlink their own IdPs.
+    """
+    # Validate IDP exists
+    idp = idp_crud.get_identity_provider(idp_id, db)
+    if idp is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Identity provider with id {idp_id} not found",
+        )
+
+    # Check if link exists for this user
+    link = user_idp_crud.get_user_identity_provider_by_user_id_and_idp_id(
+        token_user_id, idp_id, db
+    )
+    if not link:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Identity provider {idp.name} is not linked to your account",
+        )
+
+    # CRITICAL: Prevent account lockout
+    # Get user details to check if they have a password
+    user = users_crud.get_user_by_id(token_user_id, db)
+
+    # Count remaining IdP links after deletion
+    all_idp_links = user_idp_crud.get_user_identity_providers_by_user_id(
+        token_user_id, db
+    )
+    remaining_idp_count = len(all_idp_links) - 1
+
+    # User must have either:
+    # - A password set, OR
+    # - At least one remaining IdP link
+    has_password = user.password is not None and user.password != ""
+
+    if not has_password and remaining_idp_count == 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cannot unlink last authentication method. Please set a password first.",
+        )
+
+    # Proceed with deletion
+    success = user_idp_crud.delete_user_identity_provider(token_user_id, idp_id, db)
+
+    if not success:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to unlink identity provider",
+        )
+
+    # Audit logging
+    core_logger.print_to_log(
+        f"User {token_user_id} unlinked IdP: idp_id={idp_id} ({idp.name})"
+    )
+
+    # Return 204 No Content (successful deletion)
+    return None
