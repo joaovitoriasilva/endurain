@@ -1,6 +1,7 @@
 {
   "buttonBack": "Voltar",
   "buttonClose": "Fechar",
+  "buttonSubmit": "Submit",
   "true": "Verdade",
   "false": "Falso",
   "yes": "Sim",
@@ -36,6 +37,7 @@
   "unitsKmH": "km/h",
   "unitsKg": "kg",
   "labelWeightInKg": "Peso em kg",
+  "labelWeightTargetInKg": "Weight target in kg",
   "unitsInches": "polegadas",
   "unitsFeet": "pés",
   "unitsFeetShort": "pés",
@@ -45,6 +47,15 @@
   "unitsMph": "mph",
   "unitsLbs": "las",
   "labelWeightInLbs": "Peso em libras",
+  "labelWeightTargetInLbs": "Weight target in lbs",
+  "labelSteps": "Steps",
+  "labelStepsTarget": "Steps target",
+  "labelSleep": "Sleep",
+  "labelSleepTarget": "Sleep target",
+  "labelDeep": "Deep",
+  "labelLight": "Light",
+  "labelREM": "REM",
+  "labelAwake": "Awake",
   "unitsCalories": "kcal",
   "unitsBpm": "bpm",
   "labelHRinBpm": "Frequência cardíaca em bpm",
@@ -78,5 +89,9 @@
   "genderFemale": "Feminino",
   "genderUnspecified": "Não especificado",
   "labelAverage": "Average",
-  "labelMaximum": "Maximum"
+  "labelMaximum": "Maximum",
+  "unitsBrpm": "brpm",
+  "unitsCelsius": "°C",
+  "unitsFahrenheit": "°F",
+  "RHRLabel": "Resting heart rate"
 }
