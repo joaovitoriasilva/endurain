@@ -57,6 +57,7 @@
   "modalEditActivityVisibilityOption1": "Seguidors",
   "modalEditActivityVisibilityOption2": "Privat",
   "modalEditActivityIsHiddenLabel": "Està ocult",
+  "modalEditActivityHiddenItemsLabel": "Activity hidden fields",
   "modalEditActivityHideStartTimeLabel": "Amaga hora inici",
   "modalEditActivityHideLocationLabel": "Amaga localització",
   "modalEditActivityHideMapLabel": "Amaga el mapa",
