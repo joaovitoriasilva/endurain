@@ -4,5 +4,5 @@
   "emailVerified": "Email verified successfully!",
   "tokenNotFound": "Token not found",
   "tokenExpired": "Token expired",
-  "verificationFailed": "Email verification failed"
+  "verificationFailed": "E-Mail-Bestätigung fehlgeschlagen"
 }
