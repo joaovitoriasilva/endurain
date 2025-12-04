@@ -9,7 +9,7 @@
   "adminApprovalLabel": "Admin approval",
   "emailConfirmationLabel": "Email confirmation",
   "publicShareableLinksLabel": "Öffentliche Links",
-  "enabledLabel": "Enabled",
+  "enabledLabel": "Aktiviert",
   "serverSettingsPublicShareableLinksEnabledWarningAlert": "Durch das Aktivieren dieser Option werden alle öffentlich geposteten Aktivitäten ohne Authentifizierung sichtbar.",
   "publicShareableLinksShowUserInfoLabel": "Zeige Benutzerinformationen",
   "serverSettingsPublicShareableLinksShowUserWarningAlert": "Durch das Aktivieren dieser Option werden alle Benutzerinformationen bei öffentlichen Links sichtbar",
