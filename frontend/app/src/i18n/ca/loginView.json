@@ -8,6 +8,8 @@
   "subtitle": "Inici de sessió",
   "username": "Nom d’usuari",
   "password": "Contrasenya",
+  "hidePassword": "Hide password",
+  "showPassword": "Show password",
   "mfaCode": "Codi MFA",
   "mfaRequired": "Autenticació multifactor requerida. Si us plau entra el codi de 6 dígits.",
   "verifyMFAButton": "Verificar MFA",
@@ -33,5 +35,15 @@
   "signUpLink": "No tens compte? Registre",
   "emailVerificationSent": "Reviseu el correu electrònic per obtenir instruccions de verificació",
   "adminApprovalRequired": "Compte pendent d'aprovació d''administració",
-  "verifyEmailInvalidLink": "Enllaç de verificació d'email invàlid"
+  "verifyEmailInvalidLink": "Enllaç de verificació d'email invàlid",
+  "ssoSection": "Or sign in with",
+  "ssoButton": "Sign in with {provider}",
+  "ssoSuccess": "Successfully authenticated via SSO",
+  "ssoFailed": "SSO authentication failed. Please try again",
+  "ssoCancelled": "SSO authentication was cancelled",
+  "ssoAccountNotFound": "No account found. Please contact your administrator",
+  "ssoAccountDisabled": "Your account has been disabled. Please contact your administrator",
+  "ssoAutoCreateDisabled": "Account auto-creation is disabled. Please contact your administrator",
+  "ssoErrorUndefined": "An unexpected error occurred during SSO authentication",
+  "forceLocalLogin": "Local login flag enabled. Please use your username and password to log in."
 }
