@@ -25,7 +25,7 @@
   "errorDisableMFA": "Deaktivieren der MFA fehlgeschlagen",
   "subtitleMySessions": "Meine Sitzungen",
   "userChangePasswordSuccessMessage": "Passwort erfolgreich geändert",
-  "userChangePasswordErrorMessage": "Fehler beim ändern des Passwort",
+  "userChangePasswordErrorMessage": "Fehler beim Ändern des Passworts",
   "successDeleteSession": "Sitzung erfolgreich gelöscht",
   "errorDeleteSession": "Fehler beim Löschen der Sitzung"
 }
