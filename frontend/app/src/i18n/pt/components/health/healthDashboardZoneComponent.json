@@ -1,7 +1,7 @@
 {
-  "sleep": "Today's sleep",
-  "restingHeartRate": "Resting heart rate",
-  "avgSkinTemperatureDeviation": "Skin temp. dev.",
+  "sleep": "Sono de hoje",
+  "restingHeartRate": "FC em repouso",
+  "avgSkinTemperatureDeviation": "Desvio temp. pele",
   "weight": "Peso",
   "noWeightData": "Sem dados de peso",
   "noWeightTarget": "Sem meta de peso",
@@ -13,7 +13,7 @@
   "bmiObesityClass1": "Obesidade (Classe 1)",
   "bmiObesityClass2": "Obesidade (Classe 2)",
   "bmiObesityClass3": "Obesidade extrema (Classe 3)",
-  "steps": "Today's steps",
-  "stepsTargetLabel": "steps",
-  "noStepsTarget": "No steps target"
+  "steps": "Passos de hoje",
+  "stepsTargetLabel": "passos",
+  "noStepsTarget": "Sem meta de passos"
 }
