@@ -5,7 +5,7 @@
   "userListUserIsAdminBadge": "管理员",
   "userListUserIsInactiveBadge": "未启用",
   "userListUserHasUnverifiedEmailBadge": "邮箱未验证",
-  "userListUserHasExternalAuthBadge": "External Auth",
+  "userListUserHasExternalAuthBadge": "External auth",
   "modalApproveSignUpTitle": "批准用户注册",
   "modalApproveSignUpBody": "确定要批准用户 ",
   "processingApproval": "正在处理审批……",
@@ -21,7 +21,7 @@
   "userSessionDeleteSuccessMessage": "会话删除成功",
   "userSessionDeleteErrorMessage": "删除会话时出错",
   "tabSessions": "Sessions",
-  "tabIdentityProviders": "Identity Providers",
+  "tabIdentityProviders": "Identity providers",
   "userIdpsLoadErrorMessage": "Error loading identity providers",
   "userIdpDeleteSuccessMessage": "Identity provider unlinked successfully",
   "userIdpDeleteErrorMessage": "Error unlinking identity provider"
