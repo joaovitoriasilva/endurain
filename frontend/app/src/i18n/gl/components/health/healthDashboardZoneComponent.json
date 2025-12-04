@@ -1,4 +1,7 @@
 {
+  "sleep": "Today's sleep",
+  "restingHeartRate": "Resting heart rate",
+  "avgSkinTemperatureDeviation": "Skin temp. dev.",
   "weight": "Peso",
   "noWeightData": "Sen datos do peso",
   "noWeightTarget": "Sen obxectivo de peso",
@@ -9,5 +12,8 @@
   "bmiOverweight": "Sobrepeso",
   "bmiObesityClass1": "Obesidade (clase 1)",
   "bmiObesityClass2": "Obesidade (clase 2)",
-  "bmiObesityClass3": "Obesidade extrema (clase 3)"
+  "bmiObesityClass3": "Obesidade extrema (clase 3)",
+  "steps": "Today's steps",
+  "stepsTargetLabel": "steps",
+  "noStepsTarget": "No steps target"
 }
