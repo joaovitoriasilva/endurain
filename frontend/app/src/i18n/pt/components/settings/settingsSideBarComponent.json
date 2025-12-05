@@ -1,6 +1,7 @@
 {
   "usersSection": "Utilizadores",
   "serverSettingsSection": "Definições do Servidor",
+  "identityProvidersSection": "Identity Providers",
   "generalSection": "Geral",
   "myProfileSection": "O meu perfil",
   "myGoals": "Meus objetivos",

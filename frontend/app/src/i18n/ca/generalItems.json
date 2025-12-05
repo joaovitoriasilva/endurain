@@ -1,6 +1,7 @@
 {
   "buttonBack": "Torna",
   "buttonClose": "Tanca",
+  "buttonSubmit": "Submit",
   "true": "Cert",
   "false": "Fals",
   "yes": "Si",
@@ -36,6 +37,7 @@
   "unitsKmH": "km/h",
   "unitsKg": "kg",
   "labelWeightInKg": "Pes en kg",
+  "labelWeightTargetInKg": "Weight target in kg",
   "unitsInches": "polzades",
   "unitsFeet": "peus",
   "unitsFeetShort": "peus",
@@ -45,6 +47,15 @@
   "unitsMph": "mph",
   "unitsLbs": "lliures",
   "labelWeightInLbs": "Pes en lliures",
+  "labelWeightTargetInLbs": "Weight target in lbs",
+  "labelSteps": "Steps",
+  "labelStepsTarget": "Steps target",
+  "labelSleep": "Sleep",
+  "labelSleepTarget": "Sleep target",
+  "labelDeep": "Deep",
+  "labelLight": "Light",
+  "labelREM": "REM",
+  "labelAwake": "Awake",
   "unitsCalories": "kCal",
   "unitsBpm": "bpm",
   "labelHRinBpm": "Bategs en bpm",
@@ -78,5 +89,9 @@
   "genderFemale": "Dona",
   "genderUnspecified": "Sense especificar",
   "labelAverage": "Mitja",
-  "labelMaximum": "Màxim"
+  "labelMaximum": "Màxim",
+  "unitsBrpm": "brpm",
+  "unitsCelsius": "°C",
+  "unitsFahrenheit": "°F",
+  "RHRLabel": "Resting heart rate"
 }
