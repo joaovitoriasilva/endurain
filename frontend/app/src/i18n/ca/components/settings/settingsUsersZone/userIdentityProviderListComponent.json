@@ -1,15 +1,15 @@
 {
-  "unknownProviderIcon": "Unknown provider icon",
-  "providerTypeBadgeLabel": "Authentication provider type",
-  "linkedAtLabel": "Date and time when provider was linked",
-  "linkedAt": "Linked",
-  "lastLoginLabel": "Date and time of last login with this provider",
-  "lastLogin": "Last used",
-  "neverUsedLabel": "This provider has never been used for login",
-  "neverUsed": "Never used",
-  "deleteButtonAriaLabel": "Delete {provider} identity provider link",
-  "modalDeleteTitle": "Delete identity provider",
-  "modalDeleteBody1": "Are you sure you want to unlink",
-  "modalDeleteBody2": "? The user will no longer be able to log in using this provider.",
-  "modalDeleteButton": "Delete provider link"
+  "unknownProviderIcon": "Icona de proveidor desconeguda",
+  "providerTypeBadgeLabel": "Tipus proveidor autentificació",
+  "linkedAtLabel": "Data i hora de proveidor linkat",
+  "linkedAt": "Linkat",
+  "lastLoginLabel": "Data i hora de l'últim accés amb el proveidor",
+  "lastLogin": "Últim ús",
+  "neverUsedLabel": "Proveidor mai utilitzat per accedir",
+  "neverUsed": "Mai usat",
+  "deleteButtonAriaLabel": "Esborra {provider} link de proveidor",
+  "modalDeleteTitle": "Esborra proveidor d'identitat",
+  "modalDeleteBody1": "Segur que vols deslinkar",
+  "modalDeleteBody2": "? L'usuari no podrà accedir amb aquest proveidor.",
+  "modalDeleteButton": "Suprimeix link proveïdor"
 }
