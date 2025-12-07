@@ -1,11 +1,11 @@
 {
-  "labelSteps": "steps",
-  "labelDate": "Date",
+  "labelSteps": "passos",
+  "labelDate": "Data",
   "labelGarminConnect": "Garmin Connect",
-  "modalDeleteStepsTitle": "Delete steps entry",
-  "modalDeleteStepsBody": "Are you sure you want to delete steps entry for ",
-  "successDeleteSteps": "Steps deleted",
-  "errorDeleteSteps": "It was not possible to delete steps entry",
-  "successEditSteps": "Steps edited",
-  "errorEditSteps": "It was not possible to edit steps entry"
+  "modalDeleteStepsTitle": "Esborra entrada de passos",
+  "modalDeleteStepsBody": "Segur que vols suprimir l'entrada de passos per ",
+  "successDeleteSteps": "Passos esborrats",
+  "errorDeleteSteps": "No s'ha pogut suprimir l'entrada de passos",
+  "successEditSteps": "Passos editats",
+  "errorEditSteps": "No s'ha pogut editar l'entrada de passos"
 }
