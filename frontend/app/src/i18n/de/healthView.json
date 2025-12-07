@@ -1,13 +1,13 @@
 {
   "title": "Gesundheit",
-  "errorFetchingHealthSteps": "Error fetching health steps",
-  "errorFetchingHealthWeight": "Error fetching health data",
-  "errorFetchingHealthSleep": "Error fetching health sleep",
+  "errorFetchingHealthSteps": "Fehler beim Laden der Schritte",
+  "errorFetchingHealthWeight": "Fehler beim Laden der Gesundheitsdaten",
+  "errorFetchingHealthSleep": "Fehler beim Laden der Schlafdaten",
   "errorFetchingHealthTargets": "Fehler beim Laden der Gesundheitsziele",
   "successUpdatingWeightTarget": "Successfully updated weight target",
-  "errorUpdatingWeightTarget": "Error updating weight target",
+  "errorUpdatingWeightTarget": "Fehler beim Aktualisieren des Gewichtsziels",
   "successUpdatingStepsTarget": "Successfully updated steps target",
-  "errorUpdatingStepsTarget": "Error updating steps target",
+  "errorUpdatingStepsTarget": "Fehler beim Aktualisieren der Schrittziele",
   "successUpdatingSleepTarget": "Successfully updated sleep target",
-  "errorUpdatingSleepTarget": "Error updating sleep target"
+  "errorUpdatingSleepTarget": "Fehler beim Aktualisieren der Schlafziele"
 }
