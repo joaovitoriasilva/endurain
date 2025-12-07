@@ -1,13 +1,13 @@
 {
   "title": "Salut",
-  "errorFetchingHealthSteps": "Error fetching health steps",
-  "errorFetchingHealthWeight": "Error fetching health data",
-  "errorFetchingHealthSleep": "Error fetching health sleep",
+  "errorFetchingHealthSteps": "Error recollint passos",
+  "errorFetchingHealthWeight": "Error recollint dades de salut",
+  "errorFetchingHealthSleep": "Error recollint dades de son",
   "errorFetchingHealthTargets": "Error recollint objectius de salut",
-  "successUpdatingWeightTarget": "Successfully updated weight target",
-  "errorUpdatingWeightTarget": "Error updating weight target",
-  "successUpdatingStepsTarget": "Successfully updated steps target",
-  "errorUpdatingStepsTarget": "Error updating steps target",
-  "successUpdatingSleepTarget": "Successfully updated sleep target",
-  "errorUpdatingSleepTarget": "Error updating sleep target"
+  "successUpdatingWeightTarget": "Objectiu de pes actualitzat",
+  "errorUpdatingWeightTarget": "Error actualitzant objectiu de pes",
+  "successUpdatingStepsTarget": "Objectiu de pasos actualitzat",
+  "errorUpdatingStepsTarget": "Error actualitzant objectiu de passos",
+  "successUpdatingSleepTarget": "Objectiu de son actualitzat",
+  "errorUpdatingSleepTarget": "Error actualitzant objectiu de son"
 }
