@@ -1,7 +1,7 @@
 {
   "dashboardSection": "Panell de control",
-  "sleepSection": "Sleep",
-  "RHRSection": "Resting heart rate",
-  "stepsSection": "Steps",
+  "sleepSection": "Son",
+  "RHRSection": "Freqüència cardíaca en repòs",
+  "stepsSection": "Passos",
   "weightSection": "Pes"
 }
