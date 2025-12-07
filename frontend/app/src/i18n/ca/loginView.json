@@ -40,10 +40,10 @@
   "ssoButton": "Inicia sessió amb {provider}",
   "ssoSuccess": "Autenticat correctament amb SSO",
   "ssoFailed": "Autenticació SSO fallida. Torna a provar",
-  "ssoCancelled": "SSO authentication was cancelled",
-  "ssoAccountNotFound": "No account found. Please contact your administrator",
-  "ssoAccountDisabled": "Your account has been disabled. Please contact your administrator",
-  "ssoAutoCreateDisabled": "Account auto-creation is disabled. Please contact your administrator",
-  "ssoErrorUndefined": "An unexpected error occurred during SSO authentication",
-  "forceLocalLogin": "Local login flag enabled. Please use your username and password to log in."
+  "ssoCancelled": "Autenticació SSO cancel•lada",
+  "ssoAccountNotFound": "Compte no trobat. Contacta amb l'admin",
+  "ssoAccountDisabled": "Compte deshabilitat. Contacta amb l'admin",
+  "ssoAutoCreateDisabled": "Auto creació de comptes deshabilitat. Contacta amn l'admin",
+  "ssoErrorUndefined": "Error durant autenticació SSO",
+  "forceLocalLogin": "Usa usuari i contrasenya per accedir."
 }
