@@ -8,8 +8,8 @@
   "neverUsedLabel": "Este fornecedor nunca foi usado para autenticação",
   "neverUsed": "Nunca utilizado",
   "deleteButtonAriaLabel": "Excluir vínculo de fornecedor de identidade {provider}",
-  "modalDeleteTitle": "Delete identity provider",
+  "modalDeleteTitle": "Eliminar fornecedor de identidade",
   "modalDeleteBody1": "Tem certeza de que deseja desvincular",
   "modalDeleteBody2": "? O utilizador não conseguirá autenticar-se com este fornecedor de identidade.",
-  "modalDeleteButton": "Delete provider link"
+  "modalDeleteButton": "Eliminar link do fornecedor"
 }
