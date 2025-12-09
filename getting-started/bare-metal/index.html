@@ -9,23 +9,25 @@
       
       
       
+        <link rel="prev" href="../advanced-started/">
       
-        <link rel="next" href="getting-started/getting-started/">
+      
+        <link rel="next" href="../maria-to-postgres-migration/">
       
       
-      <link rel="icon" href="assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
     
     
       
-        <title>Endurain documentation</title>
+        <title>Bare-Metal Installation Guide - Endurain documentation</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.84d31ad4.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.84d31ad4.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -44,7 +46,7 @@
       
     
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -70,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#what-is-endurain" class="md-skip">
+        <a href="#bare-metal-installation-guide" class="md-skip">
           Skip to content
         </a>
       
@@ -86,7 +88,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="Endurain documentation" class="md-header__button md-logo" aria-label="Endurain documentation" data-md-component="logo">
+    <a href="../.." title="Endurain documentation" class="md-header__button md-logo" aria-label="Endurain documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -106,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              Bare-Metal Installation Guide
             
           </span>
         </div>
@@ -222,7 +224,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="Endurain documentation" class="md-nav__button md-logo" aria-label="Endurain documentation" data-md-component="logo">
+    <a href="../.." title="Endurain documentation" class="md-nav__button md-logo" aria-label="Endurain documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -249,30 +251,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Home
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="." class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -283,114 +265,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#what-is-endurain" class="md-nav__link">
-    <span class="md-ellipsis">
-      What is Endurain?
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#developers-note" class="md-nav__link">
-    <span class="md-ellipsis">
-      Developer's Note
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
-    <span class="md-ellipsis">
-      Features
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#planned-features" class="md-nav__link">
-    <span class="md-ellipsis">
-      Planned Features
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sponsors" class="md-nav__link">
-    <span class="md-ellipsis">
-      Sponsors
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#contributing" class="md-nav__link">
-    <span class="md-ellipsis">
-      Contributing
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#license" class="md-nav__link">
-    <span class="md-ellipsis">
-      License
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#help-translate" class="md-nav__link">
-    <span class="md-ellipsis">
-      Help Translate
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#star-history" class="md-nav__link">
-    <span class="md-ellipsis">
-      Star History
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#trademark-notice" class="md-nav__link">
-    <span class="md-ellipsis">
-      Trademark Notice
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -399,18 +273,20 @@
       
   
   
+    
   
   
+  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
           <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
@@ -426,7 +302,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Hosting Guide
@@ -440,7 +316,7 @@
   
   
     <li class="md-nav__item">
-      <a href="getting-started/getting-started/" class="md-nav__link">
+      <a href="../getting-started/" class="md-nav__link">
         
   
   
@@ -463,7 +339,7 @@
   
   
     <li class="md-nav__item">
-      <a href="getting-started/advanced-started/" class="md-nav__link">
+      <a href="../advanced-started/" class="md-nav__link">
         
   
   
@@ -483,10 +359,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="getting-started/bare-metal/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Bare-Metal Installation Guide
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -497,6 +395,98 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-install-required-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Install Required Dependencies
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-install-required-runtime-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Install Required Runtime Tools
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-download-endurain-release" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Download Endurain Release
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-create-environment-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Create Environment Configuration
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-build-the-frontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Build the Frontend
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-set-up-the-backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Set Up the Backend
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-setup-postgres-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Setup Postgres Database
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-systemd-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. Systemd Service
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -509,7 +499,7 @@
   
   
     <li class="md-nav__item">
-      <a href="getting-started/maria-to-postgres-migration/" class="md-nav__link">
+      <a href="../maria-to-postgres-migration/" class="md-nav__link">
         
   
   
@@ -577,7 +567,7 @@
   
   
     <li class="md-nav__item">
-      <a href="features/sleep-scoring/" class="md-nav__link">
+      <a href="../../features/sleep-scoring/" class="md-nav__link">
         
   
   
@@ -645,7 +635,7 @@
   
   
     <li class="md-nav__item">
-      <a href="integrations/3rd-party-apps/" class="md-nav__link">
+      <a href="../../integrations/3rd-party-apps/" class="md-nav__link">
         
   
   
@@ -668,7 +658,7 @@
   
   
     <li class="md-nav__item">
-      <a href="integrations/3rd-party-services/" class="md-nav__link">
+      <a href="../../integrations/3rd-party-services/" class="md-nav__link">
         
   
   
@@ -698,7 +688,7 @@
   
   
     <li class="md-nav__item">
-      <a href="developer-guide/" class="md-nav__link">
+      <a href="../../developer-guide/" class="md-nav__link">
         
   
   
@@ -720,7 +710,7 @@
   
   
     <li class="md-nav__item">
-      <a href="gallery/" class="md-nav__link">
+      <a href="../../gallery/" class="md-nav__link">
         
   
   
@@ -752,6 +742,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -760,90 +752,72 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#what-is-endurain" class="md-nav__link">
+  <a href="#1-install-required-dependencies" class="md-nav__link">
     <span class="md-ellipsis">
-      What is Endurain?
+      1. Install Required Dependencies
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#developers-note" class="md-nav__link">
+  <a href="#2-install-required-runtime-tools" class="md-nav__link">
     <span class="md-ellipsis">
-      Developer's Note
+      2. Install Required Runtime Tools
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
+  <a href="#3-download-endurain-release" class="md-nav__link">
     <span class="md-ellipsis">
-      Features
+      3. Download Endurain Release
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#planned-features" class="md-nav__link">
+  <a href="#4-create-environment-configuration" class="md-nav__link">
     <span class="md-ellipsis">
-      Planned Features
+      4. Create Environment Configuration
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#sponsors" class="md-nav__link">
+  <a href="#5-build-the-frontend" class="md-nav__link">
     <span class="md-ellipsis">
-      Sponsors
+      5. Build the Frontend
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#contributing" class="md-nav__link">
+  <a href="#6-set-up-the-backend" class="md-nav__link">
     <span class="md-ellipsis">
-      Contributing
+      6. Set Up the Backend
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#license" class="md-nav__link">
+  <a href="#7-setup-postgres-database" class="md-nav__link">
     <span class="md-ellipsis">
-      License
+      7. Setup Postgres Database
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#help-translate" class="md-nav__link">
+  <a href="#8-systemd-service" class="md-nav__link">
     <span class="md-ellipsis">
-      Help Translate
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#star-history" class="md-nav__link">
-    <span class="md-ellipsis">
-      Star History
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#trademark-notice" class="md-nav__link">
-    <span class="md-ellipsis">
-      Trademark Notice
+      8. Systemd Service
     </span>
   </a>
   
@@ -868,107 +842,126 @@
   
 
 
-  <h1>Home</h1>
-
-<div align="center">
-  <p>
-    <img src="assets/logo.svg" width="150" height="150">
-  </p>
-
-  <p>
-    <a href="https://crowdin.com/project/endurain">
-      <img src="https://badges.crowdin.net/endurain/localized.svg" alt="Crowdin">
-    </a>
-    <img src="https://img.shields.io/github/license/joaovitoriasilva/endurain" alt="License">
-    <a href="https://github.com/joaovitoriasilva/endurain/releases">
-      <img src="https://img.shields.io/github/v/release/joaovitoriasilva/endurain" alt="GitHub release">
-    </a>
-    <a href="https://github.com/joaovitoriasilva/endurain/stargazers">
-      <img src="https://img.shields.io/github/stars/joaovitoriasilva/endurain.svg?style=social&label=Star" alt="GitHub stars">
-    </a>
-    <a href="https://github.com/joaovitoriasilva/endurain/blob/master/TRADEMARK.md">
-      <img src="https://img.shields.io/badge/trademark-Endurain%E2%84%A2-blue" alt="Trademark Policy">
-    </a>
-  </p>
-
-  <h2>
-      Endurain
-  </h2>
-  <p>
-    A self-hosted fitness tracking service - <a href="https://fosstodon.org/@endurain">Mastodon profile</a> - <a href="https://discord.gg/6VUjUq2uZR">Discord server</a>
-  </p>
-</div>
-
-<h2 id="what-is-endurain">What is Endurain?</h2>
-<p>Endurain is a self-hosted fitness tracking service designed to give users full control over their data and hosting environment. Built with:</p>
+<h1 id="bare-metal-installation-guide">Bare-Metal Installation Guide</h1>
+<p>This guide explains how to install <strong>Endurain</strong> bare-metal on Debian without Docker.</p>
+<h2 id="1-install-required-dependencies">1. Install Required Dependencies</h2>
+<pre><code class="language-bash">apt install -y \
+  default-libmysqlclient-dev \
+  build-essential \
+  pkg-config  \
+  git \
+  curl \
+  python3-dev
+</code></pre>
+<h2 id="2-install-required-runtime-tools">2. Install Required Runtime Tools</h2>
+<p>Install the required tools from their official sources:</p>
 <ul>
-<li><strong>Frontend:</strong> Vue.js, Notivue and Bootstrap CSS</li>
-<li><strong>Backend:</strong> Python FastAPI, Alembic, SQLAlchemy, Apprise, stravalib and python-garminconnect for Strava and Garmin Connect integration, gpxpy, tcxreader and fitdecode for .gpx, .tcx and .fit file import respectively </li>
-<li><strong>Database:</strong> PostgreSQL for efficient data management</li>
-<li><strong>Observability:</strong> Jaeger for basic tracing and monitoring</li>
+<li>uv (Python) → https://docs.astral.sh/uv/</li>
+<li>Node.js 22 → https://nodejs.org/en/download</li>
+<li>PostgreSQL 17 → https://www.postgresql.org/download/</li>
 </ul>
-<p>To deploy Endurain, a Docker image is available, and a comprehensive example can be found in the "docker-compose.yml.example" file provided in the project repository. Configuration is facilitated through environment variables, ensuring flexibility and ease of customization.</p>
-<h2 id="developers-note">Developer's Note</h2>
-<p>As a non-professional developer, my journey with Endurain involved learning and implementing new technologies and concepts, with invaluable assistance from GitHub Copilot and ChatGPT. The primary motivation behind this project was to gain hands-on experience and expand my understanding of modern development practices. Second motivation is that I'm an amateur triathlete and I want to keep track of my gear and gear components usage.</p>
-<p>If you have any recommendations or insights on improving any aspect of Endurain, whether related to technology choices, user experience, or any other relevant area, I would greatly appreciate your input. The goal is to create a reliable and user-friendly fitness tracking solution that caters to the needs of individuals who prefer self-hosted applications. Your constructive feedback will undoubtedly contribute to the refinement of Endurain.</p>
-<h2 id="features">Features</h2>
-<p>Endurain currently supports:</p>
-<ul>
-<li>Multi-user functionality with admin and user profiles adaptable interfaces</li>
-<li>Activity import via manual or bulk upload (.gpx, .tcx and .fit files. .fit files are preferred)</li>
-<li>Strava integration for syncing activities and gear</li>
-<li>Garmin Connect integration for syncing activities, gear and body composition</li>
-<li>Activity feeds and statistics (week/month)</li>
-<li>Basic activity privacy settings</li>
-<li>Gear tracking (wetsuits, bicycles, shoes, racquets, skis, snowboards)</li>
-<li>Gear component tracking (e.g., track when components like bike chains need replacing)</li>
-<li>Default gear for activity types</li>
-<li>User pages with stats and activity histories</li>
-<li>Follower features (view activities)</li>
-<li>Multi-language support</li>
-<li>Imperial and metric units support</li>
-<li>Dark/light theme switcher</li>
-<li>Third-party app support</li>
-<li>Weight, steps and sleep logging</li>
-<li>Notification system</li>
-<li>Define and track goals</li>
-<li>MFA TOTP support</li>
-<li>Password reset through email link. Uses Apprise for email notifications</li>
-<li>Sign-up with configurable email verification and admin approva</li>
-<li>SSO support (OIDC/SAML)</li>
-</ul>
-<h2 id="planned-features">Planned Features</h2>
-<p>Please visit the <a href="https://github.com/joaovitoriasilva/endurain/blob/master/ROADMAP.md">ROADMAP.md file on GitHub</a>.</p>
-<h2 id="sponsors">Sponsors</h2>
-<p>A huge thank you to the project sponsors! Your support helps keep this project going.</p>
-<p>Consider <a href="https://github.com/sponsors/joaovitoriasilva">sponsoring Endurain on GitHub</a> to ensure continuous development.</p>
-<h2 id="contributing">Contributing</h2>
-<p>Contributions are welcomed! Please open an issue to discuss any changes or improvements before submitting a PR. Check out the <a href="https://github.com/joaovitoriasilva/endurain/blob/master/CONTRIBUTING.md">Contributing Guidelines</a> for more details.</p>
-<h2 id="license">License</h2>
-<p>This project is licensed under the AGPL-3.0 or later License.</p>
-<h2 id="help-translate">Help Translate</h2>
-<p>Endurain has multi-language support, and you can help translate it into more languages via <a href="https://crowdin.com/project/endurain">Crowdin</a>. </p>
-<p>Currently supported in:</p>
-<ul>
-<li>Catalan by <a href="https://github.com/rubenixnagios">@rubenixnagios</a></li>
-<li>Chinese Simplified</li>
-<li>Chinese Traditional</li>
-<li>German by <a href="https://github.com/ThreeCO">@ThreeCO</a></li>
-<li>French (FR) <a href="https://github.com/gwenvador">@gwenvador</a></li>
-<li>GALICIAN (GL)</li>
-<li>Dutch (NL) <a href="https://github.com/woutvanderaa">@woutvanderaa</a></li>
-<li>Portuguese (PT)</li>
-<li>Slovenian (SL) <a href="https://github.com/thehijacker">@thehijacker</a></li>
-<li>Spanish (ES) <a href="https://github.com/rgmelkor">@rgmelkor</a> and <a href="https://github.com/tinchodin">@tinchodin</a></li>
-<li>English (US)</li>
-</ul>
-<h2 id="star-history">Star History</h2>
-<p><a href="https://star-history.com/#joaovitoriasilva/endurain&amp;Date"><img alt="Star History Chart" src="https://api.star-history.com/svg?repos=joaovitoriasilva/endurain&amp;type=Date" /></a></p>
-<h2 id="trademark-notice">Trademark Notice</h2>
-<p>Endurain® is a trademark of João Vitória Silva.  </p>
-<p>You are welcome to self-host Endurain and use the name and logo, including for personal, educational, research, or community (non-commercial) use.<br />
-Commercial use of the Endurain name or logos (such as offering paid hosting, products, or services) is <strong>not permitted without prior written permission</strong>.</p>
-<p>See <a href="https://github.com/joaovitoriasilva/endurain/blob/master/TRADEMARK.md"><code>TRADEMARK.md</code></a> for full details.</p>
+<h2 id="3-download-endurain-release">3. Download Endurain Release</h2>
+<p>Run the following command to download and unpack the latest release.</p>
+<pre><code class="language-bash">mkdir -p /path/to/endurain
+cd /path/to/endurain
+
+TAG=$(curl -s https://api.github.com/repos/joaovitoriasilva/endurain/releases/latest \
+  | grep -oP '&quot;tag_name&quot;: &quot;\K(.*)(?=&quot;)')
+curl -L &quot;https://github.com/joaovitoriasilva/endurain/archive/refs/tags/$TAG.tar.gz&quot; \
+  | tar xz
+EXTRACTED=$(ls -d endurain-*)
+shopt -s dotglob
+mv &quot;$EXTRACTED&quot;/* .
+shopt -u dotglob
+rm -rf &quot;$EXTRACTED&quot;
+</code></pre>
+<h2 id="4-create-environment-configuration">4. Create Environment Configuration</h2>
+<p>Prepare data storage.</p>
+<pre><code class="language-bash">mkdir -p /path/to/endurain_data/{data,logs}
+</code></pre>
+<p>Copy the provided example.</p>
+<pre><code class="language-bash">cp /path/to/endurain/.env.example /path/to/endurain/.env
+</code></pre>
+<p>Generate your <code>SECRET_KEY</code> and <code>FERNET_KEY</code>. These keys are required for Endurain to work, so be sure to paste them into your <code>.env</code> file.</p>
+<pre><code class="language-bash">openssl rand -hex 32 # SECRET_KEY
+openssl rand -base64 32 # FERNET_KEY
+</code></pre>
+<p>Edit <code>.env</code> file.</p>
+<pre><code class="language-bash">nano /path/to/endurain/.env
+</code></pre>
+<p>Adjust the environment variables and set keys. You definitely have to adjust <code>FRONTEND_DIR</code>, <code>BACKEND_DIR</code> and <code>DB_HOST</code>.<br />
+Environment variables are explained in the <a href="../advanced-started/">Environment Variables Guide</a>.</p>
+<pre><code class="language-env">DB_HOST=localhost
+BACKEND_DIR=&quot;/path/to/endurain/backend/app&quot;
+FRONTEND_DIR=&quot;/path/to/endurain/frontend/app/dist&quot;
+DATA_DIR=&quot;/path/to/endurain_data/data&quot;
+LOGS_DIR=&quot;/path/to/endurain_data/logs&quot;
+</code></pre>
+<h2 id="5-build-the-frontend">5. Build the Frontend</h2>
+<pre><code class="language-bash">cd /path/to/endurain/frontend/app
+npm ci
+npm run build
+</code></pre>
+<p>Create <code>env.js</code>. Edit the URL if you use a reverse proxy.</p>
+<pre><code class="language-bash">cat &lt;&lt; 'EOF' &gt; /path/to/endurain/frontend/app/dist/env.js
+window.env = {
+  ENDURAIN_HOST: &quot;http://YOUR_SERVER_IP:8080&quot;,
+};
+EOF
+</code></pre>
+<h2 id="6-set-up-the-backend">6. Set Up the Backend</h2>
+<pre><code class="language-bash">cd /path/to/endurain/backend
+
+uv tool install poetry
+uv tool update-shell
+export PATH=&quot;/root/.local/bin:$PATH&quot;
+
+poetry self add poetry-plugin-export
+poetry export -f requirements.txt --output requirements.txt --without-hashes
+
+uv venv
+uv pip install -r requirements.txt
+</code></pre>
+<h2 id="7-setup-postgres-database">7. Setup Postgres Database</h2>
+<p>Run the following commands to create a PostgreSQL user and database for Endurain:</p>
+<pre><code class="language-bash">sudo -u postgres createuser -P endurain
+sudo -u postgres createdb -O endurain endurain
+</code></pre>
+<p>Check that the PostgreSQL client and server encodings are set to UTF-8.</p>
+<pre><code class="language-bash">sudo -u postgres psql -c &quot;SHOW client_encoding;&quot;
+sudo -u postgres psql -c &quot;SHOW server_encoding;&quot;
+</code></pre>
+<p>If either value is SQL_ASCII, set UTF-8 explicitly for the user and the database.</p>
+<pre><code class="language-bash">sudo -u postgres psql -c &quot;ALTER ROLE endurain SET client_encoding = 'UTF8';&quot;
+sudo -u postgres psql -c &quot;ALTER DATABASE endurain SET client_encoding = 'UTF8';&quot;
+</code></pre>
+<p>This ensures that all connections to the endurain database default to proper UTF-8 encoding.</p>
+<h2 id="8-systemd-service">8. Systemd Service</h2>
+<p>This is an example how you could set up your systemd service.</p>
+<pre><code class="language-bash">cat &lt;&lt; 'EOF' &gt; /etc/systemd/system/endurain.service
+[Unit]
+Description=Endurain FastAPI Backend
+After=network.target postgresql.service
+
+[Service]
+WorkingDirectory=/path/to/endurain/backend/app
+EnvironmentFile=/path/to/endurain/.env
+ExecStart=/path/to/endurain/backend/.venv/bin/uvicorn main:app --host 0.0.0.0 --port 8080
+Restart=always
+RestartSec=5
+User=root
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+EOF
+</code></pre>
+<p>Enable and start the service.</p>
+<pre><code class="language-bash">systemctl daemon-reload
+systemctl enable endurain
+systemctl start endurain
+</code></pre>
 
 
 
@@ -1017,10 +1010,10 @@ Commercial use of the Endurain name or logos (such as offering paid hosting, pro
     
     
       
-      <script id="__config" type="application/json">{"base": ".", "features": [], "search": "assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.f55a23d4.min.js"></script>
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
       
     
   </body>

@@ -360,6 +360,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../getting-started/bare-metal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Bare-Metal Installation Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../getting-started/maria-to-postgres-migration/" class="md-nav__link">
         
   
@@ -406,7 +429,7 @@
   
   
   <span class="md-ellipsis">
-    Integrations
+    Features
     
   </span>
   
@@ -416,6 +439,74 @@
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Features
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/sleep-scoring/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Sleep Scoring
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Integrations
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             Integrations
           </label>
@@ -966,7 +1057,6 @@
 
 
 <h1 id="developer-guide">Developer guide</h1>
-<hr />
 <h2 id="setup-a-dev-environment">Setup a dev environment</h2>
 <p>Bellow are the steps to create a dev environment. Examples bellow will use Endurain repo, but you should adapt those for your scenario (forked repo, etc).</p>
 <ul>
@@ -991,7 +1081,6 @@ $ git clone https://github.com/joaovitoriasilva/endurain.git # this will clone t
         image: unified-image # based on image that will be created above
         environment:
             - TZ=Europe/Lisbon # change if needed. Default is UTC
-            - DB_TYPE=postgres
             - DB_HOST=postgres
             - DB_PORT=5432
             - DB_PASSWORD=changeme
@@ -1084,7 +1173,7 @@ $ npm install
 <h3 id="api-requirements">API Requirements</h3>
 <ul>
 <li><strong>Add a header:</strong> Every request must include an <code>X-Client-Type</code> header with either <code>web</code> or <code>mobile</code> as the value. Requests with other values will receive a <code>403</code> error.</li>
-<li><strong>Authorization:</strong> Every request must include an <code>Authorization Bearer: &lt;access token&gt;</code> header with a valid (new or refreshed) access token.</li>
+<li><strong>Authorization:</strong> Every request must include an <code>Authorization: Bearer &lt;access token&gt;</code> header with a valid (new or refreshed) access token.</li>
 </ul>
 <h3 id="token-handling">Token Handling</h3>
 <ul>
@@ -1175,7 +1264,9 @@ X-Client-Type: web|mobile
   {
     "access_token": "eyJ...",
     "refresh_token": "eyJ...",
-    "session_id": "unique_session_id"
+    "session_id": "unique_session_id",
+    "token_type": "Bearer",
+    "expires_in": 900,
   }</code></p>
 <h4 id="error-handling">Error Handling</h4>
 <ul>
@@ -1218,6 +1309,10 @@ X-Client-Type: web|mobile
 <tr>
 <td>Track run</td>
 <td>34</td>
+</tr>
+<tr>
+<td>Treadmill run</td>
+<td>40</td>
 </tr>
 <tr>
 <td>Virtual run</td>
@@ -1362,6 +1457,26 @@ X-Client-Type: web|mobile
 <tr>
 <td>Soccer</td>
 <td>38</td>
+</tr>
+<tr>
+<td>Cardio training</td>
+<td>41</td>
+</tr>
+<tr>
+<td>Kayaking</td>
+<td>42</td>
+</tr>
+<tr>
+<td>Sailing</td>
+<td>43</td>
+</tr>
+<tr>
+<td>Snow shoeing</td>
+<td>44</td>
+</tr>
+<tr>
+<td>Inline skating</td>
+<td>45</td>
 </tr>
 </tbody>
 </table>

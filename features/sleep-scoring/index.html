@@ -1,0 +1,1652 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../../getting-started/maria-to-postgres-migration/">
+      
+      
+        <link rel="next" href="../../integrations/3rd-party-apps/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+    
+    
+      
+        <title>Sleep Scoring - Endurain documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.84d31ad4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#sleep-scoring-guide" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Endurain documentation" class="md-header__button md-logo" aria-label="Endurain documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Endurain documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Sleep Scoring
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/joaovitoriasilva/endurain" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Endurain documentation" class="md-nav__button md-logo" aria-label="Endurain documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Endurain documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/joaovitoriasilva/endurain" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Hosting Guide
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Hosting Guide
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Getting started easy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/advanced-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Getting started advanced
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/bare-metal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Bare-Metal Installation Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/maria-to-postgres-migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    MariaDB to Postgres migration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Features
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Features
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Sleep Scoring
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Sleep Scoring
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-sleep-scoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      What is Sleep Scoring?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-are-scores-calculated" class="md-nav__link">
+    <span class="md-ellipsis">
+      How Are Scores Calculated?
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How Are Scores Calculated?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#overall-sleep-score-0-100" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overall Sleep Score (0-100)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#understanding-each-score-component" class="md-nav__link">
+    <span class="md-ellipsis">
+      Understanding Each Score Component
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Understanding Each Score Component">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-sleep-duration-score" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Sleep Duration Score
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-sleep-quality-score" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Sleep Quality Score
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-awake-count-score" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Awake Count Score
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-rem-sleep-percentage-score" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. REM Sleep Percentage Score
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-deep-sleep-percentage-score" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Deep Sleep Percentage Score
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-light-sleep-percentage-score" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Light Sleep Percentage Score
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-sleep-stress-score" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Sleep Stress Score
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tips-for-better-sleep-scores" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tips for Better Sleep Scores
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tips for Better Sleep Scores">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#to-improve-duration-score" class="md-nav__link">
+    <span class="md-ellipsis">
+      To Improve Duration Score:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#to-improve-quality-score" class="md-nav__link">
+    <span class="md-ellipsis">
+      To Improve Quality Score:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#to-reduce-awakenings" class="md-nav__link">
+    <span class="md-ellipsis">
+      To Reduce Awakenings:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#to-reduce-sleep-stress" class="md-nav__link">
+    <span class="md-ellipsis">
+      To Reduce Sleep Stress:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#frequently-asked-questions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Frequently Asked Questions
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Frequently Asked Questions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#q-why-is-my-score-low-even-though-i-slept-8-hours" class="md-nav__link">
+    <span class="md-ellipsis">
+      Q: Why is my score low even though I slept 8 hours?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q-is-it-bad-if-my-scores-vary-day-to-day" class="md-nav__link">
+    <span class="md-ellipsis">
+      Q: Is it bad if my scores vary day to day?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q-whats-more-important-duration-or-quality" class="md-nav__link">
+    <span class="md-ellipsis">
+      Q: What's more important - duration or quality?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q-my-remdeep-sleep-percentage-seems-low-is-that-bad" class="md-nav__link">
+    <span class="md-ellipsis">
+      Q: My REM/Deep sleep percentage seems low. Is that bad?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q-can-i-compare-my-scores-with-friends" class="md-nav__link">
+    <span class="md-ellipsis">
+      Q: Can I compare my scores with friends?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q-what-if-i-have-a-sleep-disorder" class="md-nav__link">
+    <span class="md-ellipsis">
+      Q: What if I have a sleep disorder?
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#understanding-your-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Understanding Your Data
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Understanding Your Data">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#when-are-scores-calculated" class="md-nav__link">
+    <span class="md-ellipsis">
+      When are scores calculated?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-data-is-needed" class="md-nav__link">
+    <span class="md-ellipsis">
+      What data is needed?
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#technical-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      Technical Details
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Summary
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Integrations
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Integrations
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/3rd-party-apps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    3rd party apps
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/3rd-party-services/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    3rd party services
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Developer guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gallery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Gallery
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-sleep-scoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      What is Sleep Scoring?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-are-scores-calculated" class="md-nav__link">
+    <span class="md-ellipsis">
+      How Are Scores Calculated?
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How Are Scores Calculated?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#overall-sleep-score-0-100" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overall Sleep Score (0-100)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#understanding-each-score-component" class="md-nav__link">
+    <span class="md-ellipsis">
+      Understanding Each Score Component
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Understanding Each Score Component">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-sleep-duration-score" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Sleep Duration Score
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-sleep-quality-score" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Sleep Quality Score
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-awake-count-score" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Awake Count Score
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-rem-sleep-percentage-score" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. REM Sleep Percentage Score
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-deep-sleep-percentage-score" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Deep Sleep Percentage Score
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-light-sleep-percentage-score" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Light Sleep Percentage Score
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-sleep-stress-score" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Sleep Stress Score
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tips-for-better-sleep-scores" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tips for Better Sleep Scores
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tips for Better Sleep Scores">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#to-improve-duration-score" class="md-nav__link">
+    <span class="md-ellipsis">
+      To Improve Duration Score:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#to-improve-quality-score" class="md-nav__link">
+    <span class="md-ellipsis">
+      To Improve Quality Score:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#to-reduce-awakenings" class="md-nav__link">
+    <span class="md-ellipsis">
+      To Reduce Awakenings:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#to-reduce-sleep-stress" class="md-nav__link">
+    <span class="md-ellipsis">
+      To Reduce Sleep Stress:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#frequently-asked-questions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Frequently Asked Questions
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Frequently Asked Questions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#q-why-is-my-score-low-even-though-i-slept-8-hours" class="md-nav__link">
+    <span class="md-ellipsis">
+      Q: Why is my score low even though I slept 8 hours?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q-is-it-bad-if-my-scores-vary-day-to-day" class="md-nav__link">
+    <span class="md-ellipsis">
+      Q: Is it bad if my scores vary day to day?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q-whats-more-important-duration-or-quality" class="md-nav__link">
+    <span class="md-ellipsis">
+      Q: What's more important - duration or quality?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q-my-remdeep-sleep-percentage-seems-low-is-that-bad" class="md-nav__link">
+    <span class="md-ellipsis">
+      Q: My REM/Deep sleep percentage seems low. Is that bad?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q-can-i-compare-my-scores-with-friends" class="md-nav__link">
+    <span class="md-ellipsis">
+      Q: Can I compare my scores with friends?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q-what-if-i-have-a-sleep-disorder" class="md-nav__link">
+    <span class="md-ellipsis">
+      Q: What if I have a sleep disorder?
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#understanding-your-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Understanding Your Data
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Understanding Your Data">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#when-are-scores-calculated" class="md-nav__link">
+    <span class="md-ellipsis">
+      When are scores calculated?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-data-is-needed" class="md-nav__link">
+    <span class="md-ellipsis">
+      What data is needed?
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#technical-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      Technical Details
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Summary
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="sleep-scoring-guide">Sleep Scoring Guide</h1>
+<p>Endurain uses a sleep scoring system to help you understand the quality of your sleep. This guide explains how your sleep is evaluated and what the scores mean.</p>
+<h2 id="what-is-sleep-scoring">What is Sleep Scoring?</h2>
+<p>Sleep scoring is like a report card for your sleep. The system analyzes your sleep data and gives you:</p>
+<ul>
+<li><strong>An overall sleep score</strong> (0-100 points)</li>
+<li><strong>Individual component scores</strong> with quality labels</li>
+<li><strong>Easy-to-understand ratings</strong>: Excellent, Good, Fair, or Poor</li>
+</ul>
+<h2 id="how-are-scores-calculated">How Are Scores Calculated?</h2>
+<h3 id="overall-sleep-score-0-100">Overall Sleep Score (0-100)</h3>
+<p>Your overall sleep score combines several important factors:</p>
+<ul>
+<li><strong>30%</strong> - How long you slept (Duration)</li>
+<li><strong>40%</strong> - How well you slept (Quality)</li>
+<li><strong>10%</strong> - How many times you woke up</li>
+<li><strong>20%</strong> - Your stress levels during sleep</li>
+</ul>
+<p><strong>What the scores mean:</strong></p>
+<ul>
+<li><strong>90-100</strong>: Excellent sleep! You're well-rested and recharged</li>
+<li><strong>70-89</strong>: Good sleep. You got decent rest with room for improvement</li>
+<li><strong>50-69</strong>: Fair sleep. You might feel somewhat rested but could do better</li>
+<li><strong>0-49</strong>: Poor sleep. You likely feel tired and need better rest</li>
+</ul>
+<hr />
+<h2 id="understanding-each-score-component">Understanding Each Score Component</h2>
+<h3 id="1-sleep-duration-score">1. Sleep Duration Score</h3>
+<p><strong>What it measures:</strong> How many hours you slept</p>
+<p><strong>Why it matters:</strong> Your body needs enough time to go through all sleep stages and recover properly.</p>
+<p><strong>Scoring guidelines:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Hours of Sleep</th>
+<th>Score</th>
+<th>Rating</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>7-9 hours</td>
+<td>90-100</td>
+<td><strong>EXCELLENT</strong> - Perfect amount!</td>
+</tr>
+<tr>
+<td>6-7 hours</td>
+<td>70-89</td>
+<td><strong>GOOD</strong> - A bit short but okay</td>
+</tr>
+<tr>
+<td>9-10 hours</td>
+<td>70-89</td>
+<td><strong>GOOD</strong> - A bit long but okay</td>
+</tr>
+<tr>
+<td>5-6 hours</td>
+<td>50-69</td>
+<td><strong>FAIR</strong> - Not enough rest</td>
+</tr>
+<tr>
+<td>10-11 hours</td>
+<td>50-69</td>
+<td><strong>FAIR</strong> - Possibly oversleeping</td>
+</tr>
+<tr>
+<td>Less than 5 hours</td>
+<td>0-49</td>
+<td><strong>POOR</strong> - Seriously insufficient</td>
+</tr>
+<tr>
+<td>More than 11 hours</td>
+<td>0-49</td>
+<td><strong>POOR</strong> - Too much sleep</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The sweet spot:</strong> 7-9 hours, with 8 hours being ideal for most adults.</p>
+<hr />
+<h3 id="2-sleep-quality-score">2. Sleep Quality Score</h3>
+<p><strong>What it measures:</strong> How your sleep was distributed across different sleep stages</p>
+<p><strong>Why it matters:</strong> Quality sleep isn't just about quantity - your brain and body need the right mix of sleep stages to fully recover.</p>
+<p><strong>The four sleep stages:</strong></p>
+<ol>
+<li><strong>Light Sleep</strong> - Transition period, your body starts to relax</li>
+<li><strong>Deep Sleep</strong> - Body repairs muscles and tissues, strengthens immune system</li>
+<li><strong>REM Sleep</strong> - Brain processes memories and emotions, vivid dreams occur</li>
+<li><strong>Awake</strong> - Brief wakeful moments (some are normal!)</li>
+</ol>
+<p><strong>Optimal percentages:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Sleep Stage</th>
+<th>Ideal Range</th>
+<th>Why It Matters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Deep Sleep</strong></td>
+<td>13-23% (peak: 18%)</td>
+<td>Physical recovery and healing</td>
+</tr>
+<tr>
+<td><strong>REM Sleep</strong></td>
+<td>20-25% (peak: 22.5%)</td>
+<td>Memory and emotional processing</td>
+</tr>
+<tr>
+<td><strong>Light Sleep</strong></td>
+<td>45-55% (peak: 50%)</td>
+<td>Transition between stages</td>
+</tr>
+<tr>
+<td><strong>Awake Time</strong></td>
+<td>Less than 5%</td>
+<td>Normal brief awakenings</td>
+</tr>
+</tbody>
+</table>
+<p><strong>How it's scored:</strong></p>
+<ul>
+<li>Each sleep stage gets its own score based on how close you are to the optimal percentage</li>
+<li>The scores are combined with these weights:</li>
+<li>Deep sleep: 25%</li>
+<li>REM sleep: 30% (most important for mental recovery!)</li>
+<li>Light sleep: 25%</li>
+<li>Awake time: 20% (penalty applied)</li>
+</ul>
+<hr />
+<h3 id="3-awake-count-score">3. Awake Count Score</h3>
+<p><strong>What it measures:</strong> How many times you woke up during the night</p>
+<p><strong>Why it matters:</strong> Frequent awakenings disrupt your sleep cycles and prevent deep, restorative sleep.</p>
+<p><strong>Scoring:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Awakenings</th>
+<th>Score</th>
+<th>Rating</th>
+<th>What It Means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0-1 times</td>
+<td>90-100</td>
+<td><strong>EXCELLENT</strong></td>
+<td>Uninterrupted, restorative sleep</td>
+</tr>
+<tr>
+<td>2-3 times</td>
+<td>70-89</td>
+<td><strong>GOOD</strong></td>
+<td>Some interruptions but still decent</td>
+</tr>
+<tr>
+<td>4-5 times</td>
+<td>50-69</td>
+<td><strong>FAIR</strong></td>
+<td>Sleep continuity affected</td>
+</tr>
+<tr>
+<td>6+ times</td>
+<td>0-49</td>
+<td><strong>POOR</strong></td>
+<td>Very fragmented sleep</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note:</strong> It's normal to wake up briefly 1-2 times per night. You might not even remember them!</p>
+<hr />
+<h3 id="4-rem-sleep-percentage-score">4. REM Sleep Percentage Score</h3>
+<p><strong>What it measures:</strong> What percentage of your sleep was REM (Rapid Eye Movement) sleep</p>
+<p><strong>Why it matters:</strong> REM sleep is when your brain consolidates memories, processes emotions, and boosts creativity. It's essential for mental health and learning.</p>
+<p><strong>Optimal range:</strong> 20-25% of total sleep time (about 1.5-2 hours for 8 hours of sleep)</p>
+<p><strong>What different levels mean:</strong></p>
+<ul>
+<li><strong>Too low (&lt;20%)</strong>: May affect memory, mood, and cognitive function</li>
+<li><strong>Optimal (20-25%)</strong>: Brain is fully processing and recovering</li>
+<li><strong>Too high (&gt;25%)</strong>: Unusual and may indicate sleep disorders</li>
+</ul>
+<hr />
+<h3 id="5-deep-sleep-percentage-score">5. Deep Sleep Percentage Score</h3>
+<p><strong>What it measures:</strong> What percentage of your sleep was deep sleep</p>
+<p><strong>Why it matters:</strong> Deep sleep is when your body does most of its physical repair - healing muscles, strengthening bones, and boosting your immune system.</p>
+<p><strong>Optimal range:</strong> 13-23% of total sleep time (about 1-2 hours for 8 hours of sleep)</p>
+<p><strong>What different levels mean:</strong></p>
+<ul>
+<li><strong>Too low (&lt;13%)</strong>: Less physical recovery, may feel physically tired</li>
+<li><strong>Optimal (13-23%)</strong>: Body is fully recovering and strengthening</li>
+<li><strong>Too high (&gt;23%)</strong>: Rare, but may indicate sleep debt recovery</li>
+</ul>
+<p><strong>Did you know?</strong> Deep sleep decreases naturally as you age, which is normal!</p>
+<hr />
+<h3 id="6-light-sleep-percentage-score">6. Light Sleep Percentage Score</h3>
+<p><strong>What it measures:</strong> What percentage of your sleep was light sleep</p>
+<p><strong>Why it matters:</strong> Light sleep serves as a transition between sleep stages and makes up the largest portion of your sleep.</p>
+<p><strong>Optimal range:</strong> 45-55% of total sleep time (about 3.5-4.5 hours for 8 hours of sleep)</p>
+<p><strong>What different levels mean:</strong></p>
+<ul>
+<li><strong>Too low (&lt;45%)</strong>: You may be spending too much time in other stages</li>
+<li><strong>Optimal (45-55%)</strong>: Healthy balance of sleep stages</li>
+<li><strong>Too high (&gt;55%)</strong>: May not be getting enough deep or REM sleep</li>
+</ul>
+<hr />
+<h3 id="7-sleep-stress-score">7. Sleep Stress Score</h3>
+<p><strong>What it measures:</strong> Your average stress level during sleep and how restless you were</p>
+<p><strong>Why it matters:</strong> High stress during sleep indicates your body isn't fully relaxing, which affects recovery quality.</p>
+<p><strong>Stress levels explained</strong> (based on Garmin scale):</p>
+<ul>
+<li><strong>0-25</strong>: Rest state - fully relaxed</li>
+<li><strong>26-50</strong>: Low stress - mostly relaxed</li>
+<li><strong>51-75</strong>: Medium stress - moderately elevated</li>
+<li><strong>76-100</strong>: High stress - not relaxing properly</li>
+</ul>
+<p><strong>Scoring:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Stress Level</th>
+<th>Base Score</th>
+<th>Rating</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0-25 (Rest)</td>
+<td>100</td>
+<td><strong>EXCELLENT</strong></td>
+</tr>
+<tr>
+<td>26-50 (Low)</td>
+<td>70-90</td>
+<td><strong>GOOD</strong></td>
+</tr>
+<tr>
+<td>51-75 (Medium)</td>
+<td>50-70</td>
+<td><strong>FAIR</strong></td>
+</tr>
+<tr>
+<td>76-100 (High)</td>
+<td>0-50</td>
+<td><strong>POOR</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Restless moments penalty:</strong> Each restless moment during sleep reduces your score by 2-3 points.</p>
+<hr />
+<h2 id="tips-for-better-sleep-scores">Tips for Better Sleep Scores</h2>
+<h3 id="to-improve-duration-score">To Improve Duration Score:</h3>
+<ul>
+<li>Aim for 7-9 hours of sleep per night</li>
+<li>Keep a consistent sleep schedule, even on weekends. Be consistent on the time you go to bed and awake not only the sleep hours</li>
+<li>Go to bed when you're tired, not too early or late</li>
+</ul>
+<h3 id="to-improve-quality-score">To Improve Quality Score:</h3>
+<ul>
+<li>Create a dark, quiet, cool sleeping environment</li>
+<li>Avoid screens and high intensity brain tasks 1 hour before bedtime (blue light disrupts sleep)</li>
+<li>Avoid caffeine 6 hours before bed</li>
+<li>Exercise regularly, but not right before bed</li>
+</ul>
+<h3 id="to-reduce-awakenings">To Reduce Awakenings:</h3>
+<ul>
+<li>Limit fluid intake 2 hours before bedtime</li>
+<li>Keep your bedroom cool (60-67°F / 15-19°C is ideal)</li>
+<li>Use white noise or earplugs if needed</li>
+<li>Address any underlying sleep disorders with a doctor</li>
+</ul>
+<h3 id="to-reduce-sleep-stress">To Reduce Sleep Stress:</h3>
+<ul>
+<li>Practice relaxation techniques before bed (meditation, deep breathing)</li>
+<li>Keep a regular exercise routine during the day</li>
+<li>Avoid stressful activities or conversations before bedtime</li>
+<li>Consider journaling to clear your mind before sleep</li>
+</ul>
+<hr />
+<h2 id="frequently-asked-questions">Frequently Asked Questions</h2>
+<h3 id="q-why-is-my-score-low-even-though-i-slept-8-hours">Q: Why is my score low even though I slept 8 hours?</h3>
+<p><strong>A:</strong> Duration is only 30% of your overall score. You might have had poor quality sleep, many awakenings, or high stress levels. Check your individual component scores to see what needs improvement.</p>
+<h3 id="q-is-it-bad-if-my-scores-vary-day-to-day">Q: Is it bad if my scores vary day to day?</h3>
+<p><strong>A:</strong> Some variation is normal! Factors like stress, exercise, diet, and life events affect your sleep. Look for trends over weeks rather than individual nights.</p>
+<h3 id="q-whats-more-important-duration-or-quality">Q: What's more important - duration or quality?</h3>
+<p><strong>A:</strong> Both matter! Quality is weighted slightly higher (40% vs 30%) because you can sleep for 10 hours but still feel tired if the quality is poor. Aim for both good duration AND quality.</p>
+<h3 id="q-my-remdeep-sleep-percentage-seems-low-is-that-bad">Q: My REM/Deep sleep percentage seems low. Is that bad?</h3>
+<p><strong>A:</strong> Not necessarily. These percentages are averages based on research. Individual needs vary by age, genetics, and lifestyle. If you feel rested and energetic, your sleep is probably fine!</p>
+<h3 id="q-can-i-compare-my-scores-with-friends">Q: Can I compare my scores with friends?</h3>
+<p><strong>A:</strong> While you can, remember that everyone's sleep needs are different. Focus on improving YOUR scores over time rather than comparing with others.</p>
+<h3 id="q-what-if-i-have-a-sleep-disorder">Q: What if I have a sleep disorder?</h3>
+<p><strong>A:</strong> These scores are educational tools, not medical diagnoses. If you consistently get poor scores or feel tired despite good scores, consult a healthcare professional or sleep specialist.</p>
+<hr />
+<h2 id="understanding-your-data">Understanding Your Data</h2>
+<h3 id="when-are-scores-calculated">When are scores calculated?</h3>
+<p>Scores are automatically calculated when you:</p>
+<ul>
+<li>Create a new sleep record</li>
+<li>Update an existing sleep record</li>
+<li>Important: If sleep data is imported from Garmin Connect, no calculations are made. Garmin Connect data is used</li>
+</ul>
+<p>The system recalculates all scores to ensure they reflect your current data.</p>
+<h3 id="what-data-is-needed">What data is needed?</h3>
+<p>For the most accurate scores, provide:</p>
+<ul>
+<li>✅ Sleep start and end times</li>
+<li>✅ Total sleep duration</li>
+<li>✅ Sleep stage breakdowns (deep, light, REM, awake)</li>
+<li>✅ Number of awakenings</li>
+<li>✅ Stress levels (optional but recommended)</li>
+</ul>
+<p><strong>Partial data:</strong> Even with incomplete data, the system will calculate scores for the metrics you provide. Missing metrics won't break the scoring system.</p>
+<hr />
+<h2 id="technical-details">Technical Details</h2>
+<p>For developers and technically-minded users:</p>
+<ul>
+<li><strong>Algorithm</strong>: Based on sleep research (provided by Claude Sonnet 4.5 and double checked by me)</li>
+<li><strong>Scoring method</strong>: Weighted average of normalized component scores</li>
+<li><strong>Data source</strong>: Compatible with Garmin Connect and manual entry</li>
+<li><strong>Score range</strong>: All scores normalized to 0-100 scale</li>
+<li><strong>Labels</strong>: Threshold-based categorization (90+=Excellent, 70+=Good, 50+=Fair, &lt;50=Poor)</li>
+</ul>
+<hr />
+<h2 id="summary">Summary</h2>
+<p>Your sleep scores provide valuable insights into your rest quality. By understanding what each score means and following the improvement tips, you can work towards better, more restorative sleep.</p>
+<p><strong>Remember:</strong>
+- 🎯 Focus on trends, not single nights
+- 💪 Small improvements add up over time
+- 😴 Consistency is key to good sleep
+- 🩺 Consult a doctor for persistent sleep issues</p>
+<p>Sweet dreams and happy tracking! 🌙✨</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+    
+  </body>
+</html>
