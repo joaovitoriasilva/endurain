@@ -377,7 +377,25 @@
         <li class="md-nav__item">
   <a href="#installing-docker-and-caddy-reverse-proxy" class="md-nav__link">
     <span class="md-ellipsis">
-      Installing docker and Caddy reverse proxy
+      Installing Docker and Caddy reverse proxy
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installing-caddy-reverse-proxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installing Caddy reverse proxy
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installing-nginx-proxy-manager-reverse-proxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installing Nginx Proxy Manager reverse proxy
     </span>
   </a>
   
@@ -435,9 +453,42 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#configure-a-reverse-proxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configure a reverse proxy
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configure a reverse proxy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#configure-caddy-as-reverse-proxy-and-get-ssl-cert-from-letsencrypt" class="md-nav__link">
     <span class="md-ellipsis">
       Configure Caddy as reverse proxy and get SSL cert from letsencrypt
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configure-nginx-proxy-manager-as-reverse-proxy-and-get-ssl-cert-from-letsencrypt" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configure Nginx Proxy Manager as reverse proxy and get SSL cert from letsencrypt
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#access-your-endurain-instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Access your Endurain instance
     </span>
   </a>
   
@@ -796,7 +847,25 @@
         <li class="md-nav__item">
   <a href="#installing-docker-and-caddy-reverse-proxy" class="md-nav__link">
     <span class="md-ellipsis">
-      Installing docker and Caddy reverse proxy
+      Installing Docker and Caddy reverse proxy
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installing-caddy-reverse-proxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installing Caddy reverse proxy
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installing-nginx-proxy-manager-reverse-proxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installing Nginx Proxy Manager reverse proxy
     </span>
   </a>
   
@@ -854,9 +923,42 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#configure-a-reverse-proxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configure a reverse proxy
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configure a reverse proxy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#configure-caddy-as-reverse-proxy-and-get-ssl-cert-from-letsencrypt" class="md-nav__link">
     <span class="md-ellipsis">
       Configure Caddy as reverse proxy and get SSL cert from letsencrypt
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configure-nginx-proxy-manager-as-reverse-proxy-and-get-ssl-cert-from-letsencrypt" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configure Nginx Proxy Manager as reverse proxy and get SSL cert from letsencrypt
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#access-your-endurain-instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Access your Endurain instance
     </span>
   </a>
   
@@ -917,17 +1019,25 @@
 <li>A computer/server with enough disk space for your activity files.</li>
 <li>A Linux distro that has <code>docker compose</code> cli, and <code>caddy</code> in the repositories.</li>
 </ul>
-<h2 id="installing-docker-and-caddy-reverse-proxy">Installing docker and Caddy reverse proxy</h2>
+<h2 id="installing-docker-and-caddy-reverse-proxy">Installing Docker and Caddy reverse proxy</h2>
 <p>Note:
-If you have a old-ish distro (Ubuntu 22.04 and older) you need to add the repos for caddy and docker. Read how to do it for <a href="https://docs.docker.com/compose/install/linux/">docker</a>, and <a href="https://caddyserver.com/docs/install#debian-ubuntu-raspbian">caddy</a>. Fore newer distroes (Debian 13 and Ubuntu 24.04 you do not have to do this step).</p>
-<p>We use apt to do this:</p>
-<pre><code>sudo apt update -y
-sudo apt install docker.io docker-compose caddy -y
+If you have a old-ish distro (Ubuntu 22.04 and older) you need to add the repo for Docker. Read how to do it on <a href="https://docs.docker.com/compose/install/linux/">Docker</a> documentation. For newer distroes (Debian 13 and Ubuntu 24.04 it is not expected for you to have to do this step).</p>
+<p>Install Docker:</p>
+<pre><code class="language-bash">sudo apt update -y
+sudo apt install docker.io docker-compose -y
 </code></pre>
 <p>Confirm your user has the id 1000:</p>
-<pre><code>id
+<pre><code class="language-bash">id
 </code></pre>
 <p>If you are not the user 1000, you need to set the <code>UID</code> and <code>GID</code> to your id in the .env file. But to keep this guide as easy to follow as possible, we will assume that you are user 1000.</p>
+<h2 id="installing-caddy-reverse-proxy">Installing Caddy reverse proxy</h2>
+<p>Note:
+If you have a old-ish distro (Ubuntu 22.04 and older) you need to add the repo for Caddy. Read how to do it on <a href="https://caddyserver.com/docs/install#debian-ubuntu-raspbian">Caddy</a> documentation. For newer distroes (Debian 13 and Ubuntu 24.04 it is not expected for you to have to do this step).</p>
+<pre><code class="language-bash">sudo apt update -y
+sudo apt install caddy -y
+</code></pre>
+<h2 id="installing-nginx-proxy-manager-reverse-proxy">Installing Nginx Proxy Manager reverse proxy</h2>
+<p>Nginx Proxy Manager comes as a pre-built Docker image. Please refer to the <a href="https://nginxproxymanager.com/guide/">docs</a> for details on how to install it.</p>
 <h2 id="create-directory-structure">Create directory structure</h2>
 <p>Lets use <code>/opt/endurain/</code> as the root directory for our project.</p>
 <pre><code class="language-bash">sudo mkdir /opt/endurain
@@ -1005,39 +1115,109 @@ mv .env.example .env
 </tbody>
 </table>
 <p><strong>Please note:</strong></p>
-<p>POSTGRES_DB and POSTGRES_USER is values for the database. If you change it from endurain, you also need to set the environment variables for the app image. Please leave them as <code>endurain</code> if you are unsure.</p>
+<p><code>POSTGRES_DB</code> and <code>POSTGRES_USER</code> are values for the database. If you change it from endurain, you also need to set the environment variables for the app image. Please leave them as <code>endurain</code> if you are unsure.</p>
 <h3 id="start-the-stack">Start the stack</h3>
 <p>It is finally time to start the stack!</p>
 <pre><code class="language-bash">cd /opt/endurain
 sudo docker compose up -d
 </code></pre>
 <p>Check the log output:</p>
-<pre><code>docker compose logs -f
+<pre><code class="language-bash">docker compose logs -f
 </code></pre>
 <p>If you do not get any errors, continue to next step.</p>
 <h3 id="visit-the-site">Visit the site</h3>
 <ul>
-<li>Visit the site insecurly on http://<code>IP-OF-YOUR-SERVER</code>:8080</li>
+<li>Visit the site insecurly on <code>http://&lt;IP-OF-YOUR-SERVER&gt;:8080</code></li>
 <li>We still can not login to the site, because the <code>ENDURAIN_HOST</code> doesn't match our local URL.</li>
 </ul>
-<h2 id="configure-caddy-as-reverse-proxy-and-get-ssl-cert-from-letsencrypt">Configure Caddy as reverse proxy and get SSL cert from letsencrypt</h2>
+<h2 id="configure-a-reverse-proxy">Configure a reverse proxy</h2>
 <ul>
-<li>Before we configure caddy you need to set your DNS provider to point your domain to your external IP.</li>
+<li>Before we configure a reverse proxy you need to set your DNS provider to point your domain to your external IP.</li>
 <li>You also need to open your firewall on port 443 and 80 to the server.</li>
 </ul>
-<p>We use caddy outside docker. This way Debian handles the updates (you just need to run <code>sudo apt get update -y</code> and <code>sudo apt get upgrade -y</code>)</p>
+<h3 id="configure-caddy-as-reverse-proxy-and-get-ssl-cert-from-letsencrypt">Configure Caddy as reverse proxy and get SSL cert from letsencrypt</h3>
+<p>We use Caddy outside docker. This way Debian handles the updates (you just need to run <code>sudo apt update -y</code> and <code>sudo apt upgrade -y</code>)</p>
 <p>Caddy is configured in the file <code>/etc/caddy/Caddyfile</code></p>
 <p>Open the file in your favourite editor, delete the default text, and paste in this:</p>
-<pre><code>endurain.yourdomain.com {
+<pre><code class="language-conf">endurain.yourdomain.com {
         reverse_proxy localhost:8080
 }
 </code></pre>
-<p>Restart caddy</p>
-<pre><code>sudo systemctl restart caddy
+<p>Restart Caddy</p>
+<pre><code class="language-bash">sudo systemctl restart caddy
 </code></pre>
-<p>Check the ouput of caddy with:</p>
-<pre><code>sudo journalctl -u caddy
+<p>Check the ouput of Caddy with:</p>
+<pre><code class="language-bash">sudo journalctl -u caddy
 </code></pre>
+<h3 id="configure-nginx-proxy-manager-as-reverse-proxy-and-get-ssl-cert-from-letsencrypt">Configure Nginx Proxy Manager as reverse proxy and get SSL cert from letsencrypt</h3>
+<p>Bellow is an example config file for Endurain:</p>
+<pre><code class="language-conf">------------------------------------------------------------
+endurain.yourdomain.com
+------------------------------------------------------------
+
+map $scheme $hsts_header {
+    https &quot;max-age=63072000; preload&quot;;
+}
+
+server {
+    set $forward_scheme http;
+    set $server &quot;your_server_ip&quot;;
+    set $port 8884;
+
+    listen 80;
+    listen [::]:80;
+
+    listen 443 ssl;
+    listen [::]:443 ssl;
+
+    server_name endurain.yourdomain.com;
+
+    http2 on;
+    Let's Encrypt SSL
+
+    include conf.d/include/letsencrypt-acme-challenge.conf;
+    include conf.d/include/ssl-cache.conf;
+    include conf.d/include/ssl-ciphers.conf;
+    ssl_certificate /etc/letsencrypt/live/npm-21/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/npm-21/privkey.pem;
+    Asset Caching
+
+    include conf.d/include/assets.conf;
+    Block Exploits
+
+    include conf.d/include/block-exploits.conf;
+    HSTS (ngx_http_headers_module is required) (63072000 seconds = 2 years)
+
+    add_header Strict-Transport-Security $hsts_header always;
+    Force SSL
+
+    include conf.d/include/force-ssl.conf;
+
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $http_connection;
+    proxy_http_version 1.1;
+
+    access_log /data/logs/proxy-host-18_access.log proxy;
+    error_log /data/logs/proxy-host-18_error.log warn;
+
+    location / {
+        HSTS (ngx_http_headers_module is required) (63072000 seconds = 2 years)
+
+        add_header Strict-Transport-Security $hsts_header always;
+
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $http_connection;
+        proxy_http_version 1.1;
+        Proxy!
+
+        include conf.d/include/proxy.conf;
+    }
+    Custom
+
+    include /data/nginx/custom/server_proxy[.]conf;
+}
+</code></pre>
+<h2 id="access-your-endurain-instance">Access your Endurain instance</h2>
 <p>You should now be able to access your site on endurain.yourdomain.com</p>
 <p><strong>Log in with username: admin password: admin, and remember to change the password</strong></p>
 <p>🎉 <strong>Weee</strong> 🎉 You now have your own instance of Endurain up and running!</p>
@@ -1056,7 +1236,7 @@ sudo docker compose up -d
 <p>** It is generally pretty safe to upgrade postgres minor version f.eks 17.4 to 17.5, but major is often breaking change (example 17.2 to 18.1 )</p>
 <h2 id="things-to-think-about">Things to think about</h2>
 <p>You should implement backup strategy for the following directories:</p>
-<pre><code>/opt/endurain/app/data
+<pre><code class="language-bash">/opt/endurain/app/data
 /opt/endurain/app/logs
 </code></pre>
 <p>You also need to backup your postgres database. It is not good practice to just backup the volume <code>/opt/endurain/postgres</code> this might be corrupted if  the database is in the middle of a wright when the database goes down.</p>

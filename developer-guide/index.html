@@ -1226,21 +1226,23 @@ X-Client-Type: web|mobile
 
 username=user@example.com&amp;password=userpassword
 </code></pre>
-<p><strong>Response (when MFA is enabled):</strong>
-- <strong>Web clients</strong>: HTTP 202 Accepted
+<p><strong>Response (when MFA is enabled):</strong></p>
+<ul>
+<li><strong>Web clients</strong>: HTTP 202 Accepted
   <code>json
   {
     "mfa_required": true,
     "username": "example",
     "message": "MFA verification required"
-  }</code>
-- <strong>Mobile clients</strong>: HTTP 200 OK
+  }</code></li>
+<li><strong>Mobile clients</strong>: HTTP 200 OK
   <code>json
   {
     "mfa_required": true,
     "username": "example",
     "message": "MFA verification required"
-  }</code></p>
+  }</code></li>
+</ul>
 <h4 id="step-2-mfa-verification">Step 2: MFA Verification</h4>
 <p>Complete the login by providing the MFA code to <code>/mfa/verify</code>:</p>
 <p><strong>Request:</strong></p>
@@ -1253,13 +1255,14 @@ X-Client-Type: web|mobile
   &quot;mfa_code&quot;: &quot;123456&quot;
 }
 </code></pre>
-<p><strong>Response (successful verification):</strong>
-- <strong>Web clients</strong>: Tokens are set as HTTP-only cookies
+<p><strong>Response (successful verification):</strong></p>
+<ul>
+<li><strong>Web clients</strong>: Tokens are set as HTTP-only cookies
   <code>json
   {
     "session_id": "unique_session_id"
-  }</code>
-- <strong>Mobile clients</strong>: Tokens are returned in response body
+  }</code></li>
+<li><strong>Mobile clients</strong>: Tokens are returned in response body
   <code>json
   {
     "access_token": "eyJ...",
@@ -1267,7 +1270,8 @@ X-Client-Type: web|mobile
     "session_id": "unique_session_id",
     "token_type": "Bearer",
     "expires_in": 900,
-  }</code></p>
+  }</code></li>
+</ul>
 <h4 id="error-handling">Error Handling</h4>
 <ul>
 <li><strong>No pending MFA login</strong>: HTTP 400 Bad Request
